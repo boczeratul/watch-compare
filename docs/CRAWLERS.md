@@ -47,6 +47,14 @@ carries on with the other sources; the job still exits 0. Silence the warning wi
 no tax handling of its own. If a site publishes its own 税抜 figure, parse it into `PriceExclTax`
 and the derivation will leave it alone.
 
+## Non-watch items
+
+Dealers list straps, buckles and bracelet links under their watch brands. `normalize.NonWatchBrands`
+(currently Vagenari, a strap maker) and `normalize.NonWatchTitleMarkers` (currently 錶節, bracelet
+links) name what is dropped: the Runner skips any listing whose title or model matches and counts
+it as `excluded` in the run summary, and the alapower adapters skip a whole brand category whose
+menu entry matches. Add to those two lists when a new part maker or part type shows up.
+
 ## Politeness and reliability
 
 * Per-host rate limit (`CRAWL_RATE_LIMIT_MS`, default 1.5 s) using a token bucket; 3 retries with

@@ -56,7 +56,13 @@ func (s Site) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) er
 			return
 		}
 		seenCat[m[1]] = true
-		cats = append(cats, cat{m[1], strings.Trim(crawler.Text(a), "‧· ")})
+		name := strings.Trim(crawler.Text(a), "‧· ")
+		if reason := normalize.ExclusionReason(name); reason != "" {
+			// strap makers and the like have their own menu entry: skip the whole category
+			env.Log.Info().Str("category", name).Str("reason", reason).Msg("skipping non-watch category")
+			return
+		}
+		cats = append(cats, cat{m[1], name})
 	})
 	if len(cats) == 0 {
 		return fmt.Errorf("no categories found on home page (markup changed?)")

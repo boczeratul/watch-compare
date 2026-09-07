@@ -41,7 +41,7 @@ func NewRunner(repo *repository.Repo, fetcher *Fetcher, cfg *config.Config, conv
 
 // Stats summarizes a run.
 type Stats struct {
-	Seen, New, Updated, PriceChanged, Deactivated, Errors int
+	Seen, New, Updated, PriceChanged, Deactivated, Errors, Excluded int
 }
 
 // Run crawls the requested sources (all enabled when keys is empty) with bounded concurrency.
@@ -127,6 +127,12 @@ func (r *Runner) runOne(ctx context.Context, src model.Source) (err error) {
 		if l.LocationCountry == "" && !marketplace {
 			l.LocationCountry = src.Country
 		}
+		// Straps, bracelet links and other parts sold under a watch brand are not listings we compare.
+		if reason := normalize.ExclusionReason(l.Title, l.Model); reason != "" {
+			st.Excluded++
+			logger.Debug().Str("id", l.ExternalID).Str("reason", reason).Str("title", truncate(l.Title, 80)).Msg("excluded non-watch item")
+			return nil
+		}
 		EnrichFromTitle(&l)
 		ApplyTaxFreePrice(&l, src.Country)
 		if basis, ok := ComparisonPrice(&l); ok {
@@ -187,7 +193,7 @@ func (r *Runner) runOne(ctx context.Context, src model.Source) (err error) {
 		st.Deactivated = n
 	}
 	logger.Info().Str("status", status).Int("seen", st.Seen).Int("new", st.New).Int("updated", st.Updated).
-		Int("priceChanged", st.PriceChanged).Int("deactivated", st.Deactivated).Int("errors", st.Errors).
+		Int("priceChanged", st.PriceChanged).Int("deactivated", st.Deactivated).Int("errors", st.Errors).Int("excluded", st.Excluded).
 		Dur("took", time.Since(started)).Msg("crawl finished")
 	if !r.cfg.CrawlDryRun {
 		if ferr := r.repo.FinishCrawlRun(ctx, runID, status, st.Seen, st.New, st.Updated, st.Deactivated, crawlErr); ferr != nil {
