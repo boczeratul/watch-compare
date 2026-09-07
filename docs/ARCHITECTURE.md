@@ -19,7 +19,8 @@ internal/
   crawler/     Fetcher (rate limit, retries, charset), Source interface, Runner (persistence)
   crawler/<site>/  one adapter per marketplace (+ fixture tests using real captured HTML/JSON)
   crawler/alapower/ shared parser for the ASP shop platform used by Hourstack and RD Watch
-  db/          pgx pool, embedded migrations (advisory-locked, idempotent)
+  db/          pgx pool, embedded migrations (advisory-locked on one connection, idempotent;
+               applied on start unless AUTO_MIGRATE=false, which production sets on both workloads)
   fx/          USD-based exchange rates
   model/       domain types
   normalize/   brand dictionary (EN/繁中/日本語 aliases), price/ref/diameter parsing, condition mapping

@@ -72,8 +72,14 @@ Steps, in order:
 3. **push** — to `REGION-docker.pkg.dev/PROJECT/watch-compare/backend`.
 4. **migrate** — deploys a tiny Cloud Run job `watch-compare-api-migrate` from the same image with
    `--command=/app/migrate --args=up` and executes it with `--wait`. Migrations are embedded in the
-   binary, idempotent, and guarded by an advisory lock. The API also runs them on boot unless
-   `AUTO_MIGRATE=false` (which production sets, because step 4 already did it).
+   binary, idempotent, and guarded by a session-level advisory lock.
+
+   This is the **only** place production applies migrations. The API service and the crawler job
+   both call `db.Migrate` on start unless `AUTO_MIGRATE=false`, and Cloud Build sets that on both,
+   so schema changes happen exactly once per deploy in an observable step. The default stays `true`
+   for local development and tests, where `make run` and `make crawl` are expected to bring an
+   empty database up to date on their own. The advisory lock still matters there, and for any
+   future fan-out (several crawler jobs starting at 02:00 would otherwise race).
 5. **deploy-api** — `gcloud run deploy` with Cloud SQL attached, secrets mounted as env vars,
    `min-instances=0`, `max-instances=10`, `concurrency=80`. Traffic moves to the new revision only
    after it passes startup checks; the previous revision stays available for rollback.
@@ -121,8 +127,8 @@ gcloud run jobs execute watch-compare-api-migrate --region asia-east1 --args=dow
 * **One image, three entrypoints** keeps the API and crawler on the same commit and halves build
   time; Cloud Run jobs just override the command.
 * **Distroless static, non-root** image: no shell, ~15 MB, fewer CVEs.
-* **Migrations as a job step** rather than on API boot in production: a failed migration fails the
-  build instead of crash-looping the service.
+* **Migrations as a job step** rather than on service or job boot in production: a failed migration
+  fails the build instead of crash-looping the service or silently changing the schema at 02:00.
 * **Cloud Run Job + Cloud Scheduler** instead of a long-running crawler container: you pay only for
   the nightly hour, retries and timeouts are handled by the platform, and logs are per execution.
 * **Secrets via Secret Manager env mounts**, never in build substitutions.

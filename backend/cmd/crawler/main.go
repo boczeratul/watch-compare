@@ -65,8 +65,12 @@ func main() {
 		logger.Fatal().Err(err).Msg("database")
 	}
 	defer pool.Close()
-	if err := db.Migrate(ctx, pool); err != nil {
-		logger.Fatal().Err(err).Msg("migrate")
+	// Production runs migrations once in a controlled Cloud Build step, so the job is deployed with
+	// AUTO_MIGRATE=false. Locally (and in tests) the default keeps the schema current on start.
+	if os.Getenv("AUTO_MIGRATE") != "false" {
+		if err := db.Migrate(ctx, pool); err != nil {
+			logger.Fatal().Err(err).Msg("migrate")
+		}
 	}
 	repo := repository.New(pool)
 	fetcher := crawler.NewFetcher(cfg)
