@@ -234,7 +234,7 @@ see the warning every night until you either configure the source or turn it off
 ```bash
 # Option A: crawl an explicit list (env var on the job)
 gcloud run jobs update watch-compare-crawler --region asia-east1 \
-  --update-env-vars=CRAWL_SOURCES=hourstack,rdwatch,jackroad,watchnian,commitwatch,sevenhours,lips,allu,housekihiroba,ishida,rww
+  --update-env-vars=CRAWL_SOURCES=hourstack,rdwatch,jackroad,watchnian,commitwatch,sevenhours,lips,allu,housekihiroba,ishida,rww,watchfinderhk,wristcheck,kenwatches
 
 # Option B: disable the source in the database (the runner honours sources.enabled)
 #   UPDATE sources SET enabled = false WHERE key IN ('chrono24', 'ebay');
