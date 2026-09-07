@@ -20,3 +20,6 @@ backend/tmp/
 .DS_Store
 .idea/
 .vscode/
+
+# Chrono24 markup is captured locally for parser testing, never committed
+backend/internal/crawler/chrono24/testdata/

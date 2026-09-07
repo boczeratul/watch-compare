@@ -3,9 +3,10 @@
 // Chrono24 fronts its site with bot protection: plain HTTP requests from a data-centre IP
 // receive HTTP 403 (verified 2026-09). Two supported ways to run this adapter:
 //
-//  1. CRAWL_RENDER_SERVICE_URL – a headless-browser render endpoint (e.g. a Browserless /
-//     Playwright service you operate, or a commercial rendering proxy). The adapter calls
-//     `<url>?url=<page>` and expects the fully rendered HTML back.
+//  1. CRAWL_RENDER_SERVICE_URL – a headless-browser render service. By default this is
+//     browserless.io Smart Scrape: the adapter POSTs {"url": <page>, "formats": ["html"]} to
+//     `<url>/smart-scrape?timeout=60000&token=…` and reads the rendered HTML from the JSON
+//     envelope (see crawler.Renderer for the self-hosted /content and plain GET variants).
 //  2. CRAWL_PROXY_URL – a residential/forward proxy for plain fetches.
 //
 // Without either, the adapter fails fast with a clear error and the run is marked "failed"
@@ -28,6 +29,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -167,10 +169,7 @@ func ParseList(doc *goquery.Document) []model.Listing {
 			l.Price, l.Currency = &p, cur
 		}
 		card.Find("img").Each(func(_ int, img *goquery.Selection) {
-			src, _ := img.Attr("data-src")
-			if src == "" {
-				src, _ = img.Attr("src")
-			}
+			src := imageSrc(img)
 			if src != "" && !strings.HasPrefix(src, "data:") && len(l.ImageURLs) < 6 {
 				l.ImageURLs = append(l.ImageURLs, upscale(crawler.AbsURL(doc, src)))
 			}
@@ -217,6 +216,33 @@ func parsePrice(text string) (string, float64, bool) {
 		cur = map[string]string{"$": "USD", "€": "EUR", "£": "GBP", "¥": "JPY"}[m[1]]
 	}
 	return cur, p, true
+}
+
+// imageSrc returns the best image URL of a card <img>. Chrono24 lazy-loads photos: src is an
+// inline SVG placeholder while data-lazy-sweet-spot-master-src holds a template such as
+// …-Square_SIZE_.jpg together with the widths the CDN serves (data-lazy-sweet-spot-derivate-widths).
+// The largest listed width is substituted; plain data-src/src are used as fallbacks.
+func imageSrc(img *goquery.Selection) string {
+	if master, ok := img.Attr("data-lazy-sweet-spot-master-src"); ok && master != "" {
+		size := "480"
+		if widths, _ := img.Attr("data-lazy-sweet-spot-derivate-widths"); widths != "" {
+			max := 0
+			for _, w := range strings.Split(widths, ",") {
+				if n, err := strconv.Atoi(strings.TrimSpace(w)); err == nil && n > max {
+					max = n
+				}
+			}
+			if max > 0 {
+				size = strconv.Itoa(max)
+			}
+		}
+		return strings.ReplaceAll(master, "_SIZE_", size)
+	}
+	if src, _ := img.Attr("data-src"); src != "" {
+		return src
+	}
+	src, _ := img.Attr("src")
+	return src
 }
 
 // upscale swaps Chrono24's thumbnail size suffix for a larger rendition when present.

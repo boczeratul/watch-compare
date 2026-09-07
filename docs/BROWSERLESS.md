@@ -1,8 +1,11 @@
 # Rendering Chrono24 through Browserless
 
-Chrono24 answers plain HTTP clients with 403, so its adapter fetches pages through a headless
-browser service. The crawler speaks the **Browserless v2 REST API** (`POST /content`), which is
-offered both as a hosted service (browserless.io) and as a container you can run on Cloud Run.
+Chrono24 answers plain HTTP clients with 403 and fronts the site with a Cloudflare challenge, so
+its adapter fetches pages through a headless browser service. By default the crawler uses
+**browserless.io Smart Scrape** (`POST /smart-scrape`), which picks its own strategy (plain fetch,
+headless browser, residential proxy, challenge solving) and returns the rendered HTML in a JSON
+envelope. The plain **Browserless v2 REST API** (`POST /content`) is still available as
+`CRAWL_RENDER_MODE=content` for a container you run yourself on Cloud Run.
 
 Review Chrono24's terms of use before enabling this. A licensed data feed is the proper
 production path; rendering is for evaluation and low volumes.
@@ -17,31 +20,51 @@ production path; rendering is for evaluation and low volumes.
 
    ```bash
    TOKEN=your-api-key
-   curl -s -X POST "https://production-lon.browserless.io/content?token=$TOKEN" \
+   curl -s -X POST "https://production-sfo.browserless.io/smart-scrape?timeout=60000&token=$TOKEN" \
      -H 'Content-Type: application/json' \
-     -d '{"url":"https://www.chrono24.com/rolex/index.htm?pageSize=120&showpage=1&sortorder=5","gotoOptions":{"waitUntil":"networkidle2","timeout":60000},"rejectResourceTypes":["image","media","font"]}' \
-     -o chrono24.html
+     -d '{"url":"https://www.chrono24.com/rolex/index.htm?pageSize=120&showpage=1&sortorder=5","formats":["html"]}' \
+     -o chrono24.json
+   jq '{ok,statusCode,strategy,attempted,message}' chrono24.json   # want ok=true, statusCode=200
+   jq -r .content chrono24.json > chrono24.html
    grep -c -- '--id' chrono24.html      # > 0 means listing cards are present
-   grep -ci 'access denied\|captcha\|are you a robot' chrono24.html   # > 0 means still blocked
+   grep -ci 'just a moment\|access denied\|captcha' chrono24.html   # > 0 means still blocked
    ```
 
-   If the page is blocked, add browserless.io's residential proxy / stealth options to the query
-   string (billed extra): `&proxy=residential&proxyCountry=de&stealth=true`. The crawler passes the
-   same options through `CRAWL_RENDER_EXTRA_QUERY`.
+   The crawler sends exactly this request and treats `ok:false` or a non-2xx `statusCode` as a
+   failed page, so a blocked page can never be mistaken for an empty listing. Any extra query
+   options you find necessary (for example `proxy=residential`) can be passed through
+   `CRAWL_RENDER_EXTRA_QUERY`.
 
 3. Run the crawler locally as a dry run against the real site:
 
    ```bash
    cd backend
-   export CRAWL_RENDER_SERVICE_URL=https://production-lon.browserless.io
+   export CRAWL_RENDER_SERVICE_URL=https://production-sfo.browserless.io
    export CRAWL_RENDER_SERVICE_TOKEN=$TOKEN
-   export CRAWL_RENDER_EXTRA_QUERY='proxy=residential&proxyCountry=de'   # only if needed
    make crawl-dry ARGS="-sources=chrono24"
    ```
 
-   The dry run prints the first 25 parsed listings. If it prints none but step 2 returned cards,
-   Chrono24's markup differs from the selectors in `internal/crawler/chrono24` — save the file from
-   step 2 as `internal/crawler/chrono24/testdata/list.html` and adjust `ParseList` against it.
+   The dry run prints the first 25 parsed listings and writes nothing to the database.
+
+   Between steps 2 and 3 there is a faster loop that needs no database and no network. Save the
+   `chrono24.html` extracted in step 2 as `backend/internal/crawler/chrono24/testdata/list.html`
+   (git-ignored) and run:
+
+   ```bash
+   cd backend && go test -v ./internal/crawler/chrono24/
+   ```
+
+   The test skips when that file is absent and otherwise reports how many listings parsed and how
+   many carry a title, price and image. It is the only way to tell a blocked page apart from a
+   markup change, because both look like "no results" in a crawl.
+
+   | What you see | What it means |
+   |---|---|
+   | Test skipped | The capture in step 2 did not produce a file |
+   | "captured page is only N bytes" | Browserless returned an error envelope, or the file is the raw JSON rather than `.content`; check the token and the `jq` step |
+   | "parsed 0 listings" | Either a captcha/blocked page, or the selectors no longer match |
+   | items > 0 but price/image counts low | Selectors partially match, `ParseList` needs adjusting |
+   | items > 0 with title, price and image | The parser works, proceed to step 3 |
 
 4. Deploy: store the key in Secret Manager and set the URL on the crawler job.
 
@@ -52,11 +75,11 @@ production path; rendering is for evaluation and low volumes.
    # immediate effect on the existing job …
    gcloud run jobs update watch-compare-crawler --region asia-east1 \
      --update-secrets=CRAWL_RENDER_SERVICE_TOKEN=BROWSERLESS_TOKEN:latest \
-     --update-env-vars=CRAWL_RENDER_SERVICE_URL=https://production-lon.browserless.io,^@^CRAWL_RENDER_EXTRA_QUERY=proxy=residential&proxyCountry=de
+     --update-env-vars=CRAWL_RENDER_SERVICE_URL=https://production-sfo.browserless.io
 
    # … and permanently via the Cloud Build trigger substitutions, so redeploys keep it
    gcloud builds triggers update watch-compare-backend \
-     --update-substitutions=_RENDER_SERVICE_URL=https://production-lon.browserless.io,_RENDER_EXTRA_QUERY='proxy=residential&proxyCountry=de'
+     --update-substitutions=_RENDER_SERVICE_URL=https://production-sfo.browserless.io
    ```
 
    `cloudbuild.yaml` already mounts `BROWSERLESS_TOKEN` as `CRAWL_RENDER_SERVICE_TOKEN`; the secret
@@ -67,8 +90,9 @@ production path; rendering is for evaluation and low volumes.
 
 ### Budget
 
-Each Chrono24 list page is one rendered page (one Browserless unit, plus proxy bandwidth if
-enabled) and carries 120 listings sorted newest-first. The nightly budget is bounded by two
+Each Chrono24 list page is one Smart Scrape call (billed by the strategy the service ends up
+using: a headless-browser render plus residential proxy bandwidth when it needs them) and carries
+120 listings sorted newest-first. The nightly budget is bounded by two
 settings on the crawler job:
 
 | Variable | Default | Effect |
@@ -83,9 +107,10 @@ renders a month.
 
 ## Option B — self-hosted Browserless on Cloud Run
 
-Cheaper at volume and keeps traffic inside your project, but Chrono24 sees a Google Cloud IP,
-which is more likely to be blocked than a residential proxy; you can point Browserless at a proxy
-with `CRAWL_RENDER_LAUNCH_JSON='{"stealth":true,"args":["--proxy-server=http://host:port"]}'`.
+Cheaper at volume and keeps traffic inside your project, but the self-hosted image has no
+`/smart-scrape`, so set `CRAWL_RENDER_MODE=content`, and Chrono24 sees a Google Cloud IP, which is
+more likely to be blocked than a residential proxy; you can point Browserless at a proxy with
+`CRAWL_RENDER_LAUNCH_JSON='{"stealth":true,"args":["--proxy-server=http://host:port"]}'`.
 
 ```bash
 PROJECT_ID=my-proj REGION=asia-east1
@@ -113,7 +138,7 @@ URL=$(gcloud run services describe browserless --region=$REGION --format='value(
 printf '%s' "$TOKEN" | gcloud secrets create BROWSERLESS_TOKEN --replication-policy=automatic --data-file=-
 gcloud run jobs update watch-compare-crawler --region=$REGION \
   --update-secrets=CRAWL_RENDER_SERVICE_TOKEN=BROWSERLESS_TOKEN:latest \
-  --update-env-vars=CRAWL_RENDER_SERVICE_URL=$URL
+  --update-env-vars=CRAWL_RENDER_SERVICE_URL=$URL,CRAWL_RENDER_MODE=content
 ```
 
 Because the URL ends in `.run.app`, the crawler automatically attaches a Google identity token
@@ -135,8 +160,8 @@ crawl of a few hundred pages costs cents. Set `--max-instances` to bound the wor
 |----------|---------|
 | `CRAWL_RENDER_SERVICE_URL` | Base URL of the Browserless service. Empty = Chrono24 is skipped. |
 | `CRAWL_RENDER_SERVICE_TOKEN` | Browserless API key / container `TOKEN`, sent as `?token=`. |
-| `CRAWL_RENDER_EXTRA_QUERY` | Extra query options, e.g. `proxy=residential&proxyCountry=de&stealth=true` (browserless.io). |
-| `CRAWL_RENDER_LAUNCH_JSON` | Chromium launch options for self-hosted Browserless, e.g. `{"stealth":true,"args":["--proxy-server=…"]}`. |
-| `CRAWL_RENDER_MODE` | `browserless` (default) or `get` for a custom endpoint answering `GET ?url=`. |
+| `CRAWL_RENDER_EXTRA_QUERY` | Extra query options appended to the render request, e.g. `proxy=residential&proxyCountry=de`. |
+| `CRAWL_RENDER_LAUNCH_JSON` | Chromium launch options for self-hosted Browserless (`content` mode only), e.g. `{"stealth":true,"args":["--proxy-server=…"]}`. |
+| `CRAWL_RENDER_MODE` | `browserless` (default, `POST /smart-scrape?timeout=60000&token=…` with `{"url","formats":["html"]}`), `content` (`POST /content`, self-hosted image) or `get` for a custom endpoint answering `GET ?url=`. |
 | `CRAWL_RENDER_USE_IDTOKEN` | Attach a Google identity token; defaults to true for `*.run.app` URLs. |
 | `CRAWL_RATE_LIMIT_MS` | Applied per *target* host, so rendered fetches are as polite as plain ones. |

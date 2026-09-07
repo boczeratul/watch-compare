@@ -89,7 +89,7 @@ Supported ways to run the adapter, in order of preference:
 1. **Licensed feed** — Chrono24 offers partner/affiliate data. If you have one, replace the HTML
    parser with the feed client; the rest of the pipeline stays the same.
 2. **Browserless** (`CRAWL_RENDER_SERVICE_URL` + `CRAWL_RENDER_SERVICE_TOKEN`) — either the hosted
-   browserless.io service or the official container on Cloud Run. Step-by-step setup, testing and
+   browserless.io Smart Scrape service or the official container on Cloud Run. Step-by-step setup, testing and
    budget notes: [BROWSERLESS.md](BROWSERLESS.md).
 3. **Forward proxy** (`CRAWL_PROXY_URL`) — a residential proxy for plain fetches.
 

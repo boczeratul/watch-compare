@@ -31,8 +31,8 @@ type Config struct {
 	ProxyURL                  string // optional forward proxy (e.g. for Chrono24)
 	RenderServiceURL          string // optional headless-render service base URL (Browserless on Cloud Run)
 	RenderServiceToken        string // Browserless TOKEN (sent as ?token=)
-	RenderMode                string // browserless (default) | get
-	RenderLaunchJSON          string // Browserless launch options, e.g. {"stealth":true,"args":["--proxy-server=..."]}
+	RenderMode                string // browserless (default, /smart-scrape) | content (Browserless v2 /content) | get
+	RenderLaunchJSON          string // Browserless launch options for content mode, e.g. {"stealth":true,"args":["--proxy-server=..."]}
 	RenderExtraQuery          string // extra query string for the render endpoint, e.g. proxy=residential&proxyCountry=de
 	RenderUseIDToken          bool   // attach a Google identity token (auto for *.run.app URLs)
 
