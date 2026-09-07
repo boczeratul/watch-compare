@@ -12,6 +12,10 @@
 // without touching existing rows. Review Chrono24's terms of use and robots.txt before
 // enabling; the intended production path is an official data-partner feed.
 //
+// Budget: CHRONO24_BRANDS (default Rolex, Omega, IWC, AP, PP) × CHRONO24_MAX_PAGES (default 3) rendered
+// pages per night, 120 listings each, sorted newest first so a small page count still catches
+// fresh inventory.
+//
 // Page structure: /<brand-slug>/index.htm?pageSize=120&showpage=<n>&sortorder=5
 // Cards: a.js-article-item[data-article-id][href*="--id<id>.htm"] with
 //
@@ -28,6 +32,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
+	"github.com/hsuanlee/watch-compare/backend/internal/config"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler"
 	"github.com/hsuanlee/watch-compare/backend/internal/model"
 	"github.com/hsuanlee/watch-compare/backend/internal/normalize"
@@ -35,11 +40,15 @@ import (
 
 const baseURL = "https://www.chrono24.com"
 
-// Brands crawled (Chrono24 brand slugs). Mirrors the eBay list so cross-platform comparison overlaps.
-var Brands = []string{
-	"rolex", "tudor", "omega", "patekphilippe", "audemarspiguet", "vacheronconstantin", "alangesoehne",
-	"cartier", "breitling", "iwc", "jaeger-lecoultre", "panerai", "hublot", "tagheuer", "zenith", "breguet",
-	"blancpain", "grandseiko", "seiko", "longines", "oris", "nomos", "sinn", "tissot", "hamilton",
+// DefaultBrands are the Chrono24 brand slugs crawled when CHRONO24_BRANDS is unset. Kept to the
+// five brands that overlap most with the Japanese/Taiwanese sources so cross-marketplace
+// comparison works while the nightly render budget stays at a handful of pages.
+var DefaultBrands = []string{"rolex", "omega", "iwc", "audemarspiguet", "patekphilippe"}
+
+// slugAliases lets CHRONO24_BRANDS use our canonical brand slugs as well as Chrono24's.
+var slugAliases = map[string]string{
+	"audemars-piguet": "audemarspiguet", "patek-philippe": "patekphilippe", "vacheron-constantin": "vacheronconstantin",
+	"a-lange-sohne": "alangesoehne", "tag-heuer": "tagheuer", "grand-seiko": "grandseiko", "jaeger-lecoultre": "jaeger-lecoultre",
 }
 
 // Source implements crawler.Source.
@@ -53,14 +62,29 @@ var (
 	priceRe = regexp.MustCompile(`(?i)(\$|€|£|CHF|¥|HK\$|S\$|A\$|C\$|NT\$|US\$|JPY|USD|EUR|GBP|TWD)\s*([0-9][0-9.,]*)`)
 )
 
-// Crawl walks each brand's index pages.
-func (s Source) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) error {
-	if env.Cfg.RenderServiceURL == "" && env.Cfg.ProxyURL == "" {
+// Preflight reports whether a render service or proxy is configured; without one the site
+// answers 403 and the Runner skips this source instead of failing the job.
+func (Source) Preflight(cfg *config.Config) error {
+	if cfg.RenderServiceURL == "" && cfg.ProxyURL == "" {
 		return fmt.Errorf("chrono24 requires CRAWL_RENDER_SERVICE_URL or CRAWL_PROXY_URL (site blocks plain requests with 403)")
 	}
+	return nil
+}
+
+// Crawl walks each brand's index pages.
+func (s Source) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) error {
+	if err := s.Preflight(env.Cfg); err != nil {
+		return err
+	}
+	brands := Brands(env.Cfg)
+	maxPages := env.MaxPages
+	if env.Cfg.Chrono24MaxPages > 0 && env.Cfg.Chrono24MaxPages < maxPages {
+		maxPages = env.Cfg.Chrono24MaxPages
+	}
+	env.Log.Info().Strs("brands", brands).Int("pagesPerBrand", maxPages).Msg("chrono24 budget")
 	seen := map[string]bool{}
-	for _, brand := range Brands {
-		for page := 1; page <= env.MaxPages; page++ {
+	for _, brand := range brands {
+		for page := 1; page <= maxPages; page++ {
 			u := fmt.Sprintf("%s/%s/index.htm?pageSize=120&showpage=%d&sortorder=5", baseURL, brand, page)
 			doc, err := env.Fetcher.DocRendered(ctx, u)
 			if err != nil {
@@ -87,6 +111,25 @@ func (s Source) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) 
 		}
 	}
 	return nil
+}
+
+// Brands resolves the configured brand list (CHRONO24_BRANDS) to Chrono24 URL slugs.
+func Brands(cfg *config.Config) []string {
+	src := cfg.Chrono24Brands
+	if len(src) == 0 {
+		src = DefaultBrands
+	}
+	out := make([]string, 0, len(src))
+	for _, b := range src {
+		b = strings.ToLower(strings.TrimSpace(b))
+		if a, ok := slugAliases[b]; ok {
+			b = a
+		}
+		if b != "" {
+			out = append(out, b)
+		}
+	}
+	return out
 }
 
 // ParseList extracts listings from a Chrono24 result page. Exported for fixture tests.

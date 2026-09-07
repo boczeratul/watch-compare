@@ -27,7 +27,7 @@ type Fetcher struct {
 	client    *http.Client
 	userAgent string
 	every     time.Duration
-	renderURL string
+	renderer  *Renderer
 	mu        sync.Mutex
 	limiters  map[string]*rate.Limiter
 }
@@ -41,14 +41,21 @@ func NewFetcher(cfg *config.Config) *Fetcher {
 			transport.Proxy = http.ProxyURL(pu)
 		}
 	}
+	client := &http.Client{Transport: transport, Timeout: 45 * time.Second}
+	// The render service does its own outbound fetching, so it must not go through the proxy,
+	// and it needs a longer timeout than a plain page load.
+	renderClient := &http.Client{Transport: http.DefaultTransport, Timeout: 90 * time.Second}
 	return &Fetcher{
-		client:    &http.Client{Transport: transport, Timeout: 45 * time.Second},
+		client:    client,
 		userAgent: cfg.UserAgent,
 		every:     time.Duration(cfg.CrawlRateLimitMS) * time.Millisecond,
-		renderURL: cfg.RenderServiceURL,
+		renderer:  NewRenderer(cfg, renderClient),
 		limiters:  map[string]*rate.Limiter{},
 	}
 }
+
+// HasRenderer reports whether a headless render service is configured.
+func (f *Fetcher) HasRenderer() bool { return f.renderer != nil }
 
 // Client exposes the underlying client for API-based sources (eBay).
 func (f *Fetcher) Client() *http.Client { return f.client }
@@ -124,18 +131,16 @@ func (f *Fetcher) Get(ctx context.Context, rawURL string) ([]byte, error) {
 }
 
 // GetRendered fetches through the optional headless render service (for JS/anti-bot sites).
-// Falls back to a plain Get when no render service is configured.
+// Falls back to a plain Get when no render service is configured. The per-host rate limit is
+// applied to the *target* host so the crawled site is treated as politely as with plain fetches.
 func (f *Fetcher) GetRendered(ctx context.Context, rawURL string) ([]byte, error) {
-	if f.renderURL == "" {
+	if f.renderer == nil {
 		return f.Get(ctx, rawURL)
 	}
-	u := f.renderURL
-	if strings.Contains(u, "?") {
-		u += "&url=" + url.QueryEscape(rawURL)
-	} else {
-		u += "?url=" + url.QueryEscape(rawURL)
+	if err := f.limiter(mustHost(rawURL)).Wait(ctx); err != nil {
+		return nil, err
 	}
-	return f.Get(ctx, u)
+	return f.renderer.Render(ctx, rawURL)
 }
 
 // Doc fetches a URL and parses it as HTML.

@@ -20,11 +20,18 @@ deactivation. Parsers are covered by fixture tests using real HTML captured in `
 | `rdwatch` | HTML (alapower shop, same markup as Hourstack; 230px cards, prices without separators) | TWD | ✅ 24/24 cards on the Rolex category; live dry-run OK (41 categories) | RD Watch, Taipei |
 | `commitwatch` | **Shopify JSON feed** `/products.json?limit=250&page=N` | JPY | ✅ 30/30 with price, brand (from `vendor`), `Ref.` reference, images, condition grade from title; live dry-run OK | Commit Ginza, Tokyo; sold-out variants are skipped so they deactivate |
 | `ebay` | **Browse API** (OAuth client credentials) | market currency | needs `EBAY_CLIENT_ID/SECRET` | per-brand aspect filter in Wristwatches (31387); free developer keys at developer.ebay.com |
-| `chrono24` | HTML via render service or proxy | listing currency | ❌ plain requests get HTTP 403 | requires `CRAWL_RENDER_SERVICE_URL` or `CRAWL_PROXY_URL`; fails fast otherwise |
+| `chrono24` | HTML via Browserless (see [BROWSERLESS.md](BROWSERLESS.md)) | listing currency | ❌ plain requests get HTTP 403; selectors unverified until a rendered page is captured | skipped unless `CRAWL_RENDER_SERVICE_URL` or `CRAWL_PROXY_URL` is set; budget = `CHRONO24_BRANDS` (default Rolex, Omega, IWC, AP, PP) × `CHRONO24_MAX_PAGES` (default 3) |
 
 Image URLs: Jackroad thumbnails (`/img/goods/S/<id>.jpg`) are upgraded to the product-page image
 (`/img/goods/1/<id>.jpg`); Watchnian only serves the small `/S/` variant for the main image;
 Hourstack links `product/product_big/*.JPG` directly. We never download or store images.
+
+## Sources that need configuration
+
+`ebay` and `chrono24` implement `crawler.Preflighter`. When their credentials / proxy are missing
+the Runner logs a warning, writes a `skipped` row to `crawl_runs` (visible at `/api/v1/crawls`) and
+carries on with the other sources; the job still exits 0. Silence the warning with
+`CRAWL_SOURCES=<list>` or `UPDATE sources SET enabled = false WHERE key = '…'`.
 
 ## Politeness and reliability
 
@@ -73,9 +80,9 @@ Supported ways to run the adapter, in order of preference:
 
 1. **Licensed feed** — Chrono24 offers partner/affiliate data. If you have one, replace the HTML
    parser with the feed client; the rest of the pipeline stays the same.
-2. **Rendering service** (`CRAWL_RENDER_SERVICE_URL`) — a headless browser endpoint you operate
-   (e.g. Browserless/Playwright on Cloud Run) or a commercial rendering proxy. The adapter calls
-   `<url>?url=<page>` and expects rendered HTML.
+2. **Browserless** (`CRAWL_RENDER_SERVICE_URL` + `CRAWL_RENDER_SERVICE_TOKEN`) — either the hosted
+   browserless.io service or the official container on Cloud Run. Step-by-step setup, testing and
+   budget notes: [BROWSERLESS.md](BROWSERLESS.md).
 3. **Forward proxy** (`CRAWL_PROXY_URL`) — a residential proxy for plain fetches.
 
 Review Chrono24's terms of use and robots.txt before enabling any of these.

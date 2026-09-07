@@ -29,6 +29,13 @@ type Source interface {
 	Crawl(ctx context.Context, env *Env, emit Emit) error
 }
 
+// Preflighter is implemented by sources that need external configuration (API keys, a proxy).
+// A non-nil error means "not configured": the Runner skips the source with a warning and records
+// a "skipped" crawl run instead of failing the whole job.
+type Preflighter interface {
+	Preflight(cfg *config.Config) error
+}
+
 // EnrichFromTitle fills brand/reference/diameter/year/box-papers heuristically when the
 // marketplace did not provide structured data.
 func EnrichFromTitle(l *model.Listing, extraBrandHints ...string) {

@@ -20,6 +20,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/hsuanlee/watch-compare/backend/internal/config"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler"
 	"github.com/hsuanlee/watch-compare/backend/internal/model"
 	"github.com/hsuanlee/watch-compare/backend/internal/normalize"
@@ -128,10 +129,18 @@ type itemSummary struct {
 	} `json:"categories"`
 }
 
+// Preflight requires Browse API credentials; without them the Runner skips eBay.
+func (*Source) Preflight(cfg *config.Config) error {
+	if cfg.EbayClientID == "" || cfg.EbayClientSecret == "" {
+		return fmt.Errorf("ebay requires EBAY_CLIENT_ID and EBAY_CLIENT_SECRET (Browse API credentials)")
+	}
+	return nil
+}
+
 // Crawl searches each brand on each configured marketplace.
 func (s *Source) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) error {
-	if env.Cfg.EbayClientID == "" || env.Cfg.EbayClientSecret == "" {
-		return fmt.Errorf("EBAY_CLIENT_ID / EBAY_CLIENT_SECRET not set; skipping eBay")
+	if err := s.Preflight(env.Cfg); err != nil {
+		return err
 	}
 	seen := map[string]bool{}
 	for _, market := range env.Cfg.EbayMarketplaces {

@@ -215,6 +215,26 @@ need it (`@swc/core`, `@parcel/watcher`, `unrs-resolver`, all native binaries) a
 add it there (or run `pnpm approve-builds <pkg>` locally, which writes the same file) and commit.
 Vercel uses the pnpm version pinned by `packageManager` in `package.json`.
 
+### `chrono24: chrono24 requires CRAWL_RENDER_SERVICE_URL or CRAWL_PROXY_URL` (or `ebay requires EBAY_CLIENT_ID …`)
+
+Chrono24 blocks plain requests and eBay needs API credentials, so these sources cannot run until
+configured. The crawler now checks that before starting (`Preflight`), logs a warning, records a
+`skipped` row in `crawl_runs`, and continues with the other sources — the job exits 0. You will
+see the warning every night until you either configure the source or turn it off:
+
+```bash
+# Option A: crawl an explicit list (env var on the job)
+gcloud run jobs update watch-compare-crawler --region asia-east1 \
+  --update-env-vars=CRAWL_SOURCES=hourstack,rdwatch,jackroad,watchnian,commitwatch
+
+# Option B: disable the source in the database (the runner honours sources.enabled)
+#   UPDATE sources SET enabled = false WHERE key IN ('chrono24', 'ebay');
+
+# Option C: configure it — see docs/BROWSERLESS.md (Chrono24) and docs/CRAWLERS.md (eBay keys)
+gcloud run jobs update watch-compare-crawler --region asia-east1 \
+  --update-env-vars=CRAWL_PROXY_URL=http://user:pass@proxy.example:8080
+```
+
 ### `dial unix /cloudsql/...: connect: no such file or directory`
 
 `--set-cloudsql-instances` is missing on the service or job, or the runtime service account lacks

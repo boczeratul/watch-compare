@@ -75,6 +75,7 @@ upsert_secret DATABASE_URL "$DATABASE_URL_VALUE"
 echo "   DATABASE_URL secret updated (password applied to Cloud SQL user 'watch' in the same run)."
 gcloud secrets describe EBAY_CLIENT_ID >/dev/null 2>&1 || upsert_secret EBAY_CLIENT_ID "replace-me"
 gcloud secrets describe EBAY_CLIENT_SECRET >/dev/null 2>&1 || upsert_secret EBAY_CLIENT_SECRET "replace-me"
+gcloud secrets describe BROWSERLESS_TOKEN >/dev/null 2>&1 || upsert_secret BROWSERLESS_TOKEN "replace-me"
 
 echo "▶ Cloud Build trigger (connect the GitHub repo in the console first if prompted)"
 gcloud builds triggers describe watch-compare-backend >/dev/null 2>&1 || \

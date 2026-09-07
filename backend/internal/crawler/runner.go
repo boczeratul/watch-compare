@@ -58,9 +58,17 @@ func (r *Runner) Run(ctx context.Context, keys []string) error {
 		if len(keys) > 0 && !contains(keys, s.Key) {
 			continue
 		}
-		if _, ok := r.sources[s.Key]; !ok {
+		adapter, ok := r.sources[s.Key]
+		if !ok {
 			r.log.Warn().Str("source", s.Key).Msg("no adapter registered, skipping")
 			continue
+		}
+		if p, ok := adapter.(Preflighter); ok {
+			if err := p.Preflight(r.cfg); err != nil {
+				r.log.Warn().Str("source", s.Key).Err(err).Msg("source not configured, skipping (set CRAWL_SOURCES or disable it to silence)")
+				r.recordSkipped(ctx, s, err)
+				continue
+			}
 		}
 		todo = append(todo, s)
 	}
@@ -183,6 +191,21 @@ func (r *Runner) runOne(ctx context.Context, src model.Source) (err error) {
 		}
 	}
 	return crawlErr
+}
+
+// recordSkipped writes an audit row so /api/v1/crawls shows why a source produced nothing.
+func (r *Runner) recordSkipped(ctx context.Context, src model.Source, reason error) {
+	if r.cfg.CrawlDryRun {
+		return
+	}
+	id, err := r.repo.StartCrawlRun(ctx, src.ID)
+	if err != nil {
+		r.log.Error().Err(err).Str("source", src.Key).Msg("record skipped run")
+		return
+	}
+	if err := r.repo.FinishCrawlRun(ctx, id, "skipped", 0, 0, 0, 0, reason); err != nil {
+		r.log.Error().Err(err).Str("source", src.Key).Msg("record skipped run")
+	}
 }
 
 func (r *Runner) ensureBrand(ctx context.Context, slug, name string) (int, error) {

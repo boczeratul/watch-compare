@@ -29,7 +29,16 @@ type Config struct {
 	CrawlDeactivateStaleAfter time.Duration
 	UserAgent                 string
 	ProxyURL                  string // optional forward proxy (e.g. for Chrono24)
-	RenderServiceURL          string // optional headless-render endpoint for JS-heavy sites
+	RenderServiceURL          string // optional headless-render service base URL (Browserless on Cloud Run)
+	RenderServiceToken        string // Browserless TOKEN (sent as ?token=)
+	RenderMode                string // browserless (default) | get
+	RenderLaunchJSON          string // Browserless launch options, e.g. {"stealth":true,"args":["--proxy-server=..."]}
+	RenderExtraQuery          string // extra query string for the render endpoint, e.g. proxy=residential&proxyCountry=de
+	RenderUseIDToken          bool   // attach a Google identity token (auto for *.run.app URLs)
+
+	// Chrono24 (rendered pages are the expensive part: keep the nightly budget small)
+	Chrono24Brands   []string // Chrono24 brand slugs to crawl
+	Chrono24MaxPages int      // list pages per brand per night
 
 	// Integrations
 	EbayClientID     string
@@ -56,6 +65,13 @@ func Load() (*Config, error) {
 		UserAgent:                 getenv("CRAWL_USER_AGENT", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36 WatchCompareBot/1.0 (+https://github.com/hsuanlee/watch-compare)"),
 		ProxyURL:                  os.Getenv("CRAWL_PROXY_URL"),
 		RenderServiceURL:          os.Getenv("CRAWL_RENDER_SERVICE_URL"),
+		RenderServiceToken:        os.Getenv("CRAWL_RENDER_SERVICE_TOKEN"),
+		RenderMode:                getenv("CRAWL_RENDER_MODE", "browserless"),
+		RenderLaunchJSON:          os.Getenv("CRAWL_RENDER_LAUNCH_JSON"),
+		RenderExtraQuery:          strings.TrimPrefix(os.Getenv("CRAWL_RENDER_EXTRA_QUERY"), "?"),
+		RenderUseIDToken:          getenvBool("CRAWL_RENDER_USE_IDTOKEN", strings.HasSuffix(os.Getenv("CRAWL_RENDER_SERVICE_URL"), ".run.app")),
+		Chrono24Brands:            splitList(getenv("CHRONO24_BRANDS", "rolex,omega,iwc,audemarspiguet,patekphilippe")),
+		Chrono24MaxPages:          getenvInt("CHRONO24_MAX_PAGES", 3),
 		EbayClientID:              os.Getenv("EBAY_CLIENT_ID"),
 		EbayClientSecret:          os.Getenv("EBAY_CLIENT_SECRET"),
 		EbayMarketplaces:          splitList(getenv("EBAY_MARKETPLACES", "EBAY_US")),
