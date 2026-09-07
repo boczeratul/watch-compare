@@ -23,7 +23,7 @@ substitutions:
   _RENDER_SERVICE_URL: ""          # e.g. https://production-sfo.browserless.io (empty = Chrono24 skipped)
   _RENDER_EXTRA_QUERY: ""          # e.g. proxy=residential&proxyCountry=de
   _CHRONO24_BRANDS: "rolex,omega,iwc,audemarspiguet,patekphilippe"
-  _CHRONO24_MAX_PAGES: "3"
+  _CHRONO24_MAX_PAGES: "10"
 
 options:
   logging: CLOUD_LOGGING_ONLY
