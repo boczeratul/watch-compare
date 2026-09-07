@@ -111,7 +111,7 @@ func TestRepositoryEndToEnd(t *testing.T) {
 		SourceID: src.ID, ExternalID: "abc1", URL: "https://example.com/1", Title: "Rolex Submariner 116610LN",
 		BrandID: &rolex, BrandName: "Rolex", Model: "Submariner", ReferenceNumber: "116610LN",
 		Condition: model.ConditionVeryGood, Movement: model.MovementAutomatic, Gender: model.GenderMen,
-		Price: &price, Currency: "JPY", PriceUSD: &usd, ImageURLs: []string{"https://example.com/1.jpg"},
+		Price: &price, Currency: "JPY", PriceUSD: &usd, ImageURLs: []string{"https://example.com/1.jpg"}, DialColor: "black",
 	}
 	res, err := repo.UpsertListing(ctx, &l)
 	if err != nil {
@@ -168,6 +168,15 @@ func TestRepositoryEndToEnd(t *testing.T) {
 	sr, err = repo.SearchListings(ctx, model.ListingQuery{Text: "水鬼", TextAlt: "Submariner", Sort: model.SortRelevance})
 	if err != nil || sr.Total != 2 {
 		t.Errorf("relevance search: total=%d err=%v", sr.Total, err)
+	}
+	// dial colour filter + facets
+	sr, err = repo.SearchListings(ctx, model.ListingQuery{DialColors: []string{"black"}})
+	if err != nil || sr.Total != 1 || sr.Items[0].DialColor != "black" {
+		t.Errorf("dial filter: total=%d err=%v", sr.Total, err)
+	}
+	sr, _ = repo.SearchListings(ctx, model.ListingQuery{})
+	if len(sr.Facets.DialColors) != 1 || sr.Facets.DialColors[0].Key != "black" {
+		t.Errorf("dial facet: %+v", sr.Facets.DialColors)
 	}
 	// price filter in USD
 	minP := 9000.0

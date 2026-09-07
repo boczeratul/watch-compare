@@ -76,6 +76,7 @@ type Listing struct {
 	Year            *int            `json:"year,omitempty"`
 	CaseDiameterMM  *float64        `json:"caseDiameterMm,omitempty"`
 	CaseMaterial    string          `json:"caseMaterial,omitempty"`
+	DialColor       string          `json:"dialColor,omitempty"`
 	Movement        Movement        `json:"movement"`
 	Gender          Gender          `json:"gender"`
 	HasBox          *bool           `json:"hasBox,omitempty"`
@@ -145,6 +146,7 @@ type ListingQuery struct {
 	Movements       []Movement
 	Genders         []Gender
 	Countries       []string
+	DialColors      []string
 	PriceMinUSD     *float64
 	PriceMaxUSD     *float64
 	YearMin         *int
@@ -173,6 +175,8 @@ type Facets struct {
 	Conditions []FacetValue `json:"conditions"`
 	Movements  []FacetValue `json:"movements"`
 	Countries  []FacetValue `json:"countries"`
+	DialColors []FacetValue `json:"dialColors"`
+	Years      []FacetValue `json:"years"`
 	PriceMin   *float64     `json:"priceMinUsd,omitempty"`
 	PriceMax   *float64     `json:"priceMaxUsd,omitempty"`
 }

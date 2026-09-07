@@ -9,6 +9,7 @@ import { SourceBadge } from "./source-badge";
 
 export function ListingCard({ listing }: { listing: Listing }) {
   const tc = useTranslations("condition");
+  const td = useTranslations("dial");
   const img = listing.imageUrls[0];
   return (
     <Link href={`/listing/${listing.id}`} className="group flex h-full flex-col overflow-hidden rounded-lg border border-slate-200 bg-white transition hover:border-slate-400 hover:shadow-md">
@@ -27,7 +28,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
           {listing.title}
         </h3>
         <p className="text-xs text-slate-500">
-          {[listing.referenceNumber, listing.year, listing.caseDiameterMm ? `${listing.caseDiameterMm} mm` : null].filter(Boolean).join(" · ") || " "}
+          {[listing.referenceNumber, listing.year, listing.caseDiameterMm ? `${listing.caseDiameterMm} mm` : null, listing.dialColor ? td(listing.dialColor) : null].filter(Boolean).join(" · ") || " "}
         </p>
         <div className="mt-auto flex items-end justify-between gap-2 pt-2">
           <Price usd={listing.priceUsd} original={listing.price} originalCurrency={listing.currency} />

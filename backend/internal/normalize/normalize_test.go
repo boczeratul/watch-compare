@@ -124,3 +124,67 @@ func TestCanonicalizeQuery(t *testing.T) {
 		}
 	}
 }
+
+func TestDetectBoxPapers(t *testing.T) {
+	b := func(v bool) *bool { return &v }
+	cases := []struct {
+		in          string
+		box, papers *bool
+	}{
+		{"ROLEX 126610LN 有盒單 2023", b(true), b(true)},
+		{"原廠盒單 保固中", b(true), b(true)},
+		{"無盒單 單錶", b(false), b(false)},
+		{"有盒無單", b(true), b(false)},
+		{"只有保卡 無盒", b(false), b(true)},
+		{"箱・保証書あり", b(true), b(true)},
+		{"箱なし 保証書あり", b(false), b(true)},
+		{"Full set with box and papers", b(true), b(true)},
+		{"Watch only, no box no papers", b(false), b(false)},
+		{"Submariner 2019 excellent", nil, nil},
+	}
+	for _, c := range cases {
+		gb, gp := DetectBoxPapers(c.in)
+		if !eqb(gb, c.box) || !eqb(gp, c.papers) {
+			t.Errorf("DetectBoxPapers(%q) = %v,%v want %v,%v", c.in, fb(gb), fb(gp), fb(c.box), fb(c.papers))
+		}
+	}
+}
+
+func eqb(a, b *bool) bool {
+	if a == nil || b == nil {
+		return a == nil && b == nil
+	}
+	return *a == *b
+}
+
+func fb(v *bool) string {
+	if v == nil {
+		return "nil"
+	}
+	if *v {
+		return "true"
+	}
+	return "false"
+}
+
+func TestDialColor(t *testing.T) {
+	cases := map[string]string{
+		"ROLEX 勞力士 Submariner 黑水鬼 116610LN 黑面 有盒單":         "black",
+		"PATEK PHILIPPE Nautilus 5711/1A-010 藍色面盤":         "blue",
+		"ロレックス サブマリーナ デイト 16613 ブルー メンズ 時計":                "blue",
+		"ロレックス GMTマスターII Ref.16710 ステンレススチール ブラック文字盤 美中古":  "black",
+		"オメガ シーマスター ホワイトシェル文字盤 レディース":                      "mother_of_pearl",
+		"Omega Speedmaster Professional black dial 2021":   "black",
+		"Rolex Datejust 126334 Dial: Slate":                "grey",
+		"Rolex Day-Date 18k rose gold with champagne dial": "champagne",
+		"Rolex Day-Date 18k rose gold":                     "",
+		"Tudor Black Bay 58 79030N":                        "",
+		"勞力士 綠水鬼 126610LV 綠面 2022":                         "green",
+		"IWC 萬國 葡萄牙 銀面 IW371605":                           "silver",
+	}
+	for in, want := range cases {
+		if got := DialColor(in); got != want {
+			t.Errorf("DialColor(%q) = %q want %q", in, got, want)
+		}
+	}
+}

@@ -57,7 +57,7 @@ All endpoints are `GET`, JSON, CORS-enabled for the configured origins, and cach
 
 | Endpoint | Purpose |
 |----------|---------|
-| `/api/v1/listings` | Search. Params: `q, brand, model, ref, source, condition, movement, gender, country, price_min, price_max, currency, year_min, year_max, diameter_min, diameter_max, box, papers, sort, page, per_page` |
+| `/api/v1/listings` | Search. Params: `q, brand, model, ref, source, condition, movement, gender, country, dial, price_min, price_max, currency, year_min, year_max, diameter_min, diameter_max, box, papers, sort, page, per_page`; facets include brands, sources, conditions, movements, countries, dial colours and years |
 | `/api/v1/listings/{id}` | One listing |
 | `/api/v1/listings/{id}/similar` | Same reference on other marketplaces, cheapest first |
 | `/api/v1/listings/{id}/price-history` | Observed price points |

@@ -9,7 +9,7 @@ import { CURRENCY_COOKIE, isCurrency } from "@/lib/settings";
 import { defaultCurrencyForLocale, type Locale } from "@/i18n/routing";
 import { convertFromUsd, formatMoney, roundDisplay } from "@/lib/currency";
 
-const EMPTY: SearchResult = { items: [], total: 0, page: 1, perPage: 8, totalPages: 0, facets: { brands: [], sources: [], conditions: [], movements: [], countries: [] } };
+const EMPTY: SearchResult = { items: [], total: 0, page: 1, perPage: 8, totalPages: 0, facets: { brands: [], sources: [], conditions: [], movements: [], countries: [], dialColors: [], years: [] } };
 const DEAL_CAP_USD = 5000;
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {

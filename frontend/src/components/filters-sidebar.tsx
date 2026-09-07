@@ -10,7 +10,7 @@ import { useCurrency } from "./providers";
 import { convertFromUsd, roundDisplay } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 
-const MULTI = ["brand", "source", "condition", "movement", "gender", "country"] as const;
+const MULTI = ["brand", "source", "condition", "movement", "gender", "country", "dial"] as const;
 const RANGE = ["price_min", "price_max", "year_min", "year_max", "diameter_min", "diameter_max"] as const;
 
 export function FiltersSidebar({ facets }: { facets: Facets }) {
@@ -18,6 +18,7 @@ export function FiltersSidebar({ facets }: { facets: Facets }) {
   const tc = useTranslations("condition");
   const tm = useTranslations("movement");
   const tg = useTranslations("gender");
+  const td = useTranslations("dial");
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -46,6 +47,17 @@ export function FiltersSidebar({ facets }: { facets: Facets }) {
     else next.set(key, "true");
     navigate(next);
   };
+  const setYear = (year: string | null) => {
+    const next = new URLSearchParams(sp.toString());
+    if (year) {
+      next.set("year_min", year);
+      next.set("year_max", year);
+    } else {
+      next.delete("year_min");
+      next.delete("year_max");
+    }
+    navigate(next);
+  };
   const submitRanges = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
@@ -65,9 +77,12 @@ export function FiltersSidebar({ facets }: { facets: Facets }) {
   };
   const activeCount = [...MULTI, ...RANGE, "box", "papers"].filter((k) => sp.get(k)).length;
 
-  const group = (key: (typeof MULTI)[number], title: string, values: FacetValue[], label?: (k: string) => string) => {
-    if (!values.length) return null;
+  const group = (key: (typeof MULTI)[number], title: string, facetValues: FacetValue[], label?: (k: string) => string) => {
     const set = selected(key);
+    // Keep currently selected values visible (with a zero count) so they can be unticked even when
+    // the narrowed result set no longer contains them.
+    const values = [...facetValues, ...[...set].filter((k) => !facetValues.some((v) => v.key === k)).map((k) => ({ key: k, label: k.charAt(0).toUpperCase() + k.slice(1).replace(/-/g, " "), count: 0 }))];
+    if (!values.length) return null;
     return (
       <fieldset className="border-t border-slate-200 py-3">
         <legend className="mb-2 text-sm font-semibold text-slate-800">{title}</legend>
@@ -113,6 +128,7 @@ export function FiltersSidebar({ facets }: { facets: Facets }) {
       </fieldset>
 
       {group("brand", t("brand"), facets.brands)}
+      {group("dial", t("dialColor"), facets.dialColors, (k) => td(k as never))}
       {group("source", t("source"), facets.sources)}
       {group("condition", t("condition"), facets.conditions, (k) => tc(k as never))}
       {group("movement", t("movement"), facets.movements, (k) => tm(k as never))}
@@ -134,6 +150,25 @@ export function FiltersSidebar({ facets }: { facets: Facets }) {
 
       <fieldset className="border-t border-slate-200 py-3">
         <legend className="mb-2 text-sm font-semibold">{t("year")}</legend>
+        {facets.years.length > 0 && (
+          <ul className="mb-2 flex max-h-32 flex-wrap gap-1 overflow-auto">
+            {facets.years.map((y) => {
+              const active = sp.get("year_min") === y.key && sp.get("year_max") === y.key;
+              return (
+                <li key={y.key}>
+                  <button
+                    type="button"
+                    onClick={() => setYear(active ? null : y.key)}
+                    className={cn("rounded-full border px-2 py-0.5 text-xs", active ? "border-slate-900 bg-slate-900 text-white" : "border-slate-300 bg-white text-slate-700 hover:border-slate-900")}
+                    aria-pressed={active}
+                  >
+                    {y.label} <span className={active ? "text-slate-300" : "text-slate-400"}>{y.count}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
         <div className="flex items-center gap-2">
           <input name="year_min" type="number" min={1900} max={2100} defaultValue={sp.get("year_min") ?? ""} placeholder={t("min")} className="h-9 w-full rounded-md border border-slate-300 px-2 text-sm" aria-label={t("min")} />
           <span className="text-slate-400">–</span>

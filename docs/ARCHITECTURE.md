@@ -28,7 +28,10 @@ internal/
 
 ### Data model
 
-* `listings` — one row per `(source_id, external_id)`. `price_usd` is denormalized for cross-source
+* `listings` — one row per `(source_id, external_id)`. `dial_color` is a canonical key (black,
+  blue, champagne, mother_of_pearl, …) detected from multilingual titles at crawl time and
+  refreshed on every upsert; `has_box` / `has_papers` come from phrases such as 原廠盒單, 有盒單,
+  無盒單, 箱・保証書あり, "full set". `price_usd` is denormalized for cross-source
   sorting and range filters; a generated `tsvector` column powers full-text search (brand and
   reference weighted A, model B, title C). Sold/vanished listings are soft-deleted via `is_active`.
 * `price_history` — a row whenever a listing's price changes; drives the price chart and "deal" badges.

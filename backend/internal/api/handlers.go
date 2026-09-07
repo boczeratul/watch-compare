@@ -85,15 +85,16 @@ func (s *Server) ready(w http.ResponseWriter, r *http.Request) {
 func parseQuery(r *http.Request, conv *fx.Converter) (model.ListingQuery, error) {
 	qv := r.URL.Query()
 	q := model.ListingQuery{
-		Text:      strings.TrimSpace(qv.Get("q")),
-		Brands:    csv(qv.Get("brand")),
-		Model:     strings.TrimSpace(qv.Get("model")),
-		Reference: strings.TrimSpace(qv.Get("ref")),
-		Sources:   csv(qv.Get("source")),
-		Countries: upperAll(csv(qv.Get("country"))),
-		Sort:      model.SortKey(qv.Get("sort")),
-		Page:      atoiDefault(qv.Get("page"), 1),
-		PerPage:   atoiDefault(qv.Get("per_page"), 30),
+		Text:       strings.TrimSpace(qv.Get("q")),
+		Brands:     csv(qv.Get("brand")),
+		Model:      strings.TrimSpace(qv.Get("model")),
+		Reference:  strings.TrimSpace(qv.Get("ref")),
+		Sources:    csv(qv.Get("source")),
+		Countries:  upperAll(csv(qv.Get("country"))),
+		DialColors: csv(qv.Get("dial")),
+		Sort:       model.SortKey(qv.Get("sort")),
+		Page:       atoiDefault(qv.Get("page"), 1),
+		PerPage:    atoiDefault(qv.Get("per_page"), 30),
 	}
 	if q.Text != "" {
 		q.TextAlt = normalize.CanonicalizeQuery(q.Text)

@@ -64,6 +64,9 @@ func EnrichFromTitle(l *model.Listing, extraBrandHints ...string) {
 	if l.HasBox == nil && l.HasPapers == nil {
 		l.HasBox, l.HasPapers = normalize.DetectBoxPapers(l.Title + " " + l.Description)
 	}
+	if l.DialColor == "" {
+		l.DialColor = normalize.DialColor(l.Title, l.Description)
+	}
 	if l.Movement == "" {
 		l.Movement = normalize.MovementType(l.Title)
 	}

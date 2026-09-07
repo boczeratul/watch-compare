@@ -83,6 +83,9 @@ func loadMigrations() ([]migration, error) {
 	}
 	out := make([]migration, 0, len(byVersion))
 	for _, m := range byVersion {
+		if strings.TrimSpace(m.up) == "" {
+			return nil, fmt.Errorf("migration %d (%s) has no .up.sql", m.version, m.name)
+		}
 		out = append(out, *m)
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].version < out[j].version })

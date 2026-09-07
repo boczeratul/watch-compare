@@ -91,6 +91,9 @@ Steps, in order:
 | `_CLOUDSQL` | `my-project:asia-east1:watch-compare-pg` |
 | `_RUNTIME_SA` | `watch-compare-runtime@my-project.iam.gserviceaccount.com` |
 | `_CORS_ORIGINS` | `https://watch-compare.vercel.app,https://watchcompare.example` |
+| `_RENDER_SERVICE_URL` | `https://production-lon.browserless.io` — empty (default) keeps Chrono24 skipped, even if `BROWSERLESS_TOKEN` is set |
+| `_RENDER_EXTRA_QUERY` | `proxy=residential&proxyCountry=de` (optional) |
+| `_CHRONO24_BRANDS` / `_CHRONO24_MAX_PAGES` | `rolex,omega,iwc,audemarspiguet,patekphilippe` / `3` |
 
 ### Manual operations
 

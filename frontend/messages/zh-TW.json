@@ -1,6 +1,17 @@
 {
-  "meta": { "title": "WatchCompare 錶價比較", "tagline": "橫跨 Chrono24、eBay 與東京、台北各大錶商，找到最划算的錶", "description": "比較台灣、日本、歐洲與美國各大平台的名錶價格。依品牌、型號或預算搜尋，並以您的貨幣顯示所有物件。" },
-  "nav": { "home": "首頁", "search": "搜尋", "brands": "品牌", "language": "語言", "currency": "貨幣", "settings": "設定" },
+  "meta": {
+    "title": "WatchCompare 錶價比較",
+    "tagline": "橫跨 Chrono24、eBay 與東京、台北各大錶商，找到最划算的錶",
+    "description": "比較台灣、日本、歐洲與美國各大平台的名錶價格。依品牌、型號或預算搜尋，並以您的貨幣顯示所有物件。"
+  },
+  "nav": {
+    "home": "首頁",
+    "search": "搜尋",
+    "brands": "品牌",
+    "language": "語言",
+    "currency": "貨幣",
+    "settings": "設定"
+  },
   "home": {
     "heroTitle": "一次搜尋，全部平台。",
     "heroSubtitle": "我們每晚從 {sources} 個平台索引 {count} 支手錶，並以您的貨幣顯示，讓您輕鬆找到某個品牌、型號或預算內最划算的選擇。",
@@ -49,12 +60,41 @@
     "page": "第 {page} / {total} 頁",
     "previous": "上一頁",
     "next": "下一頁",
-    "showing": "顯示第 {from}–{to} 筆，共 {total} 筆"
+    "showing": "顯示第 {from}–{to} 筆，共 {total} 筆",
+    "dialColor": "面盤顏色"
   },
-  "sort": { "relevance": "相關性", "newest": "最新上架", "oldest": "最早上架", "price_asc": "價格：低到高", "price_desc": "價格：高到低", "year_desc": "年份：新到舊", "year_asc": "年份：舊到新", "size_asc": "錶徑：小到大", "size_desc": "錶徑：大到小" },
-  "condition": { "new": "全新", "unworn": "未使用", "very_good": "極新", "good": "良好", "fair": "尚可", "poor": "較差", "unknown": "未註明" },
-  "movement": { "automatic": "自動上鍊", "manual": "手動上鍊", "quartz": "石英", "unknown": "未註明" },
-  "gender": { "men": "男錶", "women": "女錶", "unisex": "中性", "unknown": "未註明" },
+  "sort": {
+    "relevance": "相關性",
+    "newest": "最新上架",
+    "oldest": "最早上架",
+    "price_asc": "價格：低到高",
+    "price_desc": "價格：高到低",
+    "year_desc": "年份：新到舊",
+    "year_asc": "年份：舊到新",
+    "size_asc": "錶徑：小到大",
+    "size_desc": "錶徑：大到小"
+  },
+  "condition": {
+    "new": "全新",
+    "unworn": "未使用",
+    "very_good": "極新",
+    "good": "良好",
+    "fair": "尚可",
+    "poor": "較差",
+    "unknown": "未註明"
+  },
+  "movement": {
+    "automatic": "自動上鍊",
+    "manual": "手動上鍊",
+    "quartz": "石英",
+    "unknown": "未註明"
+  },
+  "gender": {
+    "men": "男錶",
+    "women": "女錶",
+    "unisex": "中性",
+    "unknown": "未註明"
+  },
   "listing": {
     "reference": "型號",
     "brand": "品牌",
@@ -88,9 +128,43 @@
     "details": "詳細資料",
     "saveVs": "比次低價便宜 {percent}%",
     "notFound": "找不到此物件",
-    "notFoundBody": "可能已在上次爬取後下架。"
+    "notFoundBody": "可能已在上次爬取後下架。",
+    "dialColor": "面盤顏色"
   },
-  "brands": { "title": "品牌", "subtitle": "{count} 個品牌有在售物件", "listings": "{count} 件" },
-  "footer": { "disclaimer": "價格每日索引一次並依當日匯率換算，最終價格請以賣家為準。WatchCompare 與各平台無任何關聯。", "sources": "資料來源" },
-  "common": { "loading": "載入中…", "error": "發生錯誤。", "backHome": "回到首頁", "from": "起" }
+  "brands": {
+    "title": "品牌",
+    "subtitle": "{count} 個品牌有在售物件",
+    "listings": "{count} 件"
+  },
+  "footer": {
+    "disclaimer": "價格每日索引一次並依當日匯率換算，最終價格請以賣家為準。WatchCompare 與各平台無任何關聯。",
+    "sources": "資料來源"
+  },
+  "common": {
+    "loading": "載入中…",
+    "error": "發生錯誤。",
+    "backHome": "回到首頁",
+    "from": "起"
+  },
+  "dial": {
+    "black": "黑面",
+    "white": "白面",
+    "silver": "銀面",
+    "blue": "藍面",
+    "green": "綠面",
+    "grey": "灰面",
+    "champagne": "香檳面",
+    "gold": "金面",
+    "brown": "咖啡面",
+    "red": "紅面",
+    "pink": "粉面",
+    "salmon": "鮭魚面",
+    "purple": "紫面",
+    "yellow": "黃面",
+    "orange": "橘面",
+    "mother_of_pearl": "珍珠母貝面",
+    "meteorite": "隕石面",
+    "cream": "米白面",
+    "bronze": "青銅面"
+  }
 }

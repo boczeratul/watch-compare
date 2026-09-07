@@ -1,6 +1,17 @@
 {
-  "meta": { "title": "WatchCompare", "tagline": "Chrono24・eBay と東京・台北の有名店を横断して最安値を探す", "description": "台湾・日本・欧州・米国のマーケットプレイスの高級時計価格を比較。ブランド、型番、予算で検索し、すべてをお好みの通貨で表示します。" },
-  "nav": { "home": "ホーム", "search": "検索", "brands": "ブランド", "language": "言語", "currency": "通貨", "settings": "設定" },
+  "meta": {
+    "title": "WatchCompare",
+    "tagline": "Chrono24・eBay と東京・台北の有名店を横断して最安値を探す",
+    "description": "台湾・日本・欧州・米国のマーケットプレイスの高級時計価格を比較。ブランド、型番、予算で検索し、すべてをお好みの通貨で表示します。"
+  },
+  "nav": {
+    "home": "ホーム",
+    "search": "検索",
+    "brands": "ブランド",
+    "language": "言語",
+    "currency": "通貨",
+    "settings": "設定"
+  },
   "home": {
     "heroTitle": "一度の検索で、すべてのマーケットを。",
     "heroSubtitle": "毎晩 {sources} のマーケットプレイスから {count} 本の時計をインデックスし、お好みの通貨で表示。ブランド・型番・予算ごとの最安値がすぐに見つかります。",
@@ -49,12 +60,41 @@
     "page": "{page} / {total} ページ",
     "previous": "前へ",
     "next": "次へ",
-    "showing": "{total} 件中 {from}–{to} 件を表示"
+    "showing": "{total} 件中 {from}–{to} 件を表示",
+    "dialColor": "文字盤の色"
   },
-  "sort": { "relevance": "関連度", "newest": "新着順", "oldest": "古い順", "price_asc": "価格が安い順", "price_desc": "価格が高い順", "year_desc": "製造年が新しい順", "year_asc": "製造年が古い順", "size_asc": "ケース径が小さい順", "size_desc": "ケース径が大きい順" },
-  "condition": { "new": "新品", "unworn": "未使用", "very_good": "極美品", "good": "良品", "fair": "並品", "poor": "難あり", "unknown": "未記載" },
-  "movement": { "automatic": "自動巻き", "manual": "手巻き", "quartz": "クォーツ", "unknown": "未記載" },
-  "gender": { "men": "メンズ", "women": "レディース", "unisex": "ユニセックス", "unknown": "未記載" },
+  "sort": {
+    "relevance": "関連度",
+    "newest": "新着順",
+    "oldest": "古い順",
+    "price_asc": "価格が安い順",
+    "price_desc": "価格が高い順",
+    "year_desc": "製造年が新しい順",
+    "year_asc": "製造年が古い順",
+    "size_asc": "ケース径が小さい順",
+    "size_desc": "ケース径が大きい順"
+  },
+  "condition": {
+    "new": "新品",
+    "unworn": "未使用",
+    "very_good": "極美品",
+    "good": "良品",
+    "fair": "並品",
+    "poor": "難あり",
+    "unknown": "未記載"
+  },
+  "movement": {
+    "automatic": "自動巻き",
+    "manual": "手巻き",
+    "quartz": "クォーツ",
+    "unknown": "未記載"
+  },
+  "gender": {
+    "men": "メンズ",
+    "women": "レディース",
+    "unisex": "ユニセックス",
+    "unknown": "未記載"
+  },
   "listing": {
     "reference": "型番",
     "brand": "ブランド",
@@ -88,9 +128,43 @@
     "details": "詳細",
     "saveVs": "次点より {percent}% 安い",
     "notFound": "出品が見つかりません",
-    "notFoundBody": "前回のクロール以降に削除された可能性があります。"
+    "notFoundBody": "前回のクロール以降に削除された可能性があります。",
+    "dialColor": "文字盤の色"
   },
-  "brands": { "title": "ブランド", "subtitle": "掲載中 {count} ブランド", "listings": "{count} 件" },
-  "footer": { "disclaimer": "価格は1日1回インデックスし、日次レートで換算しています。最終価格は必ず販売者でご確認ください。WatchCompare はいずれのマーケットとも提携していません。", "sources": "データ元" },
-  "common": { "loading": "読み込み中…", "error": "エラーが発生しました。", "backHome": "ホームへ戻る", "from": "〜" }
+  "brands": {
+    "title": "ブランド",
+    "subtitle": "掲載中 {count} ブランド",
+    "listings": "{count} 件"
+  },
+  "footer": {
+    "disclaimer": "価格は1日1回インデックスし、日次レートで換算しています。最終価格は必ず販売者でご確認ください。WatchCompare はいずれのマーケットとも提携していません。",
+    "sources": "データ元"
+  },
+  "common": {
+    "loading": "読み込み中…",
+    "error": "エラーが発生しました。",
+    "backHome": "ホームへ戻る",
+    "from": "〜"
+  },
+  "dial": {
+    "black": "ブラック",
+    "white": "ホワイト",
+    "silver": "シルバー",
+    "blue": "ブルー",
+    "green": "グリーン",
+    "grey": "グレー",
+    "champagne": "シャンパン",
+    "gold": "ゴールド",
+    "brown": "ブラウン",
+    "red": "レッド",
+    "pink": "ピンク",
+    "salmon": "サーモン",
+    "purple": "パープル",
+    "yellow": "イエロー",
+    "orange": "オレンジ",
+    "mother_of_pearl": "シェル",
+    "meteorite": "メテオライト",
+    "cream": "アイボリー",
+    "bronze": "ブロンズ"
+  }
 }

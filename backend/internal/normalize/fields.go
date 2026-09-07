@@ -180,18 +180,63 @@ func GenderType(s string) model.Gender {
 	return model.GenderUnknown
 }
 
-// DetectBoxPapers scans free text for box / papers mentions.
+// DetectBoxPapers scans free text for box / papers mentions in English, Traditional Chinese and
+// Japanese. Explicit negatives ("無盒單", "no papers", "箱なし") set false; nil means unknown.
 func DetectBoxPapers(s string) (box, papers *bool) {
 	f := fold(s)
-	t := true
-	if strings.Contains(f, "box") || strings.Contains(f, "箱") || strings.Contains(f, "盒") || strings.Contains(f, "ボックス") {
-		box = &t
+	if hasCJK(f) {
+		f = strings.ReplaceAll(f, " ", "")
 	}
-	if strings.Contains(f, "papers") || strings.Contains(f, "card") || strings.Contains(f, "warranty") || strings.Contains(f, "保証書") || strings.Contains(f, "保卡") || strings.Contains(f, "保單") || strings.Contains(f, "ギャランティ") || strings.Contains(f, "証書") {
-		papers = &t
+	t, no := true, false
+	set := func(dst **bool, v *bool) {
+		if *dst == nil {
+			*dst = v
+		}
 	}
-	if strings.Contains(f, "full set") || strings.Contains(f, "fullset") || strings.Contains(f, "原廠盒單") || strings.Contains(f, "盒單") || strings.Contains(f, "箱保") {
-		box, papers = &t, &t
+	// 1. explicit negatives first — they are more specific than the positive markers they contain
+	for _, m := range []string{"無盒單", "沒盒單", "無盒無單", "無盒及單", "不含盒單", "unbox&paper", "箱・保証書なし", "箱保証書なし", "no box or papers", "no box and papers", "no box/papers", "watch only", "head only"} {
+		if strings.Contains(f, m) {
+			set(&box, &no)
+			set(&papers, &no)
+		}
+	}
+	for _, m := range []string{"無盒", "沒盒", "不含盒", "缺盒", "no box", "without box", "箱なし", "box only"} {
+		if strings.Contains(f, m) {
+			if m == "box only" {
+				set(&box, &t)
+				set(&papers, &no)
+			} else {
+				set(&box, &no)
+			}
+		}
+	}
+	for _, m := range []string{"無單", "沒單", "無卡", "無保卡", "無保單", "缺單", "no papers", "no card", "no warranty", "without papers", "保証書なし", "ギャランティなし", "papers only"} {
+		if strings.Contains(f, m) {
+			if m == "papers only" {
+				set(&papers, &t)
+				set(&box, &no)
+			} else {
+				set(&papers, &no)
+			}
+		}
+	}
+	// 2. both-in-one markers
+	for _, m := range []string{"full set", "fullset", "原廠盒單", "有盒單", "附盒單", "盒單齊", "盒單全", "盒單", "箱保", "箱・保証書あり", "箱保証書あり", "箱、保証書", "箱・保証書", "box and papers", "box & papers", "box/papers", "box, papers"} {
+		if strings.Contains(f, m) {
+			set(&box, &t)
+			set(&papers, &t)
+		}
+	}
+	// 3. single markers
+	for _, m := range []string{"有盒", "附盒", "原廠盒", "錶盒", "box", "箱あり", "ボックス", "内箱", "外箱", "箱"} {
+		if strings.Contains(f, m) {
+			set(&box, &t)
+		}
+	}
+	for _, m := range []string{"有單", "附單", "保卡", "保單", "保證書", "保証書", "papers", "warranty card", "guarantee card", "card", "ギャランティ", "証書"} {
+		if strings.Contains(f, m) {
+			set(&papers, &t)
+		}
 	}
 	return
 }

@@ -9,6 +9,9 @@ const API_URL = process.env.API_URL ?? "http://localhost:8080";
 export type Condition = "new" | "unworn" | "very_good" | "good" | "fair" | "poor" | "unknown";
 export type Movement = "automatic" | "manual" | "quartz" | "unknown";
 export type Gender = "men" | "women" | "unisex" | "unknown";
+export type DialColor =
+  | "black" | "white" | "silver" | "blue" | "green" | "grey" | "champagne" | "gold" | "brown" | "red"
+  | "pink" | "salmon" | "purple" | "yellow" | "orange" | "mother_of_pearl" | "meteorite" | "cream" | "bronze";
 
 export interface Listing {
   id: number;
@@ -25,6 +28,7 @@ export interface Listing {
   year?: number;
   caseDiameterMm?: number;
   caseMaterial?: string;
+  dialColor?: DialColor;
   movement: Movement;
   gender: Gender;
   hasBox?: boolean;
@@ -52,6 +56,8 @@ export interface Facets {
   conditions: FacetValue[];
   movements: FacetValue[];
   countries: FacetValue[];
+  dialColors: FacetValue[];
+  years: FacetValue[];
   priceMinUsd?: number;
   priceMaxUsd?: number;
 }
@@ -104,7 +110,7 @@ function first(v: string | string[] | undefined): string | undefined {
 
 /** Translate Next.js searchParams into API query params (1:1 names, validated upstream). */
 export function toApiParams(sp: SearchParams, currency: string): Record<string, string | undefined> {
-  const keys = ["q", "brand", "model", "ref", "source", "condition", "movement", "gender", "country",
+  const keys = ["q", "brand", "model", "ref", "source", "condition", "movement", "gender", "country", "dial",
     "price_min", "price_max", "year_min", "year_max", "diameter_min", "diameter_max", "box", "papers", "sort", "page", "per_page"];
   const out: Record<string, string | undefined> = { currency };
   for (const k of keys) out[k] = first(sp[k]);

@@ -158,7 +158,7 @@ func (r *Repo) UpsertRates(ctx context.Context, rates map[string]float64) error 
 
 const listingColumns = `
 	l.id, s.key, s.name, l.external_id, l.url, l.title, l.brand_id, coalesce(b.slug,''), coalesce(l.brand_name,''),
-	coalesce(l.model,''), coalesce(l.reference_number,''), l.condition, l.year, l.case_diameter_mm, coalesce(l.case_material,''),
+	coalesce(l.model,''), coalesce(l.reference_number,''), l.condition, l.year, l.case_diameter_mm, coalesce(l.case_material,''), coalesce(l.dial_color,''),
 	coalesce(l.movement,'unknown'), coalesce(l.gender,'unknown'), l.has_box, l.has_papers, l.price, coalesce(l.currency,''), l.price_usd, l.shipping_price,
 	coalesce(l.location_country,''), coalesce(l.location_city,''), coalesce(l.seller_name,''), coalesce(l.seller_type,''),
 	l.image_urls, coalesce(l.description,''), l.attributes, l.is_active, l.first_seen_at, l.last_seen_at`
@@ -170,7 +170,7 @@ func scanListing(row pgx.Row) (*model.Listing, error) {
 	var attrs []byte
 	var cond, mov, gen string
 	err := row.Scan(&l.ID, &l.SourceKey, &l.SourceName, &l.ExternalID, &l.URL, &l.Title, &l.BrandID, &l.BrandSlug, &l.BrandName,
-		&l.Model, &l.ReferenceNumber, &cond, &l.Year, &l.CaseDiameterMM, &l.CaseMaterial,
+		&l.Model, &l.ReferenceNumber, &cond, &l.Year, &l.CaseDiameterMM, &l.CaseMaterial, &l.DialColor,
 		&mov, &gen, &l.HasBox, &l.HasPapers, &l.Price, &l.Currency, &l.PriceUSD, &l.ShippingPrice,
 		&l.LocationCountry, &l.LocationCity, &l.SellerName, &l.SellerType,
 		&l.ImageURLs, &l.Description, &attrs, &l.IsActive, &l.FirstSeenAt, &l.LastSeenAt)
@@ -304,6 +304,9 @@ func (r *Repo) SearchListings(ctx context.Context, q model.ListingQuery) (*model
 	if len(q.Countries) > 0 {
 		b.where("l.location_country = ANY(" + b.arg(q.Countries) + ")")
 	}
+	if len(q.DialColors) > 0 {
+		b.where("l.dial_color = ANY(" + b.arg(q.DialColors) + ")")
+	}
 	if q.PriceMinUSD != nil {
 		b.where("l.price_usd >= " + b.arg(*q.PriceMinUSD))
 	}
@@ -402,9 +405,11 @@ func (r *Repo) SearchListings(ctx context.Context, q model.ListingQuery) (*model
 	batch.Queue(facetSQL("l.condition", "l.condition"), whereArgs...)
 	batch.Queue(facetSQL("l.movement", "l.movement"), whereArgs...)
 	batch.Queue(facetSQL("nullif(l.location_country,'')", "nullif(l.location_country,'')"), whereArgs...)
+	batch.Queue(facetSQL("l.dial_color", "l.dial_color"), whereArgs...)
+	batch.Queue(`SELECT l.year::text AS k, l.year::text AS lbl, count(*) n`+listingFrom+whereSQL+` AND l.year IS NOT NULL GROUP BY 1,2 ORDER BY k DESC LIMIT 60`, whereArgs...)
 	br := r.pool.SendBatch(ctx, batch)
 	defer br.Close()
-	targets := []*[]model.FacetValue{&res.Facets.Brands, &res.Facets.Sources, &res.Facets.Conditions, &res.Facets.Movements, &res.Facets.Countries}
+	targets := []*[]model.FacetValue{&res.Facets.Brands, &res.Facets.Sources, &res.Facets.Conditions, &res.Facets.Movements, &res.Facets.Countries, &res.Facets.DialColors, &res.Facets.Years}
 	for _, t := range targets {
 		frows, err := br.Query()
 		if err != nil {
@@ -445,15 +450,16 @@ func (r *Repo) UpsertListing(ctx context.Context, l *model.Listing) (UpsertResul
 		INSERT INTO listings (source_id, external_id, url, title, brand_id, brand_name, model, reference_number, condition, year,
 			case_diameter_mm, case_material, movement, gender, has_box, has_papers, price, currency, price_usd, shipping_price,
 			location_country, location_city, seller_name, seller_type, image_urls, description, attributes, is_active,
-			first_seen_at, last_seen_at, updated_at)
+			first_seen_at, last_seen_at, updated_at, dial_color)
 		VALUES ($1,$2,$3,$4,$5,nullif($6,''),nullif($7,''),nullif($8,''),$9,$10,$11,nullif($12,''),$13,$14,$15,$16,$17,nullif($18,''),$19,$20,
-			nullif($21,''),nullif($22,''),nullif($23,''),nullif($24,''),$25,nullif($26,''),$27,TRUE,now(),now(),now())
+			nullif($21,''),nullif($22,''),nullif($23,''),nullif($24,''),$25,nullif($26,''),$27,TRUE,now(),now(),now(),nullif($28,''))
 		ON CONFLICT (source_id, external_id) DO UPDATE SET
 			url = EXCLUDED.url, title = EXCLUDED.title, brand_id = EXCLUDED.brand_id, brand_name = EXCLUDED.brand_name,
 			model = coalesce(EXCLUDED.model, listings.model), reference_number = coalesce(EXCLUDED.reference_number, listings.reference_number),
 			condition = EXCLUDED.condition, year = coalesce(EXCLUDED.year, listings.year),
 			case_diameter_mm = coalesce(EXCLUDED.case_diameter_mm, listings.case_diameter_mm),
 			case_material = coalesce(EXCLUDED.case_material, listings.case_material),
+			dial_color = EXCLUDED.dial_color, -- derived from the current title/description: always refresh
 			movement = EXCLUDED.movement, gender = EXCLUDED.gender,
 			has_box = coalesce(EXCLUDED.has_box, listings.has_box), has_papers = coalesce(EXCLUDED.has_papers, listings.has_papers),
 			price = EXCLUDED.price, currency = EXCLUDED.currency, price_usd = EXCLUDED.price_usd, shipping_price = EXCLUDED.shipping_price,
@@ -467,7 +473,7 @@ func (r *Repo) UpsertListing(ctx context.Context, l *model.Listing) (UpsertResul
 		RETURNING id, (xmax = 0) AS inserted`,
 		l.SourceID, l.ExternalID, l.URL, l.Title, l.BrandID, l.BrandName, l.Model, l.ReferenceNumber, string(l.Condition), l.Year,
 		l.CaseDiameterMM, l.CaseMaterial, string(l.Movement), string(l.Gender), l.HasBox, l.HasPapers, l.Price, l.Currency, l.PriceUSD, l.ShippingPrice,
-		l.LocationCountry, l.LocationCity, l.SellerName, l.SellerType, l.ImageURLs, l.Description, attrs,
+		l.LocationCountry, l.LocationCity, l.SellerName, l.SellerType, l.ImageURLs, l.Description, attrs, l.DialColor,
 	).Scan(&res.ID, &inserted)
 	if err != nil {
 		return res, err

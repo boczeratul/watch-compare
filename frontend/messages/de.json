@@ -1,6 +1,17 @@
 {
-  "meta": { "title": "WatchCompare", "tagline": "Die besten Uhren-Angebote auf Chrono24, eBay und bei Top-Händlern in Tokio und Taipeh finden", "description": "Vergleichen Sie Luxusuhren-Preise auf Marktplätzen in Taiwan, Japan, Europa und den USA. Suchen Sie nach Marke, Referenz oder Budget und sehen Sie jedes Angebot in Ihrer Währung." },
-  "nav": { "home": "Start", "search": "Suche", "brands": "Marken", "language": "Sprache", "currency": "Währung", "settings": "Einstellungen" },
+  "meta": {
+    "title": "WatchCompare",
+    "tagline": "Die besten Uhren-Angebote auf Chrono24, eBay und bei Top-Händlern in Tokio und Taipeh finden",
+    "description": "Vergleichen Sie Luxusuhren-Preise auf Marktplätzen in Taiwan, Japan, Europa und den USA. Suchen Sie nach Marke, Referenz oder Budget und sehen Sie jedes Angebot in Ihrer Währung."
+  },
+  "nav": {
+    "home": "Start",
+    "search": "Suche",
+    "brands": "Marken",
+    "language": "Sprache",
+    "currency": "Währung",
+    "settings": "Einstellungen"
+  },
   "home": {
     "heroTitle": "Eine Suche. Alle Marktplätze.",
     "heroSubtitle": "Wir indexieren jede Nacht {count} Uhren von {sources} Marktplätzen und zeigen sie in Ihrer Währung – so finden Sie das beste Angebot für eine Marke, eine Referenz oder ein Budget.",
@@ -49,12 +60,41 @@
     "page": "Seite {page} von {total}",
     "previous": "Zurück",
     "next": "Weiter",
-    "showing": "{from}–{to} von {total}"
+    "showing": "{from}–{to} von {total}",
+    "dialColor": "Zifferblattfarbe"
   },
-  "sort": { "relevance": "Relevanz", "newest": "Neueste zuerst", "oldest": "Älteste zuerst", "price_asc": "Preis: aufsteigend", "price_desc": "Preis: absteigend", "year_desc": "Baujahr: neueste", "year_asc": "Baujahr: älteste", "size_asc": "Größe: klein bis groß", "size_desc": "Größe: groß bis klein" },
-  "condition": { "new": "Neu", "unworn": "Ungetragen", "very_good": "Sehr gut", "good": "Gut", "fair": "Befriedigend", "poor": "Mangelhaft", "unknown": "Keine Angabe" },
-  "movement": { "automatic": "Automatik", "manual": "Handaufzug", "quartz": "Quarz", "unknown": "Keine Angabe" },
-  "gender": { "men": "Herren", "women": "Damen", "unisex": "Unisex", "unknown": "Keine Angabe" },
+  "sort": {
+    "relevance": "Relevanz",
+    "newest": "Neueste zuerst",
+    "oldest": "Älteste zuerst",
+    "price_asc": "Preis: aufsteigend",
+    "price_desc": "Preis: absteigend",
+    "year_desc": "Baujahr: neueste",
+    "year_asc": "Baujahr: älteste",
+    "size_asc": "Größe: klein bis groß",
+    "size_desc": "Größe: groß bis klein"
+  },
+  "condition": {
+    "new": "Neu",
+    "unworn": "Ungetragen",
+    "very_good": "Sehr gut",
+    "good": "Gut",
+    "fair": "Befriedigend",
+    "poor": "Mangelhaft",
+    "unknown": "Keine Angabe"
+  },
+  "movement": {
+    "automatic": "Automatik",
+    "manual": "Handaufzug",
+    "quartz": "Quarz",
+    "unknown": "Keine Angabe"
+  },
+  "gender": {
+    "men": "Herren",
+    "women": "Damen",
+    "unisex": "Unisex",
+    "unknown": "Keine Angabe"
+  },
   "listing": {
     "reference": "Referenz",
     "brand": "Marke",
@@ -88,9 +128,43 @@
     "details": "Details",
     "saveVs": "{percent} % günstiger als das nächste Angebot",
     "notFound": "Angebot nicht gefunden",
-    "notFoundBody": "Es wurde möglicherweise nach dem letzten Crawl entfernt."
+    "notFoundBody": "Es wurde möglicherweise nach dem letzten Crawl entfernt.",
+    "dialColor": "Zifferblattfarbe"
   },
-  "brands": { "title": "Marken", "subtitle": "{count} Marken mit aktiven Angeboten", "listings": "{count, plural, one {# Angebot} other {# Angebote}}" },
-  "footer": { "disclaimer": "Preise werden einmal täglich indexiert und mit Tageskursen umgerechnet. Prüfen Sie den Endpreis immer beim Verkäufer. WatchCompare ist mit keinem Marktplatz verbunden.", "sources": "Quellen" },
-  "common": { "loading": "Lädt…", "error": "Etwas ist schiefgelaufen.", "backHome": "Zur Startseite", "from": "ab" }
+  "brands": {
+    "title": "Marken",
+    "subtitle": "{count} Marken mit aktiven Angeboten",
+    "listings": "{count, plural, one {# Angebot} other {# Angebote}}"
+  },
+  "footer": {
+    "disclaimer": "Preise werden einmal täglich indexiert und mit Tageskursen umgerechnet. Prüfen Sie den Endpreis immer beim Verkäufer. WatchCompare ist mit keinem Marktplatz verbunden.",
+    "sources": "Quellen"
+  },
+  "common": {
+    "loading": "Lädt…",
+    "error": "Etwas ist schiefgelaufen.",
+    "backHome": "Zur Startseite",
+    "from": "ab"
+  },
+  "dial": {
+    "black": "Schwarz",
+    "white": "Weiß",
+    "silver": "Silber",
+    "blue": "Blau",
+    "green": "Grün",
+    "grey": "Grau",
+    "champagne": "Champagner",
+    "gold": "Gold",
+    "brown": "Braun",
+    "red": "Rot",
+    "pink": "Rosa",
+    "salmon": "Lachs",
+    "purple": "Violett",
+    "yellow": "Gelb",
+    "orange": "Orange",
+    "mother_of_pearl": "Perlmutt",
+    "meteorite": "Meteorit",
+    "cream": "Creme / Elfenbein",
+    "bronze": "Bronze"
+  }
 }

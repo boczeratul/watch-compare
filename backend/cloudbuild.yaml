@@ -22,6 +22,8 @@ substitutions:
   _CORS_ORIGINS: "https://watch-compare.vercel.app"
   _RENDER_SERVICE_URL: ""          # e.g. https://production-sfo.browserless.io (empty = Chrono24 skipped)
   _RENDER_EXTRA_QUERY: ""          # e.g. proxy=residential&proxyCountry=de
+  _CHRONO24_BRANDS: "rolex,omega,iwc,audemarspiguet,patekphilippe"
+  _CHRONO24_MAX_PAGES: "3"
 
 options:
   logging: CLOUD_LOGGING_ONLY
@@ -92,7 +94,8 @@ steps:
       - --service-account=${_RUNTIME_SA}
       - --set-cloudsql-instances=${_CLOUDSQL}
       - --set-secrets=DATABASE_URL=DATABASE_URL:latest
-      - --set-env-vars=APP_ENV=production,AUTO_MIGRATE=false,^@^CORS_ALLOWED_ORIGINS=${_CORS_ORIGINS}
+      # "^@^" switches the list separator to "@" so comma-containing values survive
+      - --set-env-vars=^@^APP_ENV=production@AUTO_MIGRATE=false@CORS_ALLOWED_ORIGINS=${_CORS_ORIGINS}
       - --cpu=1
       - --memory=512Mi
       - --min-instances=0
@@ -117,7 +120,7 @@ steps:
       - --service-account=${_RUNTIME_SA}
       - --set-cloudsql-instances=${_CLOUDSQL}
       - --set-secrets=DATABASE_URL=DATABASE_URL:latest,EBAY_CLIENT_ID=EBAY_CLIENT_ID:latest,EBAY_CLIENT_SECRET=EBAY_CLIENT_SECRET:latest,CRAWL_RENDER_SERVICE_TOKEN=BROWSERLESS_TOKEN:latest
-      - --set-env-vars=APP_ENV=production,CRAWL_CONCURRENCY=3,CRAWL_MAX_PAGES=200,CRAWL_RATE_LIMIT_MS=1500,CRAWL_RENDER_SERVICE_URL=${_RENDER_SERVICE_URL},^@^CRAWL_RENDER_EXTRA_QUERY=${_RENDER_EXTRA_QUERY}
+      - --set-env-vars=^@^APP_ENV=production@CRAWL_CONCURRENCY=3@CRAWL_MAX_PAGES=200@CRAWL_RATE_LIMIT_MS=1500@CRAWL_RENDER_SERVICE_URL=${_RENDER_SERVICE_URL}@CRAWL_RENDER_EXTRA_QUERY=${_RENDER_EXTRA_QUERY}@CHRONO24_BRANDS=${_CHRONO24_BRANDS}@CHRONO24_MAX_PAGES=${_CHRONO24_MAX_PAGES}
       - --cpu=1
       - --memory=1Gi
       - --tasks=1

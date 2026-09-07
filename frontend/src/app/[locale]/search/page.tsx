@@ -10,7 +10,7 @@ import { SortSelect } from "@/components/sort-select";
 import { ListingGrid } from "@/components/listing-grid";
 import { Pagination } from "@/components/pagination";
 
-const EMPTY: SearchResult = { items: [], total: 0, page: 1, perPage: 30, totalPages: 0, facets: { brands: [], sources: [], conditions: [], movements: [], countries: [] } };
+const EMPTY: SearchResult = { items: [], total: 0, page: 1, perPage: 30, totalPages: 0, facets: { brands: [], sources: [], conditions: [], movements: [], countries: [], dialColors: [], years: [] } };
 
 type Props = { params: Promise<{ locale: string }>; searchParams: Promise<SearchParams> };
 

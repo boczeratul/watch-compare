@@ -38,11 +38,12 @@ export default async function ListingPage({ params }: Props) {
   setRequestLocale(locale);
   const listing = await load(id);
   if (!listing) notFound();
-  const [t, tc, tm, tg, currentLocale, similar, history] = await Promise.all([
+  const [t, tc, tm, tg, td, currentLocale, similar, history] = await Promise.all([
     getTranslations("listing"),
     getTranslations("condition"),
     getTranslations("movement"),
     getTranslations("gender"),
+    getTranslations("dial"),
     getLocale(),
     safe(api.similar(id), { items: [] }),
     safe(api.priceHistory(id), { items: [] }),
@@ -60,6 +61,7 @@ export default async function ListingPage({ params }: Props) {
     [t("year"), listing.year ?? "—"],
     [t("diameter"), listing.caseDiameterMm ? `${listing.caseDiameterMm} mm` : "—"],
     [t("material"), listing.caseMaterial || "—"],
+    [t("dialColor"), listing.dialColor ? <Link href={{ pathname: "/search", query: { dial: listing.dialColor, ...(listing.brand ? { brand: listing.brand } : {}) } }} className="underline">{td(listing.dialColor)}</Link> : "—"],
     [t("movement"), tm(listing.movement)],
     [t("gender"), tg(listing.gender)],
     [t("boxPapers"), `${yesNo(listing.hasBox)} / ${yesNo(listing.hasPapers)}`],
