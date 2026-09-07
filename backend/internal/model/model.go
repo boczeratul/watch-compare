@@ -81,7 +81,8 @@ type Listing struct {
 	Gender          Gender          `json:"gender"`
 	HasBox          *bool           `json:"hasBox,omitempty"`
 	HasPapers       *bool           `json:"hasPapers,omitempty"`
-	Price           *float64        `json:"price,omitempty"`
+	Price           *float64        `json:"price,omitempty"`        // as listed (tax-included for Japanese sources)
+	PriceExclTax    *float64        `json:"priceExclTax,omitempty"` // 税抜 / TAXFREE, Japanese sources only
 	Currency        string          `json:"currency,omitempty"`
 	PriceUSD        *float64        `json:"priceUsd,omitempty"`
 	ShippingPrice   *float64        `json:"shippingPrice,omitempty"`

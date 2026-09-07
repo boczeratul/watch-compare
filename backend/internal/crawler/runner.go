@@ -125,8 +125,9 @@ func (r *Runner) runOne(ctx context.Context, src model.Source) (err error) {
 			l.LocationCountry = src.Country
 		}
 		EnrichFromTitle(&l)
-		if l.Price != nil {
-			if usd, ok := r.conv.ToUSD(*l.Price, l.Currency); ok {
+		ApplyTaxFreePrice(&l, src.Country)
+		if basis, ok := ComparisonPrice(&l); ok {
+			if usd, ok := r.conv.ToUSD(basis, l.Currency); ok {
 				l.PriceUSD = &usd
 			}
 		}

@@ -33,7 +33,8 @@ export interface Listing {
   gender: Gender;
   hasBox?: boolean;
   hasPapers?: boolean;
-  price?: number;
+  price?: number;        // as listed (tax-included for Japanese sources)
+  priceExclTax?: number; // 税抜 / TAXFREE, Japanese sources only
   currency?: string;
   priceUsd?: number;
   shippingPrice?: number;

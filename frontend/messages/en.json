@@ -129,7 +129,10 @@
     "saveVs": "{percent}% cheaper than the next offer",
     "notFound": "Listing not found",
     "notFoundBody": "It may have been removed after the last crawl.",
-    "dialColor": "Dial colour"
+    "dialColor": "Dial colour",
+    "priceExclTax": "Price excl. tax",
+    "priceInclTax": "Price incl. tax",
+    "taxNote": "Japanese dealers must list tax-included prices. Exported watches are sold tax free, so comparisons and sorting on this site use the tax-free amount."
   },
   "brands": {
     "title": "Brands",

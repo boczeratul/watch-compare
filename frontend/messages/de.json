@@ -129,7 +129,10 @@
     "saveVs": "{percent} % günstiger als das nächste Angebot",
     "notFound": "Angebot nicht gefunden",
     "notFoundBody": "Es wurde möglicherweise nach dem letzten Crawl entfernt.",
-    "dialColor": "Zifferblattfarbe"
+    "dialColor": "Zifferblattfarbe",
+    "priceExclTax": "Preis ohne Steuer",
+    "priceInclTax": "Preis inkl. Steuer",
+    "taxNote": "Japanische Händler müssen Preise inklusive Steuer angeben. Bei Export entfällt die Steuer, daher rechnet und sortiert diese Seite mit dem Nettopreis."
   },
   "brands": {
     "title": "Marken",

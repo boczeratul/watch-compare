@@ -32,12 +32,25 @@ internal/
 * `listings` — one row per `(source_id, external_id)`. `dial_color` is a canonical key (black,
   blue, champagne, mother_of_pearl, …) detected from multilingual titles at crawl time and
   refreshed on every upsert; `has_box` / `has_papers` come from phrases such as 原廠盒單, 有盒單,
-  無盒單, 箱・保証書あり, "full set". `price_usd` is denormalized for cross-source
+  無盒單, 箱・保証書あり, "full set". `price` is the price as listed and `price_excl_tax` the
+  tax-free (税抜) amount for Japanese sources. `price_usd` is denormalized for cross-source
   sorting and range filters; a generated `tsvector` column powers full-text search (brand and
   reference weighted A, model B, title C). Sold/vanished listings are soft-deleted via `is_active`.
 * `price_history` — a row whenever a listing's price changes; drives the price chart and "deal" badges.
 * `brands` — canonical brand with denormalized `listing_count`.
 * `exchange_rates` — `1 USD = rate QUOTE`, refreshed at the start of every crawl.
+
+### Japanese consumption tax
+
+Japan requires consumer prices to be displayed tax-included (総額表示義務), so every Japanese source
+lists 税込 prices, while an exporting buyer pays the tax-free amount. The crawler stores both:
+`price` as listed and `price_excl_tax` derived as `ceil(price / 1.1)`. That formula is not an
+approximation — Jackroad publishes its own TAXFREE figure on product pages, and ceil matched it on
+14 of 14 sampled products where round-half matched only 7. `price_usd`, which drives all sorting
+and price-range filters, is computed from the tax-free amount when one exists, so a Tokyo listing
+is not overstated by 10% against a Munich one. The detail page shows both figures; cards and the
+comparison table show the tax-free basis so what is displayed agrees with the sort order.
+An adapter that parses a published tax-free price keeps it; the derivation only fills gaps.
 * `crawl_runs` — audit log per source per run (counts, status, error).
 
 ### Crawl cycle

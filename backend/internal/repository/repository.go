@@ -160,7 +160,7 @@ func (r *Repo) UpsertRates(ctx context.Context, rates map[string]float64) error 
 const listingColumns = `
 	l.id, s.key, s.name, l.external_id, l.url, l.title, l.brand_id, coalesce(b.slug,''), coalesce(l.brand_name,''),
 	coalesce(l.model,''), coalesce(l.reference_number,''), l.condition, l.year, l.case_diameter_mm, coalesce(l.case_material,''), coalesce(l.dial_color,''),
-	coalesce(l.movement,'unknown'), coalesce(l.gender,'unknown'), l.has_box, l.has_papers, l.price, coalesce(l.currency,''), l.price_usd, l.shipping_price,
+	coalesce(l.movement,'unknown'), coalesce(l.gender,'unknown'), l.has_box, l.has_papers, l.price, l.price_excl_tax, coalesce(l.currency,''), l.price_usd, l.shipping_price,
 	coalesce(l.location_country,''), coalesce(l.location_city,''), coalesce(l.seller_name,''), coalesce(l.seller_type,''),
 	l.image_urls, coalesce(l.description,''), l.attributes, l.is_active, l.first_seen_at, l.last_seen_at`
 
@@ -172,7 +172,7 @@ func scanListing(row pgx.Row) (*model.Listing, error) {
 	var cond, mov, gen string
 	err := row.Scan(&l.ID, &l.SourceKey, &l.SourceName, &l.ExternalID, &l.URL, &l.Title, &l.BrandID, &l.BrandSlug, &l.BrandName,
 		&l.Model, &l.ReferenceNumber, &cond, &l.Year, &l.CaseDiameterMM, &l.CaseMaterial, &l.DialColor,
-		&mov, &gen, &l.HasBox, &l.HasPapers, &l.Price, &l.Currency, &l.PriceUSD, &l.ShippingPrice,
+		&mov, &gen, &l.HasBox, &l.HasPapers, &l.Price, &l.PriceExclTax, &l.Currency, &l.PriceUSD, &l.ShippingPrice,
 		&l.LocationCountry, &l.LocationCity, &l.SellerName, &l.SellerType,
 		&l.ImageURLs, &l.Description, &attrs, &l.IsActive, &l.FirstSeenAt, &l.LastSeenAt)
 	if err != nil {
@@ -462,9 +462,9 @@ func (r *Repo) UpsertListing(ctx context.Context, l *model.Listing) (UpsertResul
 		INSERT INTO listings (source_id, external_id, url, title, brand_id, brand_name, model, reference_number, condition, year,
 			case_diameter_mm, case_material, movement, gender, has_box, has_papers, price, currency, price_usd, shipping_price,
 			location_country, location_city, seller_name, seller_type, image_urls, description, attributes, is_active,
-			first_seen_at, last_seen_at, updated_at, dial_color)
+			first_seen_at, last_seen_at, updated_at, dial_color, price_excl_tax)
 		VALUES ($1,$2,$3,$4,$5,nullif($6,''),nullif($7,''),nullif($8,''),$9,$10,$11,nullif($12,''),$13,$14,$15,$16,$17,nullif($18,''),$19,$20,
-			nullif($21,''),nullif($22,''),nullif($23,''),nullif($24,''),$25,nullif($26,''),$27,TRUE,now(),now(),now(),nullif($28,''))
+			nullif($21,''),nullif($22,''),nullif($23,''),nullif($24,''),$25,nullif($26,''),$27,TRUE,now(),now(),now(),nullif($28,''),$29)
 		ON CONFLICT (source_id, external_id) DO UPDATE SET
 			url = EXCLUDED.url, title = EXCLUDED.title, brand_id = EXCLUDED.brand_id, brand_name = EXCLUDED.brand_name,
 			model = coalesce(EXCLUDED.model, listings.model), reference_number = coalesce(EXCLUDED.reference_number, listings.reference_number),
@@ -474,7 +474,7 @@ func (r *Repo) UpsertListing(ctx context.Context, l *model.Listing) (UpsertResul
 			dial_color = EXCLUDED.dial_color, -- derived from the current title/description: always refresh
 			movement = EXCLUDED.movement, gender = EXCLUDED.gender,
 			has_box = coalesce(EXCLUDED.has_box, listings.has_box), has_papers = coalesce(EXCLUDED.has_papers, listings.has_papers),
-			price = EXCLUDED.price, currency = EXCLUDED.currency, price_usd = EXCLUDED.price_usd, shipping_price = EXCLUDED.shipping_price,
+			price = EXCLUDED.price, price_excl_tax = EXCLUDED.price_excl_tax, currency = EXCLUDED.currency, price_usd = EXCLUDED.price_usd, shipping_price = EXCLUDED.shipping_price,
 			location_country = coalesce(EXCLUDED.location_country, listings.location_country),
 			location_city = coalesce(EXCLUDED.location_city, listings.location_city),
 			seller_name = coalesce(EXCLUDED.seller_name, listings.seller_name), seller_type = coalesce(EXCLUDED.seller_type, listings.seller_type),
@@ -485,7 +485,7 @@ func (r *Repo) UpsertListing(ctx context.Context, l *model.Listing) (UpsertResul
 		RETURNING id, (xmax = 0) AS inserted`,
 		l.SourceID, l.ExternalID, l.URL, l.Title, l.BrandID, l.BrandName, l.Model, l.ReferenceNumber, string(l.Condition), l.Year,
 		l.CaseDiameterMM, l.CaseMaterial, string(l.Movement), string(l.Gender), l.HasBox, l.HasPapers, l.Price, l.Currency, l.PriceUSD, l.ShippingPrice,
-		l.LocationCountry, l.LocationCity, l.SellerName, l.SellerType, l.ImageURLs, l.Description, attrs, l.DialColor,
+		l.LocationCountry, l.LocationCity, l.SellerName, l.SellerType, l.ImageURLs, l.Description, attrs, l.DialColor, l.PriceExclTax,
 	).Scan(&res.ID, &inserted)
 	if err != nil {
 		return res, err

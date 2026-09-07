@@ -36,6 +36,31 @@ type Preflighter interface {
 	Preflight(cfg *config.Config) error
 }
 
+// ApplyTaxFreePrice fills PriceExclTax for a source whose listed prices include consumption tax.
+// Japan mandates tax-included display for consumer prices (総額表示義務), so every Japanese source
+// here lists 税込. A value already parsed from the page by an adapter is left untouched.
+func ApplyTaxFreePrice(l *model.Listing, sourceCountry string) {
+	if l.PriceExclTax != nil || l.Price == nil || sourceCountry != "JP" {
+		return
+	}
+	excl := normalize.PriceExcludingTax(*l.Price, normalize.JapanConsumptionTax)
+	l.PriceExclTax = &excl
+}
+
+// ComparisonPrice is the amount used for cross-source sorting and price-range filters: the
+// tax-free price when one is known, otherwise the price as listed. A buyer importing a watch pays
+// the tax-free amount, so comparing a Tokyo listing against a Munich one on the tax-included price
+// would overstate the Japanese offer by 10%.
+func ComparisonPrice(l *model.Listing) (float64, bool) {
+	switch {
+	case l.PriceExclTax != nil:
+		return *l.PriceExclTax, true
+	case l.Price != nil:
+		return *l.Price, true
+	}
+	return 0, false
+}
+
 // EnrichFromTitle fills brand/reference/diameter/year/box-papers heuristically when the
 // marketplace did not provide structured data.
 func EnrichFromTitle(l *model.Listing, extraBrandHints ...string) {

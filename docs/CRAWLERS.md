@@ -33,6 +33,14 @@ the Runner logs a warning, writes a `skipped` row to `crawl_runs` (visible at `/
 carries on with the other sources; the job still exits 0. Silence the warning with
 `CRAWL_SOURCES=<list>` or `UPDATE sources SET enabled = false WHERE key = '…'`.
 
+## Japanese prices
+
+`jackroad`, `watchnian` and `commitwatch` all list tax-included prices. The Runner fills
+`PriceExclTax` for any source whose country is `JP` (see `crawler.ApplyTaxFreePrice`), and
+`crawler.ComparisonPrice` decides what gets converted to USD. A new Japanese source therefore needs
+no tax handling of its own. If a site publishes its own 税抜 figure, parse it into `PriceExclTax`
+and the derivation will leave it alone.
+
 ## Politeness and reliability
 
 * Per-host rate limit (`CRAWL_RATE_LIMIT_MS`, default 1.5 s) using a token bucket; 3 retries with

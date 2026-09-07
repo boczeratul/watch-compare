@@ -220,6 +220,35 @@ func TestRepositoryEndToEnd(t *testing.T) {
 		}
 	}
 
+	// tax-free price round-trips and drives cross-source ordering
+	{
+		inclusive, exclusive, exclUSD := 1700000.0, 1545455.0, 10303.0
+		jp := model.Listing{
+			SourceID: src.ID, ExternalID: "taxfree1", URL: "https://example.com/tf",
+			Title: "Rolex Datejust 126334 tax test", BrandID: &rolex, BrandName: "Rolex",
+			ReferenceNumber: "126334TF", Condition: model.ConditionNew, Movement: model.MovementAutomatic,
+			Gender: model.GenderMen, Price: &inclusive, PriceExclTax: &exclusive, Currency: "JPY",
+			PriceUSD: &exclUSD, ImageURLs: []string{},
+		}
+		res, err := repo.UpsertListing(ctx, &jp)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got, err := repo.GetListing(ctx, res.ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got.PriceExclTax == nil || *got.PriceExclTax != exclusive {
+			t.Errorf("price_excl_tax round-trip = %v, want %v", got.PriceExclTax, exclusive)
+		}
+		if got.Price == nil || *got.Price != inclusive {
+			t.Errorf("listed price must stay tax-included: %v", got.Price)
+		}
+		if _, err := repo.Pool().Exec(ctx, `DELETE FROM listings WHERE external_id = 'taxfree1'`); err != nil {
+			t.Fatal(err)
+		}
+	}
+
 	// dial colour filter + facets
 	sr, err = repo.SearchListings(ctx, model.ListingQuery{DialColors: []string{"black"}})
 	if err != nil || sr.Total != 1 || sr.Items[0].DialColor != "black" {

@@ -31,7 +31,9 @@ export function ListingCard({ listing }: { listing: Listing }) {
           {[listing.referenceNumber, listing.year, listing.caseDiameterMm ? `${listing.caseDiameterMm} mm` : null, listing.dialColor ? td(listing.dialColor) : null].filter(Boolean).join(" · ") || " "}
         </p>
         <div className="mt-auto flex items-end justify-between gap-2 pt-2">
-          <Price usd={listing.priceUsd} original={listing.price} originalCurrency={listing.currency} />
+          {/* priceUsd is computed from the tax-free amount, so show that as the original too;
+              otherwise a Japanese card would display a number that contradicts the sort order. */}
+          <Price usd={listing.priceUsd} original={listing.priceExclTax ?? listing.price} originalCurrency={listing.currency} />
           <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-600">{tc(listing.condition)}</span>
         </div>
         {(listing.locationCountry || listing.locationCity) && (

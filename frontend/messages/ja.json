@@ -129,7 +129,10 @@
     "saveVs": "次点より {percent}% 安い",
     "notFound": "出品が見つかりません",
     "notFoundBody": "前回のクロール以降に削除された可能性があります。",
-    "dialColor": "文字盤の色"
+    "dialColor": "文字盤の色",
+    "priceExclTax": "税抜価格",
+    "priceInclTax": "税込価格",
+    "taxNote": "日本の販売店は総額表示が義務付けられています。輸出販売は免税となるため、当サイトの比較と並び替えは税抜価格を使用しています。"
   },
   "brands": {
     "title": "ブランド",

@@ -4,6 +4,7 @@ import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 import { ExternalLink, MapPin, Store, User } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { api, ApiError, safe, type Listing } from "@/lib/api";
+import { formatMoney } from "@/lib/currency";
 import { ImageGallery } from "@/components/image-gallery";
 import { Price } from "@/components/price";
 import { SourceBadge } from "@/components/source-badge";
@@ -49,6 +50,7 @@ export default async function ListingPage({ params }: Props) {
     safe(api.priceHistory(id), { items: [] }),
   ]);
   const date = (s: string) => new Intl.DateTimeFormat(currentLocale, { dateStyle: "medium" }).format(new Date(s));
+  const money = (v: number, c: string) => formatMoney(v, c, currentLocale);
   const yesNo = (v?: boolean) => (v === undefined ? "—" : v ? t("yes") : t("no"));
   const cheaperOther = similar.items.find((s) => s.priceUsd !== undefined);
   const savePct = listing.priceUsd && cheaperOther?.priceUsd && cheaperOther.priceUsd > listing.priceUsd ? Math.round((1 - listing.priceUsd / cheaperOther.priceUsd) * 100) : 0;
@@ -99,7 +101,27 @@ export default async function ListingPage({ params }: Props) {
           </div>
 
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-            <Price usd={listing.priceUsd} original={listing.price} originalCurrency={listing.currency} size="lg" />
+            {/* When the tax breakdown is shown below, let it carry the source-currency amounts. */}
+            <Price
+              usd={listing.priceUsd}
+              original={listing.priceExclTax ?? listing.price}
+              originalCurrency={listing.currency}
+              size="lg"
+              showOriginal={listing.priceExclTax === undefined}
+            />
+            {listing.priceExclTax !== undefined && listing.price !== undefined && listing.currency && (
+              <dl className="mt-3 space-y-1 border-t border-slate-200 pt-3 text-sm">
+                <div className="flex justify-between gap-4">
+                  <dt className="text-slate-500">{t("priceExclTax")}</dt>
+                  <dd className="font-medium text-slate-900">{money(listing.priceExclTax, listing.currency)}</dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-slate-500">{t("priceInclTax")}</dt>
+                  <dd className="text-slate-700">{money(listing.price, listing.currency)}</dd>
+                </div>
+                <p className="pt-1 text-xs text-slate-500">{t("taxNote")}</p>
+              </dl>
+            )}
             {listing.shippingPrice !== undefined && (
               <p className="mt-1 text-xs text-slate-500">{t("shipping")}: <Price usd={undefined} original={listing.shippingPrice} originalCurrency={listing.currency} size="sm" showOriginal={false} /></p>
             )}

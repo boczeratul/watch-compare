@@ -129,7 +129,10 @@
     "saveVs": "比次低價便宜 {percent}%",
     "notFound": "找不到此物件",
     "notFoundBody": "可能已在上次爬取後下架。",
-    "dialColor": "面盤顏色"
+    "dialColor": "面盤顏色",
+    "priceExclTax": "未稅價",
+    "priceInclTax": "含稅價",
+    "taxNote": "日本錶商依法標示含稅價。出口購買免消費稅,因此本站的比較與排序皆以未稅價計算。"
   },
   "brands": {
     "title": "品牌",

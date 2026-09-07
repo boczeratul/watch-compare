@@ -37,7 +37,7 @@ export async function CompareTable({ current, others }: { current: Listing; othe
                     <td className="px-4 py-3 text-slate-600">{tc(l.condition)}</td>
                     <td className="px-4 py-3 text-slate-600">{[l.locationCity, l.locationCountry].filter(Boolean).join(", ")}</td>
                     <td className="px-4 py-3 text-right">
-                      <Price usd={l.priceUsd} original={l.price} originalCurrency={l.currency} />
+                      <Price usd={l.priceUsd} original={l.priceExclTax ?? l.price} originalCurrency={l.currency} />
                     </td>
                     <td className="px-4 py-3 text-right">
                       {isCurrent ? (
