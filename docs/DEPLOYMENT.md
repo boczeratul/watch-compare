@@ -65,9 +65,9 @@ Cloud SQL Auth Proxy.
 
 Steps, in order:
 
-1. **test** — `go vet` + `go test -race ./...` in the official `golang:1.25` image. Any failure
+1. **test** — `go vet` + `go test -race ./...` in the official `golang:1.27` image. Any failure
    stops the build before an image is produced.
-2. **build** — multi-stage Docker build (`golang:1.25-alpine` → `distroless/static`, non-root).
+2. **build** — multi-stage Docker build (`golang:1.27-alpine` → `distroless/static`, non-root).
    The image is tagged with `$SHORT_SHA` and `latest`; `--cache-from latest` keeps builds fast.
 3. **push** — to `REGION-docker.pkg.dev/PROJECT/watch-compare/backend`.
 4. **migrate** — deploys a tiny Cloud Run job `watch-compare-api-migrate` from the same image with

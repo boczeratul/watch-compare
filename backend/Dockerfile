@@ -3,7 +3,7 @@
 #   /app/api      -> Cloud Run service
 #   /app/crawler  -> Cloud Run job (override the command)
 #   /app/migrate  -> one-off migrations
-FROM golang:1.25-alpine AS build
+FROM golang:1.27-alpine AS build
 WORKDIR /src
 RUN apk add --no-cache ca-certificates tzdata
 COPY go.mod go.sum ./

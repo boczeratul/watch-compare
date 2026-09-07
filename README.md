@@ -18,7 +18,7 @@ search, filter and sort them Chrono24-style, in your own currency and language.
 
 | Part | Stack | Deploy |
 |------|-------|--------|
-| `backend/` | Go 1.25, chi, pgx, goquery, zerolog | Cloud Build → Artifact Registry → Cloud Run (service + job) |
+| `backend/` | Go 1.27, chi, pgx, goquery, zerolog | Cloud Build → Artifact Registry → Cloud Run (service + job) |
 | `frontend/` | Next.js 16 (App Router, RSC), React 19, Tailwind v4, next-intl | Vercel (Git integration) |
 | Database | PostgreSQL 16 (Cloud SQL) with full-text search + facets | migrations embedded in the Go binary |
 
@@ -26,7 +26,7 @@ Docs: [Architecture](docs/ARCHITECTURE.md) · [Crawlers](docs/CRAWLERS.md) · [C
 
 ## Quick start (local)
 
-Prerequisites: Go 1.25+, Node 24+, pnpm, and a PostgreSQL 16 (Docker: `cd backend && docker compose up -d`).
+Prerequisites: Go 1.27+, Node 24+, pnpm, and a PostgreSQL 16 (Docker: `cd backend && docker compose up -d`).
 
 ```bash
 # 1. Backend API (applies migrations on boot)

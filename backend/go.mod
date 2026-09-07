@@ -1,6 +1,8 @@
 module github.com/hsuanlee/watch-compare/backend
 
-go 1.25.6
+go 1.27
+
+toolchain go1.27.1
 
 require (
 	github.com/PuerkitoBio/goquery v1.13.0
