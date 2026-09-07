@@ -16,7 +16,9 @@ deactivation. Parsers are covered by fixture tests using real HTML captured in `
 |--------|--------|----------|------------------|-------|
 | `jackroad` | HTML, Shift_JIS, brand categories `/shop/r/rjw<code>/?p=N` discovered from `/shop/r/rjw/` (174 brands) | JPY | ✅ 30/30 cards parsed with price, brand, reference, diameter, movement, image; live dry-run OK | ebisumart shop; brand from Japanese name |
 | `watchnian` | HTML, `/shop/r/rwatch_pN/` | JPY | ✅ 60/60 cards; condition from dealer rank (S/A/B/C) | use bare host `watchnian.com` (www returned CloudFront 502) |
-| `hourstack` | HTML, brand categories `/product.asp?cat=N&page=P` | TWD | ✅ cards parsed; reference/diameter/year extracted from title | `HOURSTACK_FETCH_DETAILS=true` also fetches product pages for material/diameter (slower) |
+| `hourstack` | HTML (alapower shop), brand categories `/product.asp?cat=N&page=P` | TWD | ✅ cards parsed; reference/diameter/year extracted from title | shared parser in `crawler/alapower`; `ALAPOWER_FETCH_DETAILS=true` also fetches product pages for material/diameter (slower) |
+| `rdwatch` | HTML (alapower shop, same markup as Hourstack; 230px cards, prices without separators) | TWD | ✅ 24/24 cards on the Rolex category; live dry-run OK (41 categories) | RD Watch, Taipei |
+| `commitwatch` | **Shopify JSON feed** `/products.json?limit=250&page=N` | JPY | ✅ 30/30 with price, brand (from `vendor`), `Ref.` reference, images, condition grade from title; live dry-run OK | Commit Ginza, Tokyo; sold-out variants are skipped so they deactivate |
 | `ebay` | **Browse API** (OAuth client credentials) | market currency | needs `EBAY_CLIENT_ID/SECRET` | per-brand aspect filter in Wristwatches (31387); free developer keys at developer.ebay.com |
 | `chrono24` | HTML via render service or proxy | listing currency | ❌ plain requests get HTTP 403 | requires `CRAWL_RENDER_SERVICE_URL` or `CRAWL_PROXY_URL`; fails fast otherwise |
 
@@ -45,6 +47,13 @@ Useful flags: `-dry-run`, `-max-pages`, `-skip-fx`, `-timeout`. Production runs 
 from the Cloud Run Job environment.
 
 ## Adding a marketplace
+
+Two shortcuts exist: a shop built on the **alapower** ASP platform (Taiwanese dealers; look for
+`product.asp?cat=` and `product_open.asp?ID=` links) only needs a 15-line adapter that fills
+`alapower.Site{BaseURL, SellerName, Boilerplate}` — see `crawler/rdwatch`. A **Shopify** store
+exposes `/products.json`; copy `crawler/commitwatch` and adjust the title/condition parsing.
+
+Otherwise:
 
 1. Capture a list page: `curl -A "$UA" <url> > internal/crawler/<key>/testdata/list.html`
    (use `iconv` for non-UTF-8 sites; the Fetcher decodes charsets automatically at runtime).

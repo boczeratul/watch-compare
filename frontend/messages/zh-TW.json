@@ -1,5 +1,5 @@
 {
-  "meta": { "title": "WatchCompare 錶價比較", "tagline": "橫跨 Chrono24、eBay、Watchnian、Jackroad 與 Hourstack，找到最划算的錶", "description": "比較台灣、日本、歐洲與美國各大平台的名錶價格。依品牌、型號或預算搜尋，並以您的貨幣顯示所有物件。" },
+  "meta": { "title": "WatchCompare 錶價比較", "tagline": "橫跨 Chrono24、eBay 與東京、台北各大錶商，找到最划算的錶", "description": "比較台灣、日本、歐洲與美國各大平台的名錶價格。依品牌、型號或預算搜尋，並以您的貨幣顯示所有物件。" },
   "nav": { "home": "首頁", "search": "搜尋", "brands": "品牌", "language": "語言", "currency": "貨幣", "settings": "設定" },
   "home": {
     "heroTitle": "一次搜尋，全部平台。",

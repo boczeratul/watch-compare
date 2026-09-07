@@ -1,5 +1,5 @@
 {
-  "meta": { "title": "WatchCompare", "tagline": "Chrono24・eBay・Watchnian・ジャックロード・Hourstack を横断して最安値を探す", "description": "台湾・日本・欧州・米国のマーケットプレイスの高級時計価格を比較。ブランド、型番、予算で検索し、すべてをお好みの通貨で表示します。" },
+  "meta": { "title": "WatchCompare", "tagline": "Chrono24・eBay と東京・台北の有名店を横断して最安値を探す", "description": "台湾・日本・欧州・米国のマーケットプレイスの高級時計価格を比較。ブランド、型番、予算で検索し、すべてをお好みの通貨で表示します。" },
   "nav": { "home": "ホーム", "search": "検索", "brands": "ブランド", "language": "言語", "currency": "通貨", "settings": "設定" },
   "home": {
     "heroTitle": "一度の検索で、すべてのマーケットを。",

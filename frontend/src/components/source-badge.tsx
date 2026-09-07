@@ -6,6 +6,8 @@ const STYLES: Record<string, string> = {
   watchnian: "bg-sky-50 text-sky-800 ring-sky-200",
   jackroad: "bg-rose-50 text-rose-800 ring-rose-200",
   hourstack: "bg-violet-50 text-violet-800 ring-violet-200",
+  rdwatch: "bg-orange-50 text-orange-800 ring-orange-200",
+  commitwatch: "bg-teal-50 text-teal-800 ring-teal-200",
 };
 
 export function SourceBadge({ source, name, className }: { source: string; name: string; className?: string }) {

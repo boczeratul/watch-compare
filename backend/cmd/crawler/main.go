@@ -18,9 +18,11 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/config"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/chrono24"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/commitwatch"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ebay"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/hourstack"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jackroad"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/rdwatch"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchnian"
 	"github.com/hsuanlee/watch-compare/backend/internal/db"
 	"github.com/hsuanlee/watch-compare/backend/internal/fx"
@@ -89,9 +91,11 @@ func main() {
 
 	// 2. Crawl.
 	runner := crawler.NewRunner(repo, fetcher, cfg, conv, logger,
-		hourstack.Source{FetchDetails: os.Getenv("HOURSTACK_FETCH_DETAILS") == "true"},
+		hourstack.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true" || os.Getenv("HOURSTACK_FETCH_DETAILS") == "true"},
+		rdwatch.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true"},
 		jackroad.Source{},
 		watchnian.Source{},
+		commitwatch.Source{},
 		&ebay.Source{},
 		chrono24.Source{},
 	)

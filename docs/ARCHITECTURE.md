@@ -17,7 +17,8 @@ internal/
   api/         chi router, handlers, query parsing, rates cache
   config/      env-based configuration
   crawler/     Fetcher (rate limit, retries, charset), Source interface, Runner (persistence)
-  crawler/<site>/  one adapter per marketplace (+ fixture tests using real captured HTML)
+  crawler/<site>/  one adapter per marketplace (+ fixture tests using real captured HTML/JSON)
+  crawler/alapower/ shared parser for the ASP shop platform used by Hourstack and RD Watch
   db/          pgx pool, embedded migrations (advisory-locked, idempotent)
   fx/          USD-based exchange rates
   model/       domain types

@@ -1,5 +1,5 @@
 {
-  "meta": { "title": "WatchCompare", "tagline": "Find the best watch deals across Chrono24, eBay, Watchnian, Jackroad and Hourstack", "description": "Compare luxury watch prices across marketplaces in Taiwan, Japan, Europe and the US. Search by brand, reference or budget and see every listing in your currency." },
+  "meta": { "title": "WatchCompare", "tagline": "Find the best watch deals across Chrono24, eBay and top dealers in Tokyo and Taipei", "description": "Compare luxury watch prices across marketplaces in Taiwan, Japan, Europe and the US. Search by brand, reference or budget and see every listing in your currency." },
   "nav": { "home": "Home", "search": "Search", "brands": "Brands", "language": "Language", "currency": "Currency", "settings": "Settings" },
   "home": {
     "heroTitle": "One search. Every marketplace.",
