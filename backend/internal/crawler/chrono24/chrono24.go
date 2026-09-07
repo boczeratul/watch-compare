@@ -20,7 +20,8 @@
 // Page structure: /<brand-slug>/index.htm?pageSize=120&showpage=<n>&sortorder=5
 // Cards: a.js-article-item[data-article-id][href*="--id<id>.htm"] with
 //
-//	.text-bold (title), .text-sm (details), [class*="price"], img[data-src|src],
+//	.text-bold (title), .text-sm (details), .wt-listing-item-price ("$12,345" or "Price on
+//	request", followed by "+ $443 for shipping"), img[data-src|src],
 //	and optional JSON-LD ItemList in <script type="application/ld+json">.
 package chrono24
 
@@ -62,6 +63,10 @@ func (Source) Key() string { return "chrono24" }
 var (
 	idRe    = regexp.MustCompile(`--id(\d+)\.htm`)
 	priceRe = regexp.MustCompile(`(?i)(\$|€|£|CHF|¥|HK\$|S\$|A\$|C\$|NT\$|US\$|JPY|USD|EUR|GBP|TWD)\s*([0-9][0-9.,]*)`)
+	// "Price on request" / "Preis auf Anfrage" / "Prix sur demande": the seller hides the price
+	onRequestRe = regexp.MustCompile(`(?i)on request|auf anfrage|sur demande|su richiesta|a consultar`)
+	// "+ $443 for shipping" / "Free shipping"
+	shippingRe = regexp.MustCompile(`(?i)\+\s*((?:\$|€|£|CHF|¥|HK\$|S\$|A\$|C\$|NT\$|US\$|JPY|USD|EUR|GBP|TWD)\s*[0-9][0-9.,]*)\s*(?:for\s+)?shipping`)
 )
 
 // Preflight reports whether a render service or proxy is configured; without one the site
@@ -165,8 +170,24 @@ func ParseList(doc *goquery.Document) []model.Listing {
 		}
 		details := firstText(card, ".text-sm, .article-subtitle, [class*='subtitle']")
 		l.Description = details
-		if cur, p, ok := parsePrice(crawler.Text(card)); ok {
-			l.Price, l.Currency = &p, cur
+		// Read the price from its own element: the card also prints "+ $443 for shipping", which
+		// must not be taken as the price when the seller only shows "Price on request".
+		priceText := firstText(card, ".wt-listing-item-price, [class*='price']")
+		if priceText == "" {
+			priceText = crawler.Text(card)
+		}
+		if !onRequestRe.MatchString(priceText) {
+			if cur, p, ok := parsePrice(priceText); ok {
+				l.Price, l.Currency = &p, cur
+			}
+		}
+		if m := shippingRe.FindStringSubmatch(crawler.Text(card)); m != nil {
+			if cur, p, ok := parsePrice(m[1]); ok {
+				l.ShippingPrice = &p
+				if l.Currency == "" {
+					l.Currency = cur
+				}
+			}
 		}
 		card.Find("img").Each(func(_ int, img *goquery.Selection) {
 			src := imageSrc(img)

@@ -51,6 +51,25 @@ func TestParseListFixture(t *testing.T) {
 			withImg++
 		}
 	}
+	// Sellers may hide the price ("Price on request"); the card still prints the shipping cost,
+	// which must not be mistaken for the price. The 2026-09 capture holds 8 such cards.
+	onRequest, withShipping := 0, 0
+	for _, l := range items {
+		if l.ShippingPrice != nil {
+			withShipping++
+		}
+		if l.Price == nil {
+			onRequest++
+			continue
+		}
+		if *l.Price < 500 {
+			t.Errorf("implausibly cheap listing %s: price %v %s (shipping cost parsed as price?)", l.ExternalID, *l.Price, l.Currency)
+		}
+	}
+	t.Logf("priceOnRequest=%d shipping=%d", onRequest, withShipping)
+	if withPrice+onRequest != len(items) {
+		t.Errorf("price/on-request split does not add up: %d + %d != %d", withPrice, onRequest, len(items))
+	}
 	first := items[0]
 	crawler.EnrichFromTitle(&first)
 	t.Logf("items=%d title=%d price=%d img=%d", len(items), withTitle, withPrice, withImg)
