@@ -23,6 +23,7 @@ deactivation. Parsers are covered by fixture tests using real HTML captured in `
 | `lips` | HTML (EC-CUBE 4), in-stock watches newest first `/ec/products/list?category_id=1&stock_flg[]=1&orderby=2&pageno=N` | JPY | ✅ 40/40 cards with price, brand, 型番 reference, grade (新品 / SA / A ランク), 付属 box+papers, image | Brand Shop LIPS; ~1.1k in stock of ~43k catalogued, so the stock filter is essential |
 | `allu` | **JSON API** `POST /jp/ja/api/v5/items/search?page=N&limit=30` with a category filter (c-79 = 腕時計) | JPY | ✅ 30/30 items with price, brand, reference, rank (N…C/J), image, seller | ALLU (Valuence) marketplace; tens of thousands of watches, so `CRAWL_MAX_PAGES` × 30 newest per run; house account "ALLU公式" = dealer, others = private |
 | `housekihiroba` | HTML (ecbeing, Shift_JIS), brand categories `/shop/c/c01<code>/` from `/shop/c/cwatch/`, newest first `/shop/c/c01<code>_ssd_p<N>/` (32 per page) | JPY | ✅ 32/32 cards with price, brand, reference, condition icon, diameter, movement, material, image | 宝石広場, Shibuya; Rolex alone is >7k pieces (>200 pages), so `CRAWL_MAX_PAGES` bounds each brand |
+| `ishida` | HTML (futureshop), pre-owned list newest first `/c/bestvintage/v_brand?page=N&sort=latest` (20 per page, `<link rel=next>`) | JPY | ✅ 20/20 cards with price, brand, reference (last line of the name), 【中古】 grade, movement/gender marks, gallery images | BEST ISHIDA, Tokyo; ~5.2k pieces / 260 pages, so `CRAWL_MAX_PAGES` bounds a run |
 | `ebay` | **Browse API** (OAuth client credentials) | market currency | needs `EBAY_CLIENT_ID/SECRET` | per-brand aspect filter in Wristwatches (31387); free developer keys at developer.ebay.com |
 | `chrono24` | HTML via Browserless (see [BROWSERLESS.md](BROWSERLESS.md)) | listing currency | ❌ plain requests get HTTP 403; selectors unverified until a rendered page is captured | skipped unless `CRAWL_RENDER_SERVICE_URL` or `CRAWL_PROXY_URL` is set; budget = `CHRONO24_BRANDS` (default Rolex, Omega, IWC, AP, PP) × `CHRONO24_MAX_PAGES` (default 3) |
 
@@ -39,7 +40,7 @@ carries on with the other sources; the job still exits 0. Silence the warning wi
 
 ## Japanese prices
 
-`jackroad`, `watchnian`, `commitwatch`, `lips`, `allu` and `housekihiroba` all list tax-included prices; `sevenhours` prints its own 税抜 figure, which the adapter parses. The Runner fills
+`jackroad`, `watchnian`, `commitwatch`, `lips`, `allu`, `housekihiroba` and `ishida` all list tax-included prices; `sevenhours` prints its own 税抜 figure, which the adapter parses. The Runner fills
 `PriceExclTax` for any source whose country is `JP` (see `crawler.ApplyTaxFreePrice`), and
 `crawler.ComparisonPrice` decides what gets converted to USD. A new Japanese source therefore needs
 no tax handling of its own. If a site publishes its own 税抜 figure, parse it into `PriceExclTax`
