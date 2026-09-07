@@ -1,0 +1,128 @@
+# Cloud Build pipeline for the Go backend.
+# Triggered on push to main (see docs/DEPLOYMENT.md). Builds one image, deploys the API
+# service and updates the crawler job to the same image digest.
+#
+# Required substitutions (set on the trigger):
+#   _REGION           e.g. asia-east1
+#   _AR_REPO          Artifact Registry repo name, e.g. watch-compare
+#   _API_SERVICE      Cloud Run service name, e.g. watch-compare-api
+#   _CRAWLER_JOB      Cloud Run job name, e.g. watch-compare-crawler
+#   _CLOUDSQL         Cloud SQL connection name, e.g. my-proj:asia-east1:watch-compare-pg
+#   _RUNTIME_SA       Runtime service account email
+#   _CORS_ORIGINS     Comma-separated allowed origins (Vercel production + preview domains)
+substitutions:
+  _REGION: asia-east1
+  _AR_REPO: watch-compare
+  _API_SERVICE: watch-compare-api
+  _CRAWLER_JOB: watch-compare-crawler
+  _CLOUDSQL: ""
+  _RUNTIME_SA: ""
+  _CORS_ORIGINS: "https://watch-compare.vercel.app"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8
+  dynamicSubstitutions: true
+
+steps:
+  # 1. Static checks and unit tests (fast, no DB needed)
+  - id: test
+    name: golang:1.25
+    dir: backend
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        go vet ./...
+        go test -race -count=1 ./...
+
+  # 2. Build the image with BuildKit cache from the previous build
+  - id: build
+    name: gcr.io/cloud-builders/docker
+    dir: backend
+    env: ["DOCKER_BUILDKIT=1"]
+    args:
+      - build
+      - --build-arg
+      - VERSION=$SHORT_SHA
+      - --cache-from
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/backend:latest
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/backend:$SHORT_SHA
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/backend:latest
+      - .
+
+  - id: push
+    name: gcr.io/cloud-builders/docker
+    args: ["push", "--all-tags", "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/backend"]
+
+  # 3. Run migrations once from a Cloud Run job before rolling the API
+  - id: migrate
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        gcloud run jobs deploy ${_API_SERVICE}-migrate \
+          --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/backend:$SHORT_SHA \
+          --region=${_REGION} --command=/app/migrate --args=up \
+          --set-cloudsql-instances=${_CLOUDSQL} \
+          --set-secrets=DATABASE_URL=DATABASE_URL:latest \
+          --service-account=${_RUNTIME_SA} --max-retries=0 --task-timeout=10m --quiet
+        gcloud run jobs execute ${_API_SERVICE}-migrate --region=${_REGION} --wait
+
+  # 4. Deploy the API service (traffic shifts only after the new revision is healthy)
+  - id: deploy-api
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_API_SERVICE}
+      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/backend:$SHORT_SHA
+      - --region=${_REGION}
+      - --platform=managed
+      - --service-account=${_RUNTIME_SA}
+      - --set-cloudsql-instances=${_CLOUDSQL}
+      - --set-secrets=DATABASE_URL=DATABASE_URL:latest
+      - --set-env-vars=APP_ENV=production,AUTO_MIGRATE=false,^@^CORS_ALLOWED_ORIGINS=${_CORS_ORIGINS}
+      - --cpu=1
+      - --memory=512Mi
+      - --min-instances=0
+      - --max-instances=10
+      - --concurrency=80
+      - --timeout=30
+      - --allow-unauthenticated
+      - --quiet
+
+  # 5. Point the crawler job at the same image
+  - id: deploy-crawler
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - jobs
+      - deploy
+      - ${_CRAWLER_JOB}
+      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/backend:$SHORT_SHA
+      - --region=${_REGION}
+      - --command=/app/crawler
+      - --service-account=${_RUNTIME_SA}
+      - --set-cloudsql-instances=${_CLOUDSQL}
+      - --set-secrets=DATABASE_URL=DATABASE_URL:latest,EBAY_CLIENT_ID=EBAY_CLIENT_ID:latest,EBAY_CLIENT_SECRET=EBAY_CLIENT_SECRET:latest
+      - --set-env-vars=APP_ENV=production,CRAWL_CONCURRENCY=3,CRAWL_MAX_PAGES=200,CRAWL_RATE_LIMIT_MS=1500
+      - --cpu=1
+      - --memory=1Gi
+      - --tasks=1
+      - --max-retries=1
+      - --task-timeout=5h
+      - --quiet
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/backend:$SHORT_SHA
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_AR_REPO}/backend:latest
+
+timeout: 1800s

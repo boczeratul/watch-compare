@@ -1,0 +1,957 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>鐘點站名錶 Rolex PP AP 交流中心 | 中古錶 | 二手錶</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-16886163278"></script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MBHT89B6');</script>
+<!-- End Google Tag Manager -->
+</head>
+
+
+<SCRIPT src="jquery/jquery-1.4.4.min.js" type="text/javascript"></SCRIPT>
+
+<style type="text/css">
+#banner {position:relative; width:986px; height:370px; border:0px solid #333; overflow:hidden;}
+#banner_list img {border:0px;}
+#banner_bg {position:absolute; bottom:0;background-color:#000;height:30px;filter: Alpha(Opacity=30);opacity:0.3;z-index:1000;cursor:pointer; width:1000px; }
+#banner_info{position:absolute; bottom:0; left:5px;height:22px;color:#fff;z-index:1001;cursor:pointer}
+#banner ul {position:absolute;list-style-type:none;filter: Alpha(Opacity=80);opacity:0.8;z-index:1002;margin:0; padding:0; bottom:10px; right:30px;}
+#banner ul li { FONT-SIZE: 8px;padding:0px 5px;margin-left:15px;float:left;display:block;color:#FFF;border:#e5eaff 1px solid;background:#444444;cursor:pointer}
+#banner ul li.on { background:#000000}
+#banner_list a{position:absolute;} <!-- 让四张图片都可以重叠在一起-->
+</style>
+
+<script type="text/javascript">
+var t=n=0,count;
+$(function(){
+     count=$("#banner_list a").length;//取得a的个数
+     $("#banner_list a:not(:first-child)").hide();//除了第一个A外，其他的a隐藏
+     $("#banner_info").html($("#banner_list a:first-child").find("img").attr('alt'));//banner_info即标题的值等于，第一个a中img子元素的alt属性值
+     $("#banner_info").click(function(){window.open($("#banner_list a:first-child").attr('href'), "_blank")});//点击banner_info，在新页面打开一个地址为第一个a的href属性值的新窗口，
+     $("#banner li").click(function() {//点击li
+         var i = $(this).text() - 1;//获取Li元素内的值-1，即1，2，3，4
+         n = i;
+         if (i >= count) return;//i大于等于4时返回停止。
+         $("#banner_info").html($("#banner_list a").eq(i).find("img").attr('alt'));//banner_info中的值等于第i个（i从0开始）a下的img子元素的alt属性值
+         $("#banner_info").unbind().click(function(){window.open($("#banner_list a").eq(i).attr('href'), "_blank")})//先为banner_info解除绑定事件，然后单击banner_info动态获取第i个a下的href地址并在新窗口打开//以上步骤是为了，当图片轮换时标题值和打开的新窗口链接也跟着动态改变
+         $("#banner_list a").filter(":visible").fadeOut(2000).parent().children().eq(i).fadeIn(2000);//banner_list中的a为隐藏的以500MS的速度淡出，它的父元素下的子元素集合中的第i个以1000ms的速度淡入，filter()匹配所选元素所具有特性的元素
+         $(this).toggleClass("on");//为所点击的li元素替换一个on类。toggleClass()如果存在（不存在）就当类名相同时删除，类名不同是替换（添加）一个类。
+         $(this).siblings().removeAttr("class");//移除除点击的li外所有同级元素的类
+      });
+      t = setInterval("showAuto()", 6000);//设置规定时间间隔自动跳转，表示每隔4000ms执行一次showAuto()函数
+      $("#banner").hover(function(){clearInterval(t)}, function(){t = setInterval("showAuto()", 6000);});//hover()是鼠标经过移除事件，表示鼠标经过banner时清楚设定的时间间隔t函数，鼠标移出时执行时间间隔函数     
+})
+     function showAuto(){
+        n = n >=(count - 1) ? 0 : ++n;//当n大于等于count-1(本例中为3)时n=0表示再次从第一张图片开始，否则n=n+1，加1递增
+        $("#banner li").eq(n).trigger('click');//每次点击相应的li会绑定一个上面的click事件
+     }
+</script>
+
+
+</head>
+<STYLE>
+    *{
+margin:0;padding:0;
+}  
+html{
+box-sizing:border-box
+}    
+*,*:before,*:after{
+box-sizing:inherit
+}  
+body{
+//background-image : url(images/bk.jpg);
+background:#222;
+ font-size: 16px;
+ font-family: "Microsoft JhengHei",  Arial, Helvetica, sans-serif;    
+ color:white;
+} 
+    
+/*網頁宣告*/
+    
+/*版面結構*/ 
+ 
+.top{        
+
+   
+    text-align:center;     
+    width:100%;
+  background-repeat: repeat;
+   // background-image : url(images/bk1.png); 
+       
+    }
+    
+
+
+   .logo{  
+   position:absolute;
+   border-radius:10px 10px 0 0;
+   background:#111;
+    margin:0px 8px 0 15px;
+   height:385px;
+   border-top:1px #333 solid;
+    border-left:1px #333 solid;
+   border-right:1px #333 solid;
+   z-index:9;
+     }  
+ 
+    
+    
+
+    
+    .main{ 
+    padding-top:10px;
+    margin:0 auto ;
+    width:1200px;
+     background:#000000;
+    
+
+
+  
+    }
+
+.sidebar{
+        
+    position: RELATIVE;
+    TOP:-25PX; 
+    width:220px; 
+    
+       
+    }
+
+.menu{  
+   width:220px; 
+   margin: 0 auto; 
+  background:#E4E4E4; 
+     
+   }
+
+   
+.alapower{
+    max-width:1000px;
+    margin:0 auto;  
+    height:30px;
+    font-size: 12px;
+    color:#ddd;
+    text-align:right;
+    line-height: 14px; 
+    padding:10px 0px 10px 0px;      
+}    
+/*版面結構*/   
+
+
+    
+
+
+
+   
+    
+/*次選單*/  
+
+ 
+
+
+ /*次選單*/ 
+ 
+    
+
+ 
+
+
+
+
+a:link { color:#ffffff; text-decoration:none }                                           /*一般連結*/
+a:visited { color:#ffffff; text-decoration:none }                                           /*參觀過的連結*/
+a:hover { color:#ffffff; text-decoration:none; } 
+
+ .menu_top>a:link { color:#ffffff; text-decoration:none }                                           /*一般連結*/
+.menu_top>a:visited { color:#ffffff; text-decoration:none }                                        /*參觀過的連結*/
+.menu_top> a:hover { color:#ffffff; text-decoration:none; } 
+
+.menu100{
+    padding-left:15px;
+	font-family: "Microsoft JhengHei", Arial, Helvetica, sans-serif;
+	color:#FFD28C;
+	font-size:16px;
+ background:#222;
+	border-bottom:1px #333 solid;
+	border-right:1px #333 solid;
+	border-left:1px #333 solid;
+}
+.menu101{
+    background:#111	;
+    padding-left:15px;
+	font-family: "Microsoft JhengHei",  Arial, Helvetica, sans-serif;
+	color:#fff;
+	font-size:14px;
+	border-bottom:1px #333 solid;
+	border-right:1px #333 solid;
+	border-left:1px #333 solid;
+}
+
+.menu101:hover{
+    padding-left:15px;
+	font-family: "Microsoft JhengHei",  Arial, Helvetica, sans-serif;
+	color:#ffffff;
+	font-size:14px;	
+	background: #333;
+	 }           
+ 
+.menu101 a:link { color:#fff; text-decoration:none }                                       
+.menu101 a:visited { color:#fff; text-decoration:none }                                         
+.menu101 a:hover { color:#fff; text-decoration:none; }  
+  
+.inputkeyword
+{
+	padding-right:3px;
+	padding-left:25px;
+	padding-top:2px;
+	padding-bottom:2px;	
+	background: #252525 url('images/search.jpg') no-repeat 3px 3px;
+	color:#CCCCCC;
+	font-size:12px;
+	line-height:22px;
+	height:20px;
+	border: 1px solid #666666
+}
+
+    .a_photo_photos {
+	background-color: #000;
+	border: 1px solid #C8A063;
+	height: 120px;
+	width: 160px;
+}
+
+/*主選單*/  
+
+.nav{
+   width:520px;
+   height:35px;
+   margin:0 auto;
+ /  background: rgba(0%,0%,0%,0.1);
+   padding-left:5px;
+    padding-top:5px;  
+
+   } 
+     
+ul{ 
+   margin:0 auto;
+   display: flex;
+   flex-direction: row;
+   align-content:stretch; 
+   }  
+     
+ul> li{
+    list-style:none; 
+    line-height: 30px;
+   
+    
+   text-align: center;   
+  
+   }   
+   
+.nav > ul> li >a{ 
+   color:#FFD28C; 
+   width:120px;
+   padding:10px 20px;
+   
+     }  
+  
+ .nav > ul> li>a:hover{
+   color:#FFD28C; 
+   background:  url('images/menu_bk.png') ;
+   background-position: bottom;
+   background-repeat: no-repeat
+   }  
+ 
+
+
+
+/*主選單*/
+
+
+    </STYLE>
+<body><!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MBHT89B6"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) --><div class=top>
+
+
+<div style="height:30px;"></div>
+<center>
+<div style="width:1200px;padding-top:20px;background:#000;border-radius:20px 20px 0 0;background:#000;">
+<table width=1200 border=0  cellpadding=0 cellspacing=0 align=center >
+<tr>
+<td align="center"  width="195"  align=center valign=top>
+<div class=logo>
+
+	<img src=images/logo.png width=150>
+
+
+<div style="text-align:center;font-size:14px;color:white; ">世界名錶買賣及交流</div>
+
+<div style="height:1px ;background:#333;margin:10px 0 10px 0;"></div>
+	
+	
+	
+		<div style="text-align:left;padding:30px 15px 10px 15px;line-height:28px;font-size:14px;width:167px">	
+	FB：鐘點站<br>
+	Line ID：@hswatch<br>
+	電話：02-22228886<br>
+
+	營業時間：<br>
+	平日 11 :00 ~ 20 :00<BR>
+	週六 12 :00 ~ 18 :00<BR> 
+	( 週日店休 )
+	</div>
+	
+</div>
+
+</td>
+
+<td valign=top>
+
+
+<div style=" border:1px #333 solid; width:988px; height:372px;  border-radius:10px 10px 10px 0;">
+<style>
+ .A{
+   border-radius:10px 10px 10px 0;
+
+   }
+</style>
+<style>
+ .A{
+
+border-radius:10px 10px 10px 0;
+   }
+</style>
+<div id="banner">
+
+    <ul style="display:none">
+        <li class="on">1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li>6</li>
+
+    </ul>
+    
+   <div id="banner_list">
+   
+   <a><img src="images/S__248078598.gif" CLASS="A" width=988></a>
+   <a><img src="images/S__247636210_0.jpg" CLASS="A" width=988></a>
+   <a><img src="images/S__45572112_0.jpg" CLASS="A" width=988></a>
+   <a><img src="images/S__45572113_0.jpg" CLASS="A" width=988></a>
+   <a><img src="images/S__248078596.gif" CLASS="A" width=988></a>
+   <a><img src="images/S__45572114_0.jpg" CLASS="A" width=988></a>
+
+   </div>
+     
+    </div> </div>
+
+
+</td>
+</tr>
+</table>
+
+</center>
+</div>
+
+</div>
+
+
+
+
+
+<div class=main>
+<div style="text-align:right;border:1px #333 solid;margin:2px 17px 10px 15px;background:#111;height:50px;z-index:8; border-radius:0 10px 10px 10px">
+
+
+<table border=0 cellpadding=0 cellspacing=0 width=1160>
+<tr>
+<td width=240><div style="margin:4px 0 0 15px;font-size:14px">地址：台北市大安區文昌街143號</div></td>
+
+<td width=110 align=left><a href="https://lin.ee/r5pCzVB" target=_blank><div style="margin-top:6px"> <img src="images/line1.png"  width=90></div></a></td>
+<td width=110 align=left><a href="https://www.facebook.com/profile.php?id=100064233601494&mibextid=LQQJ4d" target=_blank><div style="margin-top:6px"> <img src="images/fb1.png"  width=90></div></a></td>
+<td width=160 align=left><a href="https://www.instagram.com/hour_stack" target=_blank><div style="margin-top:2px"> <img src="images/ig.png"  width=140></div></a></td>
+<td width=10></td>
+
+<td width=500>
+
+<nav class="nav" >
+    <ul>
+
+
+    <li><a href="sell.asp">高價購買</a></li>
+    <li><a href="trade.asp">交易說明</a></li>    
+    <li><a href="contact.asp">聯絡我們</a></li>   
+    <li><a href="search.asp">進階搜尋</a></li>
+    <li><a href="index.asp">回首頁</a></li>
+
+   
+    </ul>
+    
+</nav>
+
+
+</td>
+
+
+</tr>
+
+</table>
+
+
+
+</div>
+
+<table width=1200  border="0">
+<tr>
+<td valign=top width="245" >               
+        
+        <div style="margin-left:14px;;">
+       <div style="border-radius:10px 10px 0 0;border:1px #333  solid;height:42px;width:218px;background:#222;padding:8px 0 0 15px;	font-family: 'Microsoft JhengHei', Arial, Helvetica, sans-serif;	color:#FFD28C;	font-size:16px;">商品分類</div>
+ 
+	<table border="0" width="218"   cellspacing="0" cellpadding="0" height="42" >
+	   	<tr><td height="42"    class="menu101" style=""><a href="product.asp">所有錶款</a></td></tr>
+      	  
+      	<tr>
+			<td height="42"   class="menu101" ><a href="product.asp?sub=男錶"> 男錶</a></td>
+		</tr> 
+      
+      	<tr>
+			<td height="42"   class="menu101" ><a href="product.asp?sub=女錶"> 女錶</a></td>
+		</tr> 
+      
+      	<tr>
+			<td height="42"   class="menu101" ><a href="product.asp?sub=精品"> 精品／飾品／配件／錶盒</a></td>
+		</tr> 
+      
+  	<tr><td height="42"   class="menu101" style=""><a href="https://tw.bid.yahoo.com/booth/Y3736379923?bcid=100" target=_blank>奇摩拍賣一元起標區</a></td></tr>
+	</table>
+	
+	<table border="0" width="218"   cellspacing="0" cellpadding="0" height="42">
+		<tr><td height="42"   class="menu100" >	常見品牌</td>	</tr>
+	</table>
+	
+	<table border="0" width="218"   cellspacing="0" cellpadding="0" height="42" bgcolor="#FFFFFF" >
+	  
+        
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=133"> 	 A.LANGE.&SOHNE 朗格</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=2"> 	 Audemars Piguet‧愛彼</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=150"> 	 Bovet 播威</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=98"> 	 Bell & Ross‧柏萊士</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=3"> 	 Blancpain‧寶鉑</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=4"> 	 Breguet‧寶璣</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=5"> 	 Breitling‧百年靈</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=6"> 	 Bvlgari‧寶格麗</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=7"> 	 Cartier‧卡地亞</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=8"> 	 Chanel‧香奈兒</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=20"> 	 Chopard‧蕭邦</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=147"> 	 DANIEL ROTH 丹尼爾·羅斯手錶</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=136"> 	 FRANCK MULLER 法蘭穆勒</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=135"> 	 Grandseiko 特級精工</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=27"> 	 Girard Perregaux‧芝柏</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=28"> 	 Glashutte ‧格拉蘇蒂</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=90"> 	 H. MOSER & CIE 亨利慕時</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=88"> 	 Hublot‧宇舶</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=151"> 	 Hautlence 豪朗時</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=31"> 	 IWC‧萬國</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=32"> 	 Jaeger - Le coulter‧積家</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=103"> 	 JAQUET DROZ‧雅克德羅</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=143"> 	 Jacob &Co 傑克豹</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=34"> 	 Longines‧浪琴</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=36"> 	 Montblanc‧萬寶龍</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=78"> 	 Maurice Lacroix‧艾美</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=152"> 	 MIDO 美度錶</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=38"> 	 Oris‧豪利時</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=134"> 	 OMEGA 歐米茄</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=39"> 	 Panerai‧沛納海</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=40"> 	 Parmigiani‧帕瑪強尼</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=41"> 	 Patek Philippe‧百達翡麗</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=42"> 	 Piaget‧伯爵</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=125"> 	 RICHARD MILLE·理查德 米勒</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=47"> 	 Rolex‧勞力士</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=146"> 	 Roger Dubuis 羅杰杜彼</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=148"> 	 SEIKO 精工</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=51"> 	 Tudor‧帝舵</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=48"> 	 Ulysse Nardin‧雅典</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=52"> 	 Vacheron Constantin‧江詩丹頓</a></td></tr>
+       
+      	<tr><td height="42"    class="menu101" ><a href="product.asp?cat=55"> 	 Zenith‧先力時</a></td></tr>
+       	
+	</table>
+  <div style="border-radius: 0 0 10px 10px;border:1px #333  solid;height:20px;border-top:0px;width:218px;background:#111;padding:8px 0 0 15px;	font-family: 'Microsoft JhengHei', Arial, Helvetica, sans-serif;	color:#ffffff;	font-size:16px;"></div>
+ 
+
+<br>
+
+
+	</div>
+			<center>
+	      　<table border="0" width="80%" id="table1" align=center>
+		<tr>
+			<td align=CENTER><a href="https://lin.ee/r5pCzVB" target=_blank><img src="images/line1.jpg" width=200></a>
+			<br>
+			
+			LINE ID： @hswatch<br>
+			
+			<a href="https://lin.ee/r5pCzVB" target=_blank><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a><br>
+		
+			<br>
+		
+			
+			</td>
+	    </tr>
+	   
+	
+		</TABLE>
+		</center>
+            </div>         
+</td>
+<td width="955" align=left  valign=top>
+
+<div style="border:1px #333 solid; width:936px;background:#111;border-radius:10px;">
+<div style="margin:30px 20px -16px 20px;padding-left:10px">
+		<table border="0"  width="100%"  cellspacing="0" cellpadding="0" >
+			<tr>
+			<td width=55 align=left ><div style="margin-top:-8px"><img src="images/title_icon1.png" ></div></td>
+			<td width=100><img src="images/product.png" ></td>
+			<td align=right >
+			<div style="width:300px;height:45px;background:#262626;border-radius:13px;text-align:center;">
+			 <div style="margin:0 auto;width:255px;height:46px;border-left:2px #000 solid;border-right:2px #000 solid;">
+			 <div style="height:10px"></div>
+			   <script>
+              function checksearch(){
+              if (search.t1.value==""){
+              alert("欄位不能空白")
+              return false
+              }
+              }
+              </script>
+			<table border="0"  cellpadding="3" align=center width=240 cellspacing="0">
+                
+            <form name="search" method="post" action="product.asp"  onSubmit="return checksearch()">
+              <input name="type" type="hidden"   value="search" >
+                  <tr>
+                    <td width=20 >	</td>
+                    <td width=90>
+					<input name="t1" type="text" class="inputkeyword"  size="8" /></td>
+                    <td width=60 >
+                    <div style="display:absolute;margin:1px 0 0 15px;">
+                    <input type="image" src="images/go.png"  border="0" />
+                    </div>
+                    </td>
+                    <td width=80>
+                    <a href="search.asp">
+					<div style="text-align:center;color:white;background:$262626;border:1px #888 solid;border-radius:5px;font-size:12px;padding:3px 0px 3px 0px">進階搜尋</div>
+					</a>
+					</td>
+                  </tr>
+                    </form>  
+       </table> 
+		  </div>
+			</div>
+			
+			</td>
+			</tr>
+			</table>
+		</div>
+
+
+
+
+  
+
+<style>
+.shopping_Price {
+
+	color: #E3AF66;
+}
+
+.a_table_list_txt { 
+
+	font-size: 12px;
+	color: #FFFFFF;
+	padding-top: 5px;
+	padding-right: 15px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+
+	
+}
+</style>
+<div style="padding:18px 0px 5px 30px;">
+		   <table width="100%" border="0" cellspacing="0" cellpadding="0" >
+                <tr>
+                  <td class="shopping_td" >
+                    <table width="99%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          </tr><tr></tr><td colspan=4><br></td><tr>
+                        
+
+
+
+
+ <td width="260" valign="top" style=""  border=1 >
+ <div >
+ <table border="0" cellspacing="0" cellpadding="3"  width="250" >
+                            <tr>
+                              <td ><table  border="0"  cellspacing="0" class="a_photo_photos" bgcolor="#262626"  width="250" >
+                                  <tr>
+                                    <td align="center">
+                                    
+                                    <table  border="0" cellpadding="5" cellspacing="0"  >
+                                    <tr><td >
+                                                                                    <table  border="0" cellpadding="0" cellspacing="0"  >
+                                    <tr><td >
+                                    
+                                    <a href="product_open.asp?ID=18449">
+                                     <div style="position:absolute"><img src="product/product_big/D16AEFAC-B7B3-4C88-9051-E1A0D7258CFA.JPG" width="250" hspace="0"  Vspace="0" BORDER=0/></div>
+                                      </A>
+                                      <style type="text/css"> 
+                                            #picture {position:relative; width:250px; height:188px; border:0px solid #333; overflow:hidden;}       
+                                            #picture ul {position:absolute;list-style-type:none;filter: z-index:1002;margin:0; padding:0; bottom:2px; right:2px;}
+                                            #picture ul li { FONT-SIZE: 8px;padding:0px 5px;margin-left:15px;float:left;display:block;color:#FFF;cursor:pointer}
+                                    </style>
+
+                                     <div id=picture>
+                                       
+                                    <a href="product_open.asp?ID=18449">
+                                      
+                                   <img src="images/spacer.gif" width="250" hspace="0"  Vspace="0" BORDER=0/>
+                                    
+
+                                   
+                                    </A></td></tr>
+									</table>
+									</td></tr>
+									</table>
+									</td>
+                                  </tr>
+                              </table></td>
+                            </tr>
+                         
+                            
+                            <tr>
+                              <td ><a href="product_open.asp?ID=18449" class="a_table_list_txt"><font color="#EFCB39"><span style="font-size:12px;">Breitling‧百年靈</span></font></a></td>
+                            </tr>
+
+                            <tr>
+                              <td ><a href="product_open.asp?ID=18449" class="a_table_list_txt"><span style="font-size:12px;">BREITLING 百年靈 Navitimer B01 Chronograph 43 <font color="#05f0f0">航空計時</font> RB0138211B1P1 <font color="#ff0000">2026年保卡</font>&nbsp;小秒針 計時碼表 皮帶款 飛行滑尺 百年靈自製01機芯 RB 0138211 B1P1 玫瑰金 自動上鍊 43mm</span></a></td>
+                            </tr>
+                            
+                            <tr>
+                              <td ><span style="font-size:12px;">編號 :KPD8252</span></td>
+                            </tr>
+                                 <tr>
+                              <td  class="12fontsize"><span style="font-size:12px;">售價 :     
+                              <span class="shopping_Price"><span style="font-size:12px;">398,000</span>元                           
+                              </span></td>                              
+                               </tr>
+                                
+                             <tr>
+                              <td style="font-size:12px;">錶況 : <span style="color:#0582F6">9成9新珍藏品</span></td>
+                            </tr>
+                             
+                             <tr>
+                              <td><span style="font-size:12px;">錶徑 : 43mm</span></td>
+                            </tr>
+                             
+
+                          </table>
+                          </div>
+                        
+                       <!--   <DIV style="text-align:center">
+                           <A href="product_open.asp?ID=18449" > <img src="images/more.png"> </A>
+                     </div>-->
+                      
+                            
+                        
+
+
+
+
+ <td width="260" valign="top" style=""  border=1 >
+ <div >
+ <table border="0" cellspacing="0" cellpadding="3"  width="250" >
+                            <tr>
+                              <td ><table  border="0"  cellspacing="0" class="a_photo_photos" bgcolor="#262626"  width="250" >
+                                  <tr>
+                                    <td align="center">
+                                    
+                                    <table  border="0" cellpadding="5" cellspacing="0"  >
+                                    <tr><td >
+                                                                                    <table  border="0" cellpadding="0" cellspacing="0"  >
+                                    <tr><td >
+                                    
+                                    <a href="product_open.asp?ID=17447">
+                                     <div style="position:absolute"><img src="product/product_big/42D24E42-D253-418F-A42B-F4D0D2E2A57B.JPG" width="250" hspace="0"  Vspace="0" BORDER=0/></div>
+                                      </A>
+                                      <style type="text/css"> 
+                                            #picture {position:relative; width:250px; height:188px; border:0px solid #333; overflow:hidden;}       
+                                            #picture ul {position:absolute;list-style-type:none;filter: z-index:1002;margin:0; padding:0; bottom:2px; right:2px;}
+                                            #picture ul li { FONT-SIZE: 8px;padding:0px 5px;margin-left:15px;float:left;display:block;color:#FFF;cursor:pointer}
+                                    </style>
+
+                                     <div id=picture>
+                                       
+                                    <a href="product_open.asp?ID=17447">
+                                      
+                                   <img src="images/spacer.gif" width="250" hspace="0"  Vspace="0" BORDER=0/>
+                                    
+
+                                   
+                                    </A></td></tr>
+									</table>
+									</td></tr>
+									</table>
+									</td>
+                                  </tr>
+                              </table></td>
+                            </tr>
+                         
+                            
+                            <tr>
+                              <td ><a href="product_open.asp?ID=17447" class="a_table_list_txt"><font color="#EFCB39"><span style="font-size:12px;">Breitling‧百年靈</span></font></a></td>
+                            </tr>
+
+                            <tr>
+                              <td ><a href="product_open.asp?ID=17447" class="a_table_list_txt"><span style="font-size:12px;">BREITLING 百年靈 Navitimer B01 Chronograph 43 AB0138241G1P1 銀灰面 日期窗&nbsp;<font color="#FF0000">2019年保卡</font> 航空計時 飛行 正裝錶 小秒針 計時碼錶 AB0138 自動上鍊 43mm</span></a></td>
+                            </tr>
+                            
+                            <tr>
+                              <td ><span style="font-size:12px;">編號 :CGY1443</span></td>
+                            </tr>
+                                 <tr>
+                              <td  class="12fontsize"><span style="font-size:12px;">售價 :     
+                              <span class="shopping_Price"><span style="font-size:12px;">125,000</span>元                           
+                              </span></td>                              
+                               </tr>
+                                
+                             <tr>
+                              <td style="font-size:12px;">錶況 : <span style="color:#0582F6"><font color="#fa00fa">9成5新 附原廠盒單</font></span></td>
+                            </tr>
+                             
+                             <tr>
+                              <td><span style="font-size:12px;">錶徑 : 43mm</span></td>
+                            </tr>
+                             
+
+                          </table>
+                          </div>
+                        
+                       <!--   <DIV style="text-align:center">
+                           <A href="product_open.asp?ID=17447" > <img src="images/more.png"> </A>
+                     </div>-->
+                      
+                            
+                        
+
+
+
+
+ <td width="260" valign="top" style=""  border=1 >
+ <div >
+ <table border="0" cellspacing="0" cellpadding="3"  width="250" >
+                            <tr>
+                              <td ><table  border="0"  cellspacing="0" class="a_photo_photos" bgcolor="#262626"  width="250" >
+                                  <tr>
+                                    <td align="center">
+                                    
+                                    <table  border="0" cellpadding="5" cellspacing="0"  >
+                                    <tr><td >
+                                                                                    <table  border="0" cellpadding="0" cellspacing="0"  >
+                                    <tr><td >
+                                    
+                                    <a href="product_open.asp?ID=16922">
+                                     <div style="position:absolute"><img src="product/product_big/89C7FA73-8474-4A7E-B492-912B22B2D64B.JPG" width="250" hspace="0"  Vspace="0" BORDER=0/></div>
+                                      </A>
+                                      <style type="text/css"> 
+                                            #picture {position:relative; width:250px; height:188px; border:0px solid #333; overflow:hidden;}       
+                                            #picture ul {position:absolute;list-style-type:none;filter: z-index:1002;margin:0; padding:0; bottom:2px; right:2px;}
+                                            #picture ul li { FONT-SIZE: 8px;padding:0px 5px;margin-left:15px;float:left;display:block;color:#FFF;cursor:pointer}
+                                    </style>
+
+                                     <div id=picture>
+                                       
+                                    <a href="product_open.asp?ID=16922">
+                                      
+                                   <img src="images/spacer.gif" width="250" hspace="0"  Vspace="0" BORDER=0/>
+                                    
+
+                                   
+                                    </A></td></tr>
+									</table>
+									</td></tr>
+									</table>
+									</td>
+                                  </tr>
+                              </table></td>
+                            </tr>
+                         
+                            
+                            <tr>
+                              <td ><a href="product_open.asp?ID=16922" class="a_table_list_txt"><font color="#EFCB39"><span style="font-size:12px;">Breitling‧百年靈</span></font></a></td>
+                            </tr>
+
+                            <tr>
+                              <td ><a href="product_open.asp?ID=16922" class="a_table_list_txt"><span style="font-size:12px;">BREITLING 百年靈 Navitimer B01 Chronograph 41 航空計時 AB0139241C1P1 <font color="#7d85f7">海軍藍</font>&nbsp;<font color="#7090f0">1/4秒中央計時紅針</font> 不鏽鋼 計時碼表 最新款 AB0139 熊貓面盤 <font color="#ff0000">2022年保卡</font> 經典雙向旋轉飛行滑尺 自動上鍊 41mm</span></a></td>
+                            </tr>
+                            
+                            <tr>
+                              <td ><span style="font-size:12px;">編號 :EIN2195</span></td>
+                            </tr>
+                                 <tr>
+                              <td  class="12fontsize"><span style="font-size:12px;">售價 :     
+                              <span class="shopping_Price"><span style="font-size:12px;">139,000</span>元                           
+                              </span></td>                              
+                               </tr>
+                                
+                             <tr>
+                              <td style="font-size:12px;">錶況 : <span style="color:#0582F6"><font color="#fa00fa">9成5新 附原廠盒單</font></span></td>
+                            </tr>
+                             
+                             <tr>
+                              <td><span style="font-size:12px;">錶徑 : 41mm</span></td>
+                            </tr>
+                             
+
+                          </table>
+                          </div>
+                        
+                       <!--   <DIV style="text-align:center">
+                           <A href="product_open.asp?ID=16922" > <img src="images/more.png"> </A>
+                     </div>-->
+                      
+                            
+
+                      </table>
+                    
+                 
+
+			<style>
+			
+.index{text-align:center;padding:10px;text-align:center;}
+			</style>
+			
+			   <br /><div style="margin-top:80px">
+			    <table border="0" cellpadding="0" cellspacing="10" width=100% >
+                        <tr>
+                          <td align=center>
+                       <table border="0" cellpadding="3" cellspacing="10" bgcolor="#262626">
+                        <tr>
+                          <td><a href="product.asp?page=1"><img src="images/n_2.gif" width="20" height="20" border=0 /></a></td>
+                        <td><a href="product.asp?page=0"><img src="images/n_1.gif" width="20" height="20"  border=0 /></a></td>
+                        <td><span style="font-size:12px;">
+                         <a href="product.asp?page=1"> 
+                
+                <strong><font color="#005BAA">1</font></strong>
+                
+                </a>
+                
+</span>
+                       </td>
+                          <td ><a href="product.asp?page=1"><img src="images/n_3.gif"width="20" height="20" border=0  /></a></td>
+                        <td><a href="product.asp?page=1"><img src="images/n_4.gif" width="20" height="20"   border=0/></a></td>
+                      </tr>
+                    </table>
+                    </td>
+                      </tr>
+                    </table>                    </td>
+                      </tr>
+                    </table>
+
+                    </div>
+
+
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div  style="text-align:center">
+<div  style="width:1200px;margin:0 auto">
+
+
+<div style="margin:0 auto;height:20px;width:1200px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;border-right:1px #333 solid;border-bottom:1px #333 solid;border-left:1px #333 solid ;background:#000;">
+
+<div style="color:white;padding-top:15px;font-size:12px">
+
+</div>
+<div style="color:white;padding-top:12px;font-size:12px;height:50px">
+Copyright © 2022   www.hourstack.com.tw<br>
+
+<a href="http://www.alapower.com.tw" target=_blank>Designed by Alapower</a>
+<br>
+</div>
+</div>
+
+</div>
+</div>
+
+
+</body>
+
+
+</html>

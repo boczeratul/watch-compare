@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS crawl_runs;
+DROP TABLE IF EXISTS exchange_rates;
+DROP TABLE IF EXISTS price_history;
+DROP TABLE IF EXISTS listings;
+DROP TABLE IF EXISTS brands;
+DROP TABLE IF EXISTS sources;
+DROP TABLE IF EXISTS schema_migrations;

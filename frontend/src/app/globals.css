@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans TC", "Noto Sans JP", sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-white text-slate-900 antialiased;
+}
+
+/* Hide the native clear button on search inputs so the layout stays stable */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}

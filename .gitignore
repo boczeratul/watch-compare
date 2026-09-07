@@ -1,0 +1,22 @@
+# Node
+node_modules/
+.next/
+out/
+.pnpm-store/
+*.tsbuildinfo
+.vercel
+
+# Go
+backend/bin/
+backend/tmp/
+
+# Env
+.env
+.env.local
+.env.*.local
+*.env
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
