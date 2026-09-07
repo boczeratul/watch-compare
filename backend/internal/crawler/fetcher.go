@@ -93,6 +93,12 @@ func (f *Fetcher) Do(ctx context.Context, req *http.Request) (*http.Response, er
 		if err := f.limiter(req.URL.Host).Wait(ctx); err != nil {
 			return nil, err
 		}
+		if attempt > 0 && req.GetBody != nil {
+			// a POST body is consumed by the first attempt: rewind it before retrying
+			if body, err := req.GetBody(); err == nil {
+				req.Body = body
+			}
+		}
 		resp, err := f.client.Do(req.WithContext(ctx))
 		if err != nil {
 			lastErr = &RetryableError{err}

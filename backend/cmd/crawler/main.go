@@ -17,12 +17,16 @@ import (
 
 	"github.com/hsuanlee/watch-compare/backend/internal/config"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/allu"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/chrono24"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/commitwatch"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ebay"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/hourstack"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/housekihiroba"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jackroad"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/lips"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/rdwatch"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/sevenhours"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchnian"
 	"github.com/hsuanlee/watch-compare/backend/internal/db"
 	"github.com/hsuanlee/watch-compare/backend/internal/fx"
@@ -100,6 +104,10 @@ func main() {
 		jackroad.Source{},
 		watchnian.Source{},
 		commitwatch.Source{},
+		sevenhours.Source{},
+		lips.Source{},
+		allu.Source{},
+		housekihiroba.Source{},
 		&ebay.Source{},
 		chrono24.Source{},
 	)

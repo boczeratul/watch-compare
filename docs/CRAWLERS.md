@@ -19,6 +19,10 @@ deactivation. Parsers are covered by fixture tests using real HTML captured in `
 | `hourstack` | HTML (alapower shop), brand categories `/product.asp?cat=N&page=P` | TWD | ✅ cards parsed; reference/diameter/year extracted from title | shared parser in `crawler/alapower`; `ALAPOWER_FETCH_DETAILS=true` also fetches product pages for material/diameter (slower) |
 | `rdwatch` | HTML (alapower shop, same markup as Hourstack; 230px cards, prices without separators) | TWD | ✅ 24/24 cards on the Rolex category; live dry-run OK (41 categories) | RD Watch, Taipei |
 | `commitwatch` | **Shopify JSON feed** `/products.json?limit=250&page=N` | JPY | ✅ 30/30 with price, brand (from `vendor`), `Ref.` reference, images, condition grade from title; live dry-run OK | Commit Ginza, Tokyo; sold-out variants are skipped so they deactivate |
+| `sevenhours` | HTML (Shopserve), all items via `/SHOP/list.php?Search=&Type=01&PAGE=N`, `<link rel=next>` | JPY | ✅ 40/40 cards with price, 税抜 price from the card, brand + reference from the title, image | 7hours, Kobe; a few hundred pieces, mostly new/unused |
+| `lips` | HTML (EC-CUBE 4), in-stock watches newest first `/ec/products/list?category_id=1&stock_flg[]=1&orderby=2&pageno=N` | JPY | ✅ 40/40 cards with price, brand, 型番 reference, grade (新品 / SA / A ランク), 付属 box+papers, image | Brand Shop LIPS; ~1.1k in stock of ~43k catalogued, so the stock filter is essential |
+| `allu` | **JSON API** `POST /jp/ja/api/v5/items/search?page=N&limit=30` with a category filter (c-79 = 腕時計) | JPY | ✅ 30/30 items with price, brand, reference, rank (N…C/J), image, seller | ALLU (Valuence) marketplace; tens of thousands of watches, so `CRAWL_MAX_PAGES` × 30 newest per run; house account "ALLU公式" = dealer, others = private |
+| `housekihiroba` | HTML (ecbeing, Shift_JIS), brand categories `/shop/c/c01<code>/` from `/shop/c/cwatch/`, newest first `/shop/c/c01<code>_ssd_p<N>/` (32 per page) | JPY | ✅ 32/32 cards with price, brand, reference, condition icon, diameter, movement, material, image | 宝石広場, Shibuya; Rolex alone is >7k pieces (>200 pages), so `CRAWL_MAX_PAGES` bounds each brand |
 | `ebay` | **Browse API** (OAuth client credentials) | market currency | needs `EBAY_CLIENT_ID/SECRET` | per-brand aspect filter in Wristwatches (31387); free developer keys at developer.ebay.com |
 | `chrono24` | HTML via Browserless (see [BROWSERLESS.md](BROWSERLESS.md)) | listing currency | ❌ plain requests get HTTP 403; selectors unverified until a rendered page is captured | skipped unless `CRAWL_RENDER_SERVICE_URL` or `CRAWL_PROXY_URL` is set; budget = `CHRONO24_BRANDS` (default Rolex, Omega, IWC, AP, PP) × `CHRONO24_MAX_PAGES` (default 3) |
 
@@ -35,7 +39,7 @@ carries on with the other sources; the job still exits 0. Silence the warning wi
 
 ## Japanese prices
 
-`jackroad`, `watchnian` and `commitwatch` all list tax-included prices. The Runner fills
+`jackroad`, `watchnian`, `commitwatch`, `lips`, `allu` and `housekihiroba` all list tax-included prices; `sevenhours` prints its own 税抜 figure, which the adapter parses. The Runner fills
 `PriceExclTax` for any source whose country is `JP` (see `crawler.ApplyTaxFreePrice`), and
 `crawler.ComparisonPrice` decides what gets converted to USD. A new Japanese source therefore needs
 no tax handling of its own. If a site publishes its own 税抜 figure, parse it into `PriceExclTax`
