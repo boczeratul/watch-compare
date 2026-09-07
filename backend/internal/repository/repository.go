@@ -294,7 +294,9 @@ func (r *Repo) SearchListings(ctx context.Context, q model.ListingQuery) (*model
 		b.where("(l.model ILIKE " + b.arg("%"+q.Model+"%") + " OR l.title ILIKE " + b.arg("%"+q.Model+"%") + ")")
 	}
 	if q.Reference != "" {
-		b.where("upper(l.reference_number) LIKE upper(" + b.arg(q.Reference+"%") + ")")
+		// Match the stored reference by prefix, with or without its maker prefix (IW328903 ↔ 328903).
+		ref := b.arg(q.Reference + "%")
+		b.where("(upper(l.reference_number) LIKE upper(" + ref + ") OR regexp_replace(upper(l.reference_number), '^[A-Z]+', '') LIKE upper(" + ref + "))")
 	}
 	if len(q.Sources) > 0 {
 		b.where("s.key = ANY(" + b.arg(q.Sources) + ")")

@@ -208,6 +208,26 @@ func TestRepositoryEndToEnd(t *testing.T) {
 		if r, err := repo.SearchListings(ctx, model.ListingQuery{Text: "dayton"}); err != nil || r.Total != 3 {
 			t.Errorf("partial model search: total=%d err=%v", r.Total, err)
 		}
+		// References are often quoted without the maker's letter prefix: "328903" must find IW328903,
+		// both in free text and through the structured ref filter, and "IW328903" must keep working.
+		iwc, err := repo.EnsureBrand(ctx, "iwc", "IWC")
+		if err != nil {
+			t.Fatal(err)
+		}
+		port := model.Listing{
+			SourceID: src.ID, ExternalID: "iwc1", URL: "https://example.com/iwc", Title: "IWC Pilot's Watch Mark XX IW328903",
+			BrandID: &iwc, BrandName: "IWC", Model: "Pilot", ReferenceNumber: "IW328903", Condition: model.ConditionNew,
+			Movement: model.MovementAutomatic, Gender: model.GenderMen, Price: &daytonaPrice, Currency: "JPY", PriceUSD: &daytonaUSD, ImageURLs: []string{},
+		}
+		if _, err := repo.UpsertListing(ctx, &port); err != nil {
+			t.Fatal(err)
+		}
+		for _, q := range []model.ListingQuery{{Text: "328903"}, {Text: "IW328903"}, {Text: "iwc 3289"}, {Reference: "328903"}, {Reference: "IW3289"}} {
+			r, err := repo.SearchListings(ctx, q)
+			if err != nil || r.Total != 1 || r.Items[0].ReferenceNumber != "IW328903" {
+				t.Errorf("bare reference query %+v: total=%d err=%v", q, r.Total, err)
+			}
+		}
 		// user-typed tsquery operators and escapes must never produce a database error
 		for _, hostile := range []string{`\`, `\`, "'", "''", ":", "*", ":*", "<->", "&", "|", "!", "(", ")", "a & !b", "; DROP TABLE listings; --", "🙂", "黑面 116500"} {
 			if _, err := repo.SearchListings(ctx, model.ListingQuery{Text: hostile}); err != nil {
@@ -215,7 +235,7 @@ func TestRepositoryEndToEnd(t *testing.T) {
 			}
 		}
 		// leave the dataset as we found it so later assertions keep their expected counts
-		if _, err := repo.Pool().Exec(ctx, `DELETE FROM listings WHERE external_id LIKE 'dayt%'`); err != nil {
+		if _, err := repo.Pool().Exec(ctx, `DELETE FROM listings WHERE external_id LIKE 'dayt%' OR external_id = 'iwc1'; DELETE FROM brands WHERE slug = 'iwc'`); err != nil {
 			t.Fatal(err)
 		}
 	}
