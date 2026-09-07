@@ -38,7 +38,7 @@ func (r *Repo) Sources(ctx context.Context) ([]model.Source, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	var out []model.Source
+	out := []model.Source{} // never nil: a JSON null would break array consumers
 	for rows.Next() {
 		var s model.Source
 		if err := rows.Scan(&s.ID, &s.Key, &s.Name, &s.BaseURL, &s.Country, &s.Currency, &s.Enabled); err != nil {
@@ -69,7 +69,7 @@ func (r *Repo) Brands(ctx context.Context) ([]model.Brand, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	var out []model.Brand
+	out := []model.Brand{} // never nil: a JSON null would break array consumers
 	for rows.Next() {
 		var b model.Brand
 		if err := rows.Scan(&b.ID, &b.Slug, &b.Name, &b.ListingCount); err != nil {
@@ -112,7 +112,7 @@ func (r *Repo) Rates(ctx context.Context) ([]model.ExchangeRate, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	var out []model.ExchangeRate
+	out := []model.ExchangeRate{} // never nil: a JSON null would break array consumers
 	for rows.Next() {
 		var e model.ExchangeRate
 		if err := rows.Scan(&e.Quote, &e.Rate, &e.FetchedAt); err != nil {
@@ -374,7 +374,7 @@ func (r *Repo) SearchListings(ctx context.Context, q model.ListingQuery) (*model
 	}
 	offset := (page - 1) * perPage
 
-	res := &model.SearchResult{Page: page, PerPage: perPage, Items: []model.Listing{}}
+	res := &model.SearchResult{Page: page, PerPage: perPage, Items: []model.Listing{}, Facets: model.NewFacets()}
 
 	// total + price bounds
 	if err := r.pool.QueryRow(ctx, `SELECT count(*), min(l.price_usd), max(l.price_usd)`+listingFrom+whereSQL, whereArgs...).

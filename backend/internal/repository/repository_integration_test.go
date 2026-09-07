@@ -2,8 +2,10 @@ package repository_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"testing"
 	"time"
 
@@ -177,6 +179,16 @@ func TestRepositoryEndToEnd(t *testing.T) {
 	sr, _ = repo.SearchListings(ctx, model.ListingQuery{})
 	if len(sr.Facets.DialColors) != 1 || sr.Facets.DialColors[0].Key != "black" {
 		t.Errorf("dial facet: %+v", sr.Facets.DialColors)
+	}
+	// the marshalled response must never contain a null array: the frontend spreads these
+	{
+		raw, err := json.Marshal(sr)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if m := regexp.MustCompile(`"[a-zA-Z]+":null`).FindAllString(string(raw), -1); len(m) > 0 {
+			t.Errorf("search response has null fields %v in %s", m, raw)
+		}
 	}
 	// price filter in USD
 	minP := 9000.0

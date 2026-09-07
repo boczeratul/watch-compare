@@ -181,6 +181,20 @@ type Facets struct {
 	PriceMax   *float64     `json:"priceMaxUsd,omitempty"`
 }
 
+// NewFacets returns a Facets with every bucket initialized. Never build a Facets literal for a
+// response: a nil slice marshals to JSON null, and the frontend spreads these arrays.
+func NewFacets() Facets {
+	return Facets{
+		Brands:     []FacetValue{},
+		Sources:    []FacetValue{},
+		Conditions: []FacetValue{},
+		Movements:  []FacetValue{},
+		Countries:  []FacetValue{},
+		DialColors: []FacetValue{},
+		Years:      []FacetValue{},
+	}
+}
+
 // SearchResult is the paginated response payload.
 type SearchResult struct {
 	Items      []Listing `json:"items"`

@@ -92,6 +92,35 @@ class ApiError extends Error {
   }
 }
 
+/**
+ * The frontend (Vercel) and the API (Cloud Run) deploy independently, so during any deploy window
+ * the running API can predate a field the UI already reads. Postgres also has no way to express
+ * "empty array" for a Go nil slice, which marshals to JSON null. Both produce runtime crashes in
+ * components that spread or map these values, so every response is normalized here at the
+ * boundary: after this, components can assume each array exists and is iterable.
+ */
+const EMPTY_FACETS: Facets = { brands: [], sources: [], conditions: [], movements: [], countries: [], dialColors: [], years: [] };
+
+function arr<T>(v: T[] | null | undefined): T[] {
+  return Array.isArray(v) ? v : [];
+}
+
+function normalizeListing(l: Listing): Listing {
+  return { ...l, imageUrls: arr(l.imageUrls) };
+}
+
+function normalizeSearchResult(r: SearchResult): SearchResult {
+  return {
+    ...r,
+    items: arr(r.items).map(normalizeListing),
+    facets: { ...EMPTY_FACETS, ...(r.facets ?? {}) },
+  };
+}
+
+function normalizeItems<T>(r: { items: T[] }): { items: T[] } {
+  return { ...r, items: arr(r.items) };
+}
+
 async function get<T>(path: string, params?: Record<string, string | undefined>, revalidate = 60): Promise<T> {
   const url = new URL(path, API_URL);
   for (const [k, v] of Object.entries(params ?? {})) {
@@ -118,14 +147,16 @@ export function toApiParams(sp: SearchParams, currency: string): Record<string, 
 }
 
 export const api = {
-  searchListings: (params: Record<string, string | undefined>) => get<SearchResult>("/api/v1/listings", params, 60),
-  getListing: (id: string | number) => get<Listing>(`/api/v1/listings/${id}`, undefined, 120),
-  similar: (id: string | number) => get<{ items: Listing[] }>(`/api/v1/listings/${id}/similar`, undefined, 120),
-  priceHistory: (id: string | number) => get<{ items: PricePoint[] }>(`/api/v1/listings/${id}/price-history`, undefined, 300),
-  brands: () => get<{ items: Brand[] }>("/api/v1/brands", undefined, 600),
-  sources: () => get<{ items: Source[] }>("/api/v1/sources", undefined, 3600),
-  rates: () => get<RatesResponse>("/api/v1/rates", undefined, 600),
-  stats: () => get<Stats>("/api/v1/stats", undefined, 300),
+  searchListings: (params: Record<string, string | undefined>) =>
+    get<SearchResult>("/api/v1/listings", params, 60).then(normalizeSearchResult),
+  getListing: (id: string | number) => get<Listing>(`/api/v1/listings/${id}`, undefined, 120).then(normalizeListing),
+  similar: (id: string | number) =>
+    get<{ items: Listing[] }>(`/api/v1/listings/${id}/similar`, undefined, 120).then((r) => ({ items: arr(r.items).map(normalizeListing) })),
+  priceHistory: (id: string | number) => get<{ items: PricePoint[] }>(`/api/v1/listings/${id}/price-history`, undefined, 300).then(normalizeItems),
+  brands: () => get<{ items: Brand[] }>("/api/v1/brands", undefined, 600).then(normalizeItems),
+  sources: () => get<{ items: Source[] }>("/api/v1/sources", undefined, 3600).then(normalizeItems),
+  rates: () => get<RatesResponse>("/api/v1/rates", undefined, 600).then((r) => ({ ...r, items: arr(r.items), supported: arr(r.supported) })),
+  stats: () => get<Stats>("/api/v1/stats", undefined, 300).then((r) => ({ ...r, sources: arr(r.sources) })),
 };
 
 export { ApiError };
