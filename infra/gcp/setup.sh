@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # One-time GCP bootstrap for WatchCompare. Idempotent where gcloud allows it.
-# Usage: PROJECT_ID=my-proj GITHUB_OWNER=me GITHUB_REPO=watch-compare ./infra/gcp/setup.sh
+# Usage: PROJECT_ID=watch-compare-507905 GITHUB_OWNER=boczeratul GITHUB_REPO=watch-compare ./infra/gcp/setup.sh
 set -euo pipefail
 
 : "${PROJECT_ID:?set PROJECT_ID}"
@@ -9,7 +9,7 @@ set -euo pipefail
 REGION="${REGION:-asia-east1}"
 AR_REPO="${AR_REPO:-watch-compare}"
 SQL_INSTANCE="${SQL_INSTANCE:-watch-compare-pg}"
-SQL_TIER="${SQL_TIER:-db-g1-small}"
+SQL_TIER="${SQL_TIER:-db-perf-optimized-N-2}"
 API_SERVICE="${API_SERVICE:-watch-compare-api}"
 CRAWLER_JOB="${CRAWLER_JOB:-watch-compare-crawler}"
 CORS_ORIGINS="${CORS_ORIGINS:-https://watch-compare.vercel.app}"
