@@ -27,6 +27,7 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jackroad"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/lips"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/rdwatch"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/rww"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/sevenhours"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchnian"
 	"github.com/hsuanlee/watch-compare/backend/internal/db"
@@ -110,6 +111,7 @@ func main() {
 		allu.Source{},
 		housekihiroba.Source{},
 		ishida.Source{},
+		rww.Source{},
 		&ebay.Source{},
 		chrono24.Source{},
 	)

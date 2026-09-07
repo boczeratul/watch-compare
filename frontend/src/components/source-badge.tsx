@@ -13,6 +13,7 @@ const STYLES: Record<string, string> = {
   allu: "bg-indigo-50 text-indigo-800 ring-indigo-200",
   housekihiroba: "bg-yellow-50 text-yellow-800 ring-yellow-200",
   ishida: "bg-cyan-50 text-cyan-800 ring-cyan-200",
+  rww: "bg-fuchsia-50 text-fuchsia-800 ring-fuchsia-200",
 };
 
 export function SourceBadge({ source, name, className }: { source: string; name: string; className?: string }) {

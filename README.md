@@ -1,7 +1,7 @@
 # WatchCompare
 
 Find the best deal for a watch across marketplaces. A nightly crawler indexes listings from
-**Chrono24, eBay, Watchnian, Jackroad, Commit Ginza, 7hours, Brand Shop LIPS, ALLU, Housekihiroba, BEST ISHIDA, Hourstack and RD Watch** into PostgreSQL; a Next.js frontend lets you
+**Chrono24, eBay, Watchnian, Jackroad, Commit Ginza, 7hours, Brand Shop LIPS, ALLU, Housekihiroba, BEST ISHIDA, RWW Watch, Hourstack and RD Watch** into PostgreSQL; a Next.js frontend lets you
 search, filter and sort them Chrono24-style, in your own currency and language.
 
 ```
@@ -36,7 +36,7 @@ set -a; source .env; set +a
 make run                        # http://localhost:8080/healthz
 
 # 2. Populate the index (a couple of pages per site is enough to try the UI)
-make crawl ARGS="-sources=jackroad,hourstack,watchnian,rdwatch,commitwatch,sevenhours,lips,allu,housekihiroba,ishida -max-pages=2"
+make crawl ARGS="-sources=jackroad,hourstack,watchnian,rdwatch,commitwatch,sevenhours,lips,allu,housekihiroba,ishida,rww -max-pages=2"
 
 # 3. Frontend
 cd ../frontend
