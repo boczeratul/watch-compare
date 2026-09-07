@@ -207,6 +207,14 @@ gcloud run jobs describe watch-compare-api-migrate --region=$REGION \
 The API service and the crawler job read `DATABASE_URL:latest`, so they pick up the new version on
 their next start; redeploy the API (or run the Cloud Build trigger) after rotating.
 
+### Vercel: `Run "pnpm approve-builds" to pick which dependencies should be allowed to run scripts`
+
+pnpm 10+ refuses to run dependencies' install scripts unless they are allowlisted. The three that
+need it (`@swc/core`, `@parcel/watcher`, `unrs-resolver`, all native binaries) are declared in
+`frontend/pnpm-workspace.yaml` under `allowBuilds`. If a new dependency triggers the message,
+add it there (or run `pnpm approve-builds <pkg>` locally, which writes the same file) and commit.
+Vercel uses the pnpm version pinned by `packageManager` in `package.json`.
+
 ### `dial unix /cloudsql/...: connect: no such file or directory`
 
 `--set-cloudsql-instances` is missing on the service or job, or the runtime service account lacks

@@ -1,4 +1,9 @@
+packages:
+  - "."
+
+# pnpm 10+ blocks dependency install scripts unless allowed here
+# (native binaries for the Next.js compiler, the ESLint resolver and file watching).
 allowBuilds:
-  '@parcel/watcher': set this to true or false
-  '@swc/core': set this to true or false
-  unrs-resolver: set this to true or false
+  "@swc/core": true
+  "@parcel/watcher": true
+  unrs-resolver: true
