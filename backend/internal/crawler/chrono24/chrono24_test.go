@@ -2,6 +2,7 @@ package chrono24
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/hsuanlee/watch-compare/backend/internal/config"
@@ -67,6 +68,33 @@ func TestParseListFixture(t *testing.T) {
 		}
 	}
 	t.Logf("priceOnRequest=%d shipping=%d", onRequest, withShipping)
+	// Every card names the seller's own country; the source's country (DE) must never be assumed.
+	countries := map[string]int{}
+	withCity, private := 0, 0
+	for _, l := range items {
+		if l.LocationCountry == "" {
+			t.Errorf("listing %s has no country", l.ExternalID)
+		}
+		countries[l.LocationCountry]++
+		if l.LocationCity != "" {
+			withCity++
+		}
+		if l.SellerType == "private" {
+			private++
+		}
+	}
+	t.Logf("countries=%v city=%d private=%d", countries, withCity, private)
+	if countries["DE"] == 0 || countries["DE"] == len(items) || countries["HK"] == 0 || countries["GB"] == 0 || countries["UK"] != 0 {
+		t.Errorf("country split looks wrong: %v", countries)
+	}
+	if withCity < len(items)/2 || private == 0 {
+		t.Errorf("city=%d private=%d of %d", withCity, private, len(items))
+	}
+	for _, l := range items {
+		if l.LocationCity != "" && strings.ToUpper(l.LocationCity) == l.LocationCountry {
+			t.Errorf("listing %s: country code %q stored as city", l.ExternalID, l.LocationCity)
+		}
+	}
 	if withPrice+onRequest != len(items) {
 		t.Errorf("price/on-request split does not add up: %d + %d != %d", withPrice, onRequest, len(items))
 	}

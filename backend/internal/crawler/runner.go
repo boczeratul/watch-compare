@@ -114,6 +114,7 @@ func (r *Runner) runOne(ctx context.Context, src model.Source) (err error) {
 		}
 	}
 	var st Stats
+	_, marketplace := adapter.(Marketplace)
 	emit := func(l model.Listing) error {
 		st.Seen++
 		l.SourceID = src.ID
@@ -121,7 +122,9 @@ func (r *Runner) runOne(ctx context.Context, src model.Source) (err error) {
 		if l.Currency == "" {
 			l.Currency = src.Currency
 		}
-		if l.LocationCountry == "" {
+		// A dealer's listings are where the dealer is; a marketplace listing is only where its
+		// seller says it is, so an unknown seller location stays unknown.
+		if l.LocationCountry == "" && !marketplace {
 			l.LocationCountry = src.Country
 		}
 		EnrichFromTitle(&l)

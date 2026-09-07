@@ -36,6 +36,13 @@ type Preflighter interface {
 	Preflight(cfg *config.Config) error
 }
 
+// Marketplace is implemented by sources whose listings come from sellers in many countries
+// (Chrono24, eBay). The Runner then leaves LocationCountry empty when the adapter could not read
+// it from the listing instead of stamping the marketplace's own country on it.
+type Marketplace interface {
+	Marketplace() bool
+}
+
 // ApplyTaxFreePrice fills PriceExclTax for a source whose listed prices include consumption tax.
 // Japan mandates tax-included display for consumer prices (総額表示義務), so every Japanese source
 // here lists 税込. A value already parsed from the page by an adapter is left untouched.

@@ -51,6 +51,9 @@ type Source struct {
 // Key returns the source key.
 func (*Source) Key() string { return "ebay" }
 
+// Marketplace marks eBay as multi-country: item location comes from the Browse API per listing.
+func (*Source) Marketplace() bool { return true }
+
 func (s *Source) accessToken(ctx context.Context, env *crawler.Env) (string, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()

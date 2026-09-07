@@ -22,6 +22,7 @@
 //
 //	.text-bold (title), .text-sm (details), .wt-listing-item-price ("$12,345" or "Price on
 //	request", followed by "+ $443 for shipping"), img[data-src|src],
+//	button.wt-listing-item-location[data-content="This dealer is from Geneve, Switzerland."] > span "CH",
 //	and optional JSON-LD ItemList in <script type="application/ld+json">.
 package chrono24
 
@@ -60,11 +61,17 @@ type Source struct{}
 // Key returns the source key.
 func (Source) Key() string { return "chrono24" }
 
+// Marketplace marks Chrono24 as a multi-country marketplace: the sources row says DE, but each
+// listing carries its seller's own country.
+func (Source) Marketplace() bool { return true }
+
 var (
 	idRe    = regexp.MustCompile(`--id(\d+)\.htm`)
 	priceRe = regexp.MustCompile(`(?i)(\$|€|£|CHF|¥|HK\$|S\$|A\$|C\$|NT\$|US\$|JPY|USD|EUR|GBP|TWD)\s*([0-9][0-9.,]*)`)
 	// "Price on request" / "Preis auf Anfrage" / "Prix sur demande": the seller hides the price
 	onRequestRe = regexp.MustCompile(`(?i)on request|auf anfrage|sur demande|su richiesta|a consultar`)
+	// tooltip "This dealer is from Geneve, Switzerland." → city "Geneve"; private sellers have no city
+	cityRe = regexp.MustCompile(`(?i)dealer is from\s+(.+?),\s*[^,]+\.?$`)
 	// "+ $443 for shipping" / "Free shipping"
 	shippingRe = regexp.MustCompile(`(?i)\+\s*((?:\$|€|£|CHF|¥|HK\$|S\$|A\$|C\$|NT\$|US\$|JPY|USD|EUR|GBP|TWD)\s*[0-9][0-9.,]*)\s*(?:for\s+)?shipping`)
 )
@@ -170,6 +177,7 @@ func ParseList(doc *goquery.Document) []model.Listing {
 		}
 		details := firstText(card, ".text-sm, .article-subtitle, [class*='subtitle']")
 		l.Description = details
+		attrs := map[string]any{"details": details}
 		// Read the price from its own element: the card also prints "+ $443 for shipping", which
 		// must not be taken as the price when the seller only shows "Price on request".
 		priceText := firstText(card, ".wt-listing-item-price, [class*='price']")
@@ -206,13 +214,25 @@ func ParseList(doc *goquery.Document) []model.Listing {
 		case strings.Contains(text, "pre-owned") || strings.Contains(text, "good"):
 			l.Condition = model.ConditionGood
 		}
-		if strings.Contains(text, "private seller") {
+		// Chrono24 is a marketplace: every card carries the seller's own country ("DE", "HK", …) and,
+		// for dealers, the city in the tooltip "This dealer is from Geneve, Switzerland." Private
+		// sellers only show the country. Nothing here falls back to the source's country.
+		locBtn := card.Find(".wt-listing-item-location, [class*='location'], .article-item-location").First()
+		if code := countryCode(crawler.Text(locBtn.Find("span").First())); code != "" {
+			l.LocationCountry = code
+		} else if code := countryCode(crawler.Text(locBtn)); code != "" {
+			l.LocationCountry = code
+		}
+		tooltip, _ := locBtn.Attr("data-content")
+		if strings.Contains(strings.ToLower(tooltip), "private seller") || strings.Contains(text, "private seller") {
 			l.SellerType = "private"
 		}
-		if loc := firstText(card, "[class*='location'], .article-item-location"); loc != "" {
-			l.LocationCity = loc
+		if m := cityRe.FindStringSubmatch(tooltip); m != nil {
+			l.LocationCity = normalize.CleanText(strings.Trim(m[1], " ,"))
 		}
-		attrs := map[string]any{"details": details}
+		if country, _ := locBtn.Attr("data-title"); country != "" {
+			attrs["sellerCountry"] = country
+		}
 		l.Attributes, _ = json.Marshal(attrs)
 		out = append(out, l)
 	})
@@ -264,6 +284,18 @@ func imageSrc(img *goquery.Selection) string {
 	}
 	src, _ := img.Attr("src")
 	return src
+}
+
+// countryCode normalizes the two-letter code Chrono24 prints on a card to ISO 3166-1 alpha-2.
+func countryCode(s string) string {
+	s = strings.ToUpper(strings.TrimSpace(s))
+	if s == "UK" {
+		return "GB"
+	}
+	if len(s) != 2 || s[0] < 'A' || s[0] > 'Z' || s[1] < 'A' || s[1] > 'Z' {
+		return ""
+	}
+	return s
 }
 
 // upscale swaps Chrono24's thumbnail size suffix for a larger rendition when present.
