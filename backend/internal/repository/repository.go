@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -264,8 +265,14 @@ func (r *Repo) SearchListings(ctx context.Context, q model.ListingQuery) (*model
 		// The 'simple' parser drops CJK characters, so a Japanese/Chinese query also gets
 		// (a) its canonicalized English form and (b) a trigram-indexed substring match on the title.
 		conds := []string{"l.search_tsv @@ websearch_to_tsquery('simple', " + b.arg(q.Text) + ")"}
+		if pq := prefixTSQuery(q.Text); pq != "" {
+			conds = append(conds, "l.search_tsv @@ to_tsquery('simple', "+b.arg(pq)+")")
+		}
 		if q.TextAlt != "" && q.TextAlt != q.Text {
 			conds = append(conds, "l.search_tsv @@ websearch_to_tsquery('simple', "+b.arg(q.TextAlt)+")")
+			if pq := prefixTSQuery(q.TextAlt); pq != "" {
+				conds = append(conds, "l.search_tsv @@ to_tsquery('simple', "+b.arg(pq)+")")
+			}
 		}
 		if hasNonASCII(q.Text) {
 			var likes []string
@@ -360,7 +367,12 @@ func (r *Repo) SearchListings(ctx context.Context, q model.ListingQuery) (*model
 			if q.TextAlt != "" {
 				rankText = q.Text + " " + q.TextAlt
 			}
-			orderBy = "ts_rank(l.search_tsv, websearch_to_tsquery('simple', " + b.arg(rankText) + ")) DESC, l.price_usd ASC NULLS LAST"
+			// Sum both ranks so a row matching the query exactly outranks one matched only by prefix.
+			rank := "ts_rank(l.search_tsv, websearch_to_tsquery('simple', " + b.arg(rankText) + "))"
+			if pq := prefixTSQuery(rankText); pq != "" {
+				rank += " + ts_rank(l.search_tsv, to_tsquery('simple', " + b.arg(pq) + "))"
+			}
+			orderBy = rank + " DESC, l.price_usd ASC NULLS LAST"
 		}
 	}
 
@@ -601,6 +613,35 @@ func (b *builder) whereSQL() string {
 		return " WHERE TRUE"
 	}
 	return " WHERE " + strings.Join(b.conds, " AND ")
+}
+
+// prefixTSQuery turns free text into a to_tsquery expression whose terms match by prefix.
+//
+// Postgres tokenizes a reference like "116500LN" into the single lexeme "116500ln", and a tsquery
+// matches whole lexemes, so a search for "116500" would miss every "116500LN" listing. Prefix
+// matching fixes that and also makes partial model names ("sub" → Submariner) work.
+//
+// Each term is emitted as a quoted lexeme, which makes tsquery operators typed by a user literal
+// instead of syntax, and keeps references such as 5711/1A-010 and 311.30.42.30.01.005 in one piece.
+// Backslash and single quote are the two characters that are special inside a quoted lexeme.
+// Terms shorter than three characters are matched exactly, so a stray letter cannot prefix-match
+// the whole table. Returns "" when nothing usable is left (for example an all-CJK query).
+func prefixTSQuery(text string) string {
+	fields := strings.Fields(text)
+	terms := make([]string, 0, len(fields))
+	for _, f := range fields {
+		lex := strings.ReplaceAll(f, `\`, `\\`)
+		lex = strings.ReplaceAll(lex, "'", "''")
+		lex = "'" + lex + "'"
+		if utf8.RuneCountInString(f) >= 3 {
+			lex += ":*"
+		}
+		terms = append(terms, lex)
+	}
+	if len(terms) == 0 {
+		return ""
+	}
+	return strings.Join(terms, " & ")
 }
 
 func hasNonASCII(s string) bool {

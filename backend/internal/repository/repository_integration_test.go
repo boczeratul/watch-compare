@@ -171,6 +171,55 @@ func TestRepositoryEndToEnd(t *testing.T) {
 	if err != nil || sr.Total != 2 {
 		t.Errorf("relevance search: total=%d err=%v", sr.Total, err)
 	}
+	// Reference prefix search: Postgres tokenizes "116500LN" as one lexeme, so a query for the
+	// shorter "116500" must still find it. Regression for "fewer results than the longer query".
+	{
+		daytonaPrice, daytonaUSD := 4200000.0, 28000.0
+		for i, ref := range []string{"116500LN", "116500LN-0001", "116519LN"} {
+			d := model.Listing{
+				SourceID: src.ID, ExternalID: fmt.Sprintf("dayt%d", i), URL: "https://example.com/d",
+				Title: "Rolex Cosmograph Daytona " + ref + " black dial", BrandID: &rolex, BrandName: "Rolex",
+				Model: "Daytona", ReferenceNumber: ref, Condition: model.ConditionNew,
+				Movement: model.MovementAutomatic, Gender: model.GenderMen,
+				Price: &daytonaPrice, Currency: "JPY", PriceUSD: &daytonaUSD, ImageURLs: []string{},
+			}
+			if _, err := repo.UpsertListing(ctx, &d); err != nil {
+				t.Fatal(err)
+			}
+		}
+		full, err := repo.SearchListings(ctx, model.ListingQuery{Text: "116500LN"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		short, err := repo.SearchListings(ctx, model.ListingQuery{Text: "116500"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if short.Total < full.Total {
+			t.Errorf("shorter query returned fewer results: %q=%d vs %q=%d", "116500", short.Total, "116500LN", full.Total)
+		}
+		if full.Total != 2 { // 116500LN and 116500LN-0001
+			t.Errorf("116500LN total = %d, want 2", full.Total)
+		}
+		if short.Total != 2 {
+			t.Errorf("116500 total = %d, want 2", short.Total)
+		}
+		// a partial model name should work too
+		if r, err := repo.SearchListings(ctx, model.ListingQuery{Text: "dayton"}); err != nil || r.Total != 3 {
+			t.Errorf("partial model search: total=%d err=%v", r.Total, err)
+		}
+		// user-typed tsquery operators and escapes must never produce a database error
+		for _, hostile := range []string{`\`, `\`, "'", "''", ":", "*", ":*", "<->", "&", "|", "!", "(", ")", "a & !b", "; DROP TABLE listings; --", "🙂", "黑面 116500"} {
+			if _, err := repo.SearchListings(ctx, model.ListingQuery{Text: hostile}); err != nil {
+				t.Errorf("hostile query %q errored: %v", hostile, err)
+			}
+		}
+		// leave the dataset as we found it so later assertions keep their expected counts
+		if _, err := repo.Pool().Exec(ctx, `DELETE FROM listings WHERE external_id LIKE 'dayt%'`); err != nil {
+			t.Fatal(err)
+		}
+	}
+
 	// dial colour filter + facets
 	sr, err = repo.SearchListings(ctx, model.ListingQuery{DialColors: []string{"black"}})
 	if err != nil || sr.Total != 1 || sr.Items[0].DialColor != "black" {
