@@ -39,9 +39,14 @@ if ! gcloud sql instances describe "$SQL_INSTANCE" >/dev/null 2>&1; then
 fi
 gcloud sql databases describe watch --instance="$SQL_INSTANCE" >/dev/null 2>&1 || \
   gcloud sql databases create watch --instance="$SQL_INSTANCE"
+# URL-safe password (no / + = so it can be embedded in the DSN without encoding).
 DB_PASSWORD="${DB_PASSWORD:-$(openssl rand -base64 24 | tr -d '/+=')}"
-gcloud sql users describe watch --instance="$SQL_INSTANCE" >/dev/null 2>&1 || \
+if gcloud sql users list --instance="$SQL_INSTANCE" --format='value(name)' | grep -qx watch; then
+  # Re-run: always (re)apply the password so the user and the secret below cannot drift apart.
+  gcloud sql users set-password watch --instance="$SQL_INSTANCE" --password="$DB_PASSWORD"
+else
   gcloud sql users create watch --instance="$SQL_INSTANCE" --password="$DB_PASSWORD"
+fi
 CONNECTION_NAME=$(gcloud sql instances describe "$SQL_INSTANCE" --format='value(connectionName)')
 
 echo "▶ Service accounts"
@@ -58,14 +63,16 @@ done
 gcloud iam service-accounts add-iam-policy-binding "$RUNTIME_SA" --member="serviceAccount:$BUILD_SA" --role=roles/iam.serviceAccountUser --quiet >/dev/null
 
 echo "▶ Secrets"
-upsert_secret() { # name value
+upsert_secret() { # name value  (printf '%s': no trailing newline, which would break the password)
   if gcloud secrets describe "$1" >/dev/null 2>&1; then
     printf '%s' "$2" | gcloud secrets versions add "$1" --data-file=- >/dev/null
   else
     printf '%s' "$2" | gcloud secrets create "$1" --replication-policy=automatic --data-file=- >/dev/null
   fi
 }
-upsert_secret DATABASE_URL "postgres://watch:${DB_PASSWORD}@/watch?host=/cloudsql/${CONNECTION_NAME}&sslmode=disable"
+DATABASE_URL_VALUE="postgres://watch:${DB_PASSWORD}@/watch?host=/cloudsql/${CONNECTION_NAME}&sslmode=disable"
+upsert_secret DATABASE_URL "$DATABASE_URL_VALUE"
+echo "   DATABASE_URL secret updated (password applied to Cloud SQL user 'watch' in the same run)."
 gcloud secrets describe EBAY_CLIENT_ID >/dev/null 2>&1 || upsert_secret EBAY_CLIENT_ID "replace-me"
 gcloud secrets describe EBAY_CLIENT_SECRET >/dev/null 2>&1 || upsert_secret EBAY_CLIENT_SECRET "replace-me"
 

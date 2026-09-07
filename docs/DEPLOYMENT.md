@@ -173,7 +173,48 @@ credentials live in GitHub secrets.
 
 ---
 
-## 5. Observability & cost
+## 5. Troubleshooting
+
+### `failed SASL auth: FATAL: password authentication failed for user "watch"`
+
+The job reached Cloud SQL, but the password inside the `DATABASE_URL` secret is not the password
+of the `watch` user. Typical causes: the secret was written with a trailing newline (`echo`
+instead of `printf '%s'`), the password was rotated on one side only, or a manually typed DSN
+contains characters that need URL-encoding.
+
+Fix by setting both sides to the same value in one go:
+
+```bash
+PROJECT_ID=my-proj REGION=asia-east1 INSTANCE=watch-compare-pg
+CONN=$(gcloud sql instances describe $INSTANCE --format='value(connectionName)')
+PW=$(openssl rand -base64 24 | tr -d '/+=')          # URL-safe, no encoding needed
+gcloud sql users set-password watch --instance=$INSTANCE --password="$PW"
+printf '%s' "postgres://watch:${PW}@/watch?host=/cloudsql/${CONN}&sslmode=disable" \
+  | gcloud secrets versions add DATABASE_URL --data-file=-
+gcloud run jobs execute watch-compare-api-migrate --region=$REGION --wait
+```
+
+Sanity checks:
+
+```bash
+# The value must end right after "sslmode=disable" with no "\n"
+gcloud secrets versions access latest --secret=DATABASE_URL | od -c | tail -3
+# The job must reference the secret and the instance
+gcloud run jobs describe watch-compare-api-migrate --region=$REGION \
+  --format='yaml(spec.template.spec.template.spec.containers[0].env, spec.template.metadata.annotations)'
+```
+
+The API service and the crawler job read `DATABASE_URL:latest`, so they pick up the new version on
+their next start; redeploy the API (or run the Cloud Build trigger) after rotating.
+
+### `dial unix /cloudsql/...: connect: no such file or directory`
+
+`--set-cloudsql-instances` is missing on the service or job, or the runtime service account lacks
+`roles/cloudsql.client`.
+
+---
+
+## 6. Observability & cost
 
 * Structured JSON logs with Cloud Logging severities (`zerolog`), request IDs, latency.
 * `/readyz` pings the database; Cloud Run uses it as the startup probe.
