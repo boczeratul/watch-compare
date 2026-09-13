@@ -17,6 +17,9 @@ const STYLES: Record<string, string> = {
   watchfinderhk: "bg-red-50 text-red-800 ring-red-200",
   wristcheck: "bg-stone-100 text-stone-800 ring-stone-300",
   kenwatches: "bg-green-50 text-green-800 ring-green-200",
+  rasin: "bg-blue-50 text-blue-800 ring-blue-200",
+  quark: "bg-zinc-100 text-zinc-800 ring-zinc-300",
+  bellemonde: "bg-purple-50 text-purple-800 ring-purple-200",
 };
 
 export function SourceBadge({ source, name, className }: { source: string; name: string; className?: string }) {

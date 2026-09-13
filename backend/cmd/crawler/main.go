@@ -18,6 +18,7 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/config"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/allu"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/bellemonde"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/chrono24"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/commitwatch"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ebay"
@@ -27,6 +28,8 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jackroad"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/kenwatches"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/lips"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/quark"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/rasin"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/rdwatch"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/rww"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/sevenhours"
@@ -118,6 +121,9 @@ func main() {
 		watchfinderhk.Source{},
 		wristcheck.Source{},
 		kenwatches.Source{},
+		rasin.Source{},
+		quark.Source{},
+		bellemonde.Source{},
 		&ebay.Source{},
 		chrono24.Source{},
 	)
