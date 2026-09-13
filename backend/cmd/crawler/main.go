@@ -27,12 +27,14 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ishida"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jackroad"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/kenwatches"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/kitamura"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/lips"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/quark"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/rasin"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/rdwatch"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/rww"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/sevenhours"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchandtime"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchfinderhk"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchnian"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/wristcheck"
@@ -124,6 +126,8 @@ func main() {
 		rasin.Source{},
 		quark.Source{},
 		bellemonde.Source{},
+		kitamura.Source{},
+		watchandtime.Source{},
 		&ebay.Source{},
 		chrono24.Source{},
 	)

@@ -31,6 +31,8 @@ deactivation. Parsers are covered by fixture tests using real HTML captured in `
 | `rasin` | HTML (Shopserve), `/SHOP/list.php?Search=&Type=01&PAGE=N` (40 per page, default order) | JPY | ✅ 40/40 cards with price, brand + reference + grade + gender from the title, image | GINZA RASIN, Tokyo/Osaka; ~27k published pieces of which the in-stock ones come first and the sold ones follow at ¥0, so the crawl stops at the first page without a priced card (do not use `SortKey=new`, it lists sold pieces first) |
 | `quark` | HTML, stock search `/rolex_search/result.html?…&p=N&sort=NEW&snum=100` (zero-based, 100 per page) | JPY | ✅ 100/100 items with price (3-year-warranty FAIR price; the 5-year one is kept in attributes), reference, category 新品/中古品, year, stock shop | ロレックス専門店クォーク (Quark), Rolex only, ~2.4k pieces; the origin answers 502 now and then, which the Fetcher retries |
 | `bellemonde` | HTML (MakeShop), `/view/category/all_items?sort=order&page=N` (50 per page) | JPY | ✅ 34 in-stock of 50 cards; price, brand + reference from the title, 【美品】【中古】 markers → condition, 保証書/箱 → papers/box, image | 腕時計専門店ベルモンド, Tokyo; ~4.5k published but almost all sold, so the crawl stops after two pages without an in-stock piece |
+| `kitamura` | HTML (Nuxt SSR), `/watch/buy/search/?page=N&sort=used_update_dt&pageSize=90` (90 per page, `.el-pager` numbers) | JPY | ✅ 90/90 cards with price, brand, 型番 reference, 状態 grade (AA/A/AB/B), shop, image | カメラのキタムラ's pre-owned watch counters; ~360 pieces / 4 pages |
+| `watchandtime` | HTML (ASP, Big5), brand categories `products_list.asp?id=N&page=P` from `index.asp` (24 per page) plus one product page per item | TWD | ✅ 24/24 cards with price and image; the product page adds the description title, reference, material, movement, gender, year, photos | 黃忠政名錶交流中心 (James Huang Vintage Watches), Taiwan; cards carry only brand + stock code, so every product page is fetched (a few hundred requests a night); the 鑽石／配件 category is skipped |
 | `ebay` | **Browse API** (OAuth client credentials) | market currency | needs `EBAY_CLIENT_ID/SECRET` | per-brand aspect filter in Wristwatches (31387); free developer keys at developer.ebay.com |
 | `chrono24` | HTML via Browserless (see [BROWSERLESS.md](BROWSERLESS.md)) | listing currency | ❌ plain requests get HTTP 403; selectors unverified until a rendered page is captured | marketplace: each card carries the seller's own country and city, so the DE on the sources row is never applied to a listing; skipped unless `CRAWL_RENDER_SERVICE_URL` or `CRAWL_PROXY_URL` is set; budget = `CHRONO24_BRANDS` (default Rolex, Omega, IWC, AP, PP) × `CHRONO24_MAX_PAGES` (default 3) |
 
@@ -47,7 +49,7 @@ carries on with the other sources; the job still exits 0. Silence the warning wi
 
 ## Japanese prices
 
-`jackroad`, `watchnian`, `commitwatch`, `lips`, `allu`, `housekihiroba`, `ishida`, `rasin`, `quark` and `bellemonde` all list tax-included prices; `sevenhours` prints its own 税抜 figure, which the adapter parses. The Runner fills
+`jackroad`, `watchnian`, `commitwatch`, `lips`, `allu`, `housekihiroba`, `ishida`, `rasin`, `quark`, `bellemonde` and `kitamura` all list tax-included prices; `sevenhours` prints its own 税抜 figure, which the adapter parses. The Runner fills
 `PriceExclTax` for any source whose country is `JP` (see `crawler.ApplyTaxFreePrice`), and
 `crawler.ComparisonPrice` decides what gets converted to USD. A new Japanese source therefore needs
 no tax handling of its own. If a site publishes its own 税抜 figure, parse it into `PriceExclTax`
