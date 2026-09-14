@@ -26,6 +26,7 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/housekihiroba"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ishida"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jackroad"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jdpawn"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/kenwatches"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/kitamura"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/lips"
@@ -128,6 +129,7 @@ func main() {
 		bellemonde.Source{},
 		kitamura.Source{},
 		watchandtime.Source{},
+		jdpawn.Source{},
 		&ebay.Source{},
 		chrono24.Source{},
 	)
