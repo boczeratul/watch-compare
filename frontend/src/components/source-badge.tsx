@@ -23,6 +23,7 @@ const STYLES: Record<string, string> = {
   kitamura: "bg-emerald-50 text-emerald-900 ring-emerald-300",
   watchandtime: "bg-amber-50 text-amber-900 ring-amber-300",
   jdpawn: "bg-rose-50 text-rose-900 ring-rose-300",
+  bbc0804: "bg-orange-50 text-orange-900 ring-orange-300",
 };
 
 export function SourceBadge({ source, name, className }: { source: string; name: string; className?: string }) {
