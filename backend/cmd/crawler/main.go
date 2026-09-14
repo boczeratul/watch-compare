@@ -18,6 +18,7 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/config"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/allu"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/bbc0804"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/bellemonde"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/chrono24"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/commitwatch"
@@ -130,6 +131,7 @@ func main() {
 		kitamura.Source{},
 		watchandtime.Source{},
 		jdpawn.Source{},
+		bbc0804.Source{},
 		&ebay.Source{},
 		chrono24.Source{},
 	)
