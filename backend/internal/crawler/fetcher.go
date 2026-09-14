@@ -180,7 +180,9 @@ func ParseHTML(body []byte, pageURL string) (*goquery.Document, error) {
 }
 
 func decodeBody(resp *http.Response) ([]byte, error) {
-	raw, err := io.ReadAll(io.LimitReader(resp.Body, 8<<20))
+	// 16 MB: jdpawn embeds every photo of a page as a base64 data URI, which puts a list page at
+	// 4–5 MB; a silently truncated body would drop its last cards.
+	raw, err := io.ReadAll(io.LimitReader(resp.Body, 16<<20))
 	if err != nil {
 		return nil, err
 	}
