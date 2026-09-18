@@ -578,7 +578,7 @@ func (r *Repo) Stats(ctx context.Context) (map[string]any, error) {
 		return nil, err
 	}
 	perSource := []map[string]any{}
-	rows, err := r.pool.Query(ctx, `SELECT s.key, s.name, count(l.id) FROM sources s LEFT JOIN listings l ON l.source_id=s.id AND l.is_active GROUP BY s.id ORDER BY s.id`)
+	rows, err := r.pool.Query(ctx, `SELECT s.key, s.name, count(l.id) FROM sources s LEFT JOIN listings l ON l.source_id=s.id AND l.is_active WHERE s.enabled GROUP BY s.id ORDER BY s.id`)
 	if err != nil {
 		return nil, err
 	}

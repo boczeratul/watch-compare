@@ -51,7 +51,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
           <CurrencyProvider value={{ currency, rates, supported }}>
             <Header />
             <main className="flex-1">{children}</main>
-            <Footer sources={sourcesRes.items} />
+            <Footer sources={sourcesRes.items.filter((s) => s.enabled)} />
           </CurrencyProvider>
         </NextIntlClientProvider>
       </body>

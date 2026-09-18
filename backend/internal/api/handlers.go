@@ -239,10 +239,18 @@ func (s *Server) brands(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) sources(w http.ResponseWriter, r *http.Request) {
-	src, err := s.repo.Sources(r.Context())
+	all, err := s.repo.Sources(r.Context())
 	if err != nil {
 		s.fail(w, err)
 		return
+	}
+	// Disabled sources (retired dealers) are internal: they keep their listings' history but
+	// should not be advertised in the footer or anywhere else on the site.
+	src := make([]model.Source, 0, len(all))
+	for _, x := range all {
+		if x.Enabled {
+			src = append(src, x)
+		}
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"items": src})
 }
