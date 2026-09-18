@@ -1,12 +1,13 @@
 # CI/CD & Deployment
 
-Two independent pipelines, both triggered by pushes to `main`:
+Three independent pipelines, all triggered by pushes to `main`:
 
 | Component | Pipeline | Target |
 |-----------|----------|--------|
 | `frontend/` | Vercel Git integration (preview per PR, production on `main`) | Vercel |
 | `backend/`  | Cloud Build trigger → `backend/cloudbuild.yaml` | Artifact Registry, Cloud Run service `watch-compare-api`, Cloud Run job `watch-compare-crawler` |
-| both | GitHub Actions `ci.yml` (lint, typecheck, tests) | PR checks |
+| `ios/` | Xcode Cloud workflow (archive + test, path-filtered to `ios/`) | TestFlight, App Store Connect |
+| all | GitHub Actions `ci.yml` (lint, typecheck, tests, unsigned iOS build) | PR checks |
 
 Cloud Scheduler runs the crawler job every day at **02:00 Asia/Taipei**.
 
@@ -169,20 +170,53 @@ vercel --prod                   # production
 
 ---
 
-## 4. GitHub Actions (`.github/workflows/ci.yml`)
+## 4. iOS pipeline (Xcode Cloud)
+
+Xcode Cloud archives and signs on Apple-managed macOS, holds the distribution certificate itself
+and uploads to TestFlight, so — like Vercel and Cloud Build — no signing secrets live in GitHub.
+The developer program includes 25 compute hours a month.
+
+One-time setup:
+
+1. Join the Apple Developer Program. In App Store Connect create the app record for bundle id
+   `com.hsuanlee.watchcompare` and add a 1024 px icon to `ios/WatchCompare/Assets.xcassets/AppIcon.appiconset`
+   (uploads without one are rejected).
+2. In the `WatchCompare` target set your team under *Signing & Capabilities*, and replace the
+   `CHANGE-ME` placeholder in the **Release** `API_BASE_URL` build setting with the Cloud Run URL
+   (`https://watch-compare-api-….a.run.app`). Native clients are not subject to CORS, so the API
+   needs no change.
+3. Xcode → *Product → Xcode Cloud → Create Workflow*. Grant access to the GitHub repository when
+   asked. Two workflows cover the usual flow:
+
+   | Workflow | Start condition | Actions | Post-action |
+   |----------|-----------------|---------|-------------|
+   | `Internal` | branch `main` changes, *files and folders* filter `ios/` | Archive (Release), Test (WatchCompareKit, iOS Simulator) | TestFlight internal testing |
+   | `Release`  | tag `ios-v*` | Archive (Release) | TestFlight external testing / App Store |
+
+4. Build numbers: `ios/ci_scripts/ci_pre_xcodebuild.sh` stamps `CURRENT_PROJECT_VERSION` with
+   Xcode Cloud's `CI_BUILD_NUMBER`, so every upload is unique without touching the repo.
+   Bump `MARKETING_VERSION` (1.0 → 1.1) in the target settings when you cut a release.
+
+To ship: merge to `main` for an internal TestFlight build; `git tag ios-v1.0.0 && git push --tags`
+for an external / App Store build.
+
+## 5. GitHub Actions (`.github/workflows/ci.yml`)
 
 Runs on every PR and push:
 
 * `backend`: `go vet`, `go test -race`, `gofmt` check.
 * `frontend`: `pnpm install --frozen-lockfile`, `eslint`, `tsc --noEmit`, `next build`
   (with a dummy `API_URL`; pages degrade gracefully when the API is unreachable).
+* `ios` (only when `ios/**` changed — macOS minutes bill at 10x): `swift test` on the
+  `WatchCompareKit` package (models, API client, views, 19 unit tests, runs on the macOS host) and
+  an unsigned `xcodebuild` of the app for the iOS Simulator.
 
-Deployments are *not* done from GitHub Actions — Vercel and Cloud Build own them — so no cloud
-credentials live in GitHub secrets.
+Deployments are *not* done from GitHub Actions — Vercel, Cloud Build and Xcode Cloud own them —
+so no cloud or signing credentials live in GitHub secrets.
 
 ---
 
-## 5. Troubleshooting
+## 6. Troubleshooting
 
 ### `failed SASL auth: FATAL: password authentication failed for user "watch"`
 
@@ -251,7 +285,7 @@ gcloud run jobs update watch-compare-crawler --region asia-east1 \
 
 ---
 
-## 6. Observability & cost
+## 7. Observability & cost
 
 * Structured JSON logs with Cloud Logging severities (`zerolog`), request IDs, latency.
 * `/readyz` pings the database; Cloud Run uses it as the startup probe.

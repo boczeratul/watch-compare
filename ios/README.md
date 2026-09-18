@@ -53,6 +53,13 @@ swift test           # 19 unit tests (needs the Xcode toolchain for XCTest)
 
 Or run the WatchCompare scheme's tests in Xcode.
 
+## CI/CD
+
+GitHub Actions runs the same two commands (plus an unsigned simulator build) on every PR that
+touches `ios/`; Xcode Cloud archives `main` to TestFlight. Setup and the release flow are in
+[docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md#4-ios-pipeline-xcode-cloud). `ci_scripts/` is the
+Xcode Cloud hook that stamps the build number.
+
 ## How it maps to the web app
 
 | Web | iOS |

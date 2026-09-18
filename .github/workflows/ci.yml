@@ -10,6 +10,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # macOS runners bill at 10x Linux minutes, so the iOS job only runs when ios/ (or this file) changed.
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      ios: ${{ steps.filter.outputs.ios }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            ios:
+              - 'ios/**'
+              - '.github/workflows/ci.yml'
+
   backend:
     name: Backend (Go)
     runs-on: ubuntu-latest
@@ -44,3 +60,22 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm build
+
+  ios:
+    name: iOS (Swift)
+    needs: changes
+    if: needs.changes.outputs.ios == 'true'
+    runs-on: macos-15
+    defaults: { run: { working-directory: ios } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with: { xcode-version: latest-stable }
+      - name: package build + unit tests (macOS host, no simulator needed)
+        run: swift test --package-path WatchCompareKit
+      - name: app build for iOS Simulator (unsigned)
+        run: >
+          xcodebuild -project WatchCompare.xcodeproj -scheme WatchCompare
+          -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath "$RUNNER_TEMP/dd"
+          CODE_SIGNING_ALLOWED=NO build
