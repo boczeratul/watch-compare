@@ -24,7 +24,6 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/commitwatch"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ebay"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/hourstack"
-	"github.com/hsuanlee/watch-compare/backend/internal/crawler/housekihiroba"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ishida"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jackroad"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jdpawn"
@@ -119,7 +118,6 @@ func main() {
 		sevenhours.Source{},
 		lips.Source{},
 		allu.Source{},
-		housekihiroba.Source{},
 		ishida.Source{},
 		rww.Source{},
 		watchfinderhk.Source{},
