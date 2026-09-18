@@ -1,0 +1,45 @@
+# XcodeGen spec (https://github.com/yonaskolb/XcodeGen). The checked-in WatchCompare.xcodeproj is
+# the source of truth; this file lets you regenerate it (`xcodegen generate`) if it ever drifts.
+name: WatchCompare
+options:
+  bundleIdPrefix: com.hsuanlee
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "16.0"
+  createIntermediateGroups: true
+packages:
+  WatchCompareKit:
+    path: WatchCompareKit
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+targets:
+  WatchCompare:
+    type: application
+    platform: iOS
+    sources:
+      - path: WatchCompare
+        excludes: ["Info.plist"]
+    dependencies:
+      - package: WatchCompareKit
+    info:
+      path: WatchCompare/Info.plist
+      properties:
+        APIBaseURL: $(API_BASE_URL)
+        CFBundleDisplayName: WatchCompare
+        ITSAppUsesNonExemptEncryption: false
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        UILaunchScreen: {}
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hsuanlee.watchcompare
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SWIFT_EMIT_LOC_STRINGS: YES
+      configs:
+        Debug:
+          API_BASE_URL: http://localhost:8080
+        Release:
+          API_BASE_URL: https://CHANGE-ME.a.run.app

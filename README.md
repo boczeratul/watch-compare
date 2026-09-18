@@ -21,6 +21,7 @@ search, filter and sort them Chrono24-style, in your own currency and language.
 | `backend/` | Go 1.27, chi, pgx, goquery, zerolog | Cloud Build → Artifact Registry → Cloud Run (service + job) |
 | `frontend/` | Next.js 16 (App Router, RSC), React 19, Tailwind v4, next-intl | Vercel (Git integration) |
 | Database | PostgreSQL 16 (Cloud SQL) with full-text search + facets | migrations embedded in the Go binary |
+| `ios/` | SwiftUI (iOS 17+), Swift package `WatchCompareKit` + thin Xcode app target, same `/api/v1` | Xcode → TestFlight (see [ios/README.md](ios/README.md)) |
 
 Docs: [Architecture](docs/ARCHITECTURE.md) · [Crawlers](docs/CRAWLERS.md) · [CI/CD & Deployment](docs/DEPLOYMENT.md)
 
@@ -43,6 +44,9 @@ cd ../frontend
 pnpm install
 cp .env.example .env.local      # API_URL=http://localhost:8080
 pnpm dev                        # http://localhost:3000
+
+# 4. iOS app (optional; Debug builds talk to http://localhost:8080)
+open ios/WatchCompare.xcodeproj
 ```
 
 Try a dry run of a single crawler without touching the database:
@@ -74,6 +78,7 @@ cross-marketplace sorting uses `price_usd`, which is computed at crawl time with
 cd backend && make test                      # unit + fixture-based parser tests
 TEST_EMBEDDED_PG=1 go test ./internal/repository/ -run TestRepositoryEndToEnd   # real Postgres via embedded-postgres
 cd frontend && pnpm lint && pnpm typecheck && pnpm build
+cd ios/WatchCompareKit && swift build && swift test   # models, API client, views + 19 unit tests
 ```
 
 ## Legal note
