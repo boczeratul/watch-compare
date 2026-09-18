@@ -11,9 +11,10 @@ struct WatchCompareApp: App {
 }
 
 enum AppConfig {
-    /// `APIBaseURL` in Info.plist is filled from the `API_BASE_URL` build setting
-    /// (Debug: http://localhost:8080, Release: the Cloud Run URL). A `WC_API_BASE_URL`
-    /// launch argument / user default overrides it, e.g. to point a device at a LAN backend.
+    /// `APIBaseURL` in Info.plist is filled from the project-level `API_BASE_URL` build setting:
+    /// the production Cloud Run URL for every configuration, so local development runs against
+    /// real data. A `WC_API_BASE_URL` launch argument / user default overrides it, e.g.
+    /// `-WC_API_BASE_URL http://localhost:8080` while working on the backend.
     static var apiBaseURL: URL {
         let override = UserDefaults.standard.string(forKey: "WC_API_BASE_URL")
         let configured = Bundle.main.object(forInfoDictionaryKey: "APIBaseURL") as? String

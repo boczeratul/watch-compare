@@ -45,7 +45,7 @@ pnpm install
 cp .env.example .env.local      # API_URL=http://localhost:8080
 pnpm dev                        # http://localhost:3000
 
-# 4. iOS app (optional; Debug builds talk to http://localhost:8080)
+# 4. iOS app (optional; uses the production API — add launch arg -WC_API_BASE_URL http://localhost:8080 for the local one)
 open ios/WatchCompare.xcodeproj
 ```
 

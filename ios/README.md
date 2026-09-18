@@ -26,8 +26,9 @@ ios/
 ## Requirements
 
 - Xcode 16 or newer (the project uses folder-synchronized groups), iOS 17+.
-- A running API. For the simulator, `cd backend && make run` serves http://localhost:8080 and the
-  Debug configuration points there (`API_BASE_URL` build setting → `APIBaseURL` in Info.plist).
+- Every configuration, Debug included, talks to the production API so local development shows
+  real listings. The URL is the project-level `API_BASE_URL` build setting (→ `APIBaseURL` in
+  Info.plist), currently the Cloud Run service `watch-compare-api` in `asia-east1`.
 
 ## Run
 
@@ -35,11 +36,13 @@ ios/
 open ios/WatchCompare.xcodeproj      # pick an iPhone simulator, ⌘R
 ```
 
-Set your team under *Signing & Capabilities* to run on a device, and either change the Debug
-`API_BASE_URL` to your Mac's LAN address or launch with the argument
-`-WC_API_BASE_URL http://192.168.1.10:8080` (Scheme → Run → Arguments), which overrides the
-configured URL at runtime. Release builds must point at the Cloud Run URL (`https://…a.run.app`);
-replace the `CHANGE-ME` placeholder in the target's Release settings.
+Set your team under *Signing & Capabilities* to run on a device.
+
+To work against a local backend instead (`cd backend && make run`), add the launch argument
+`-WC_API_BASE_URL http://localhost:8080` under *Scheme → Run → Arguments*; on a device use your
+Mac's LAN address (`http://192.168.1.10:8080`). The override is a user default, so it survives
+relaunches until you remove the argument. `NSAllowsLocalNetworking` in Info.plist is what lets
+that plain-http override through App Transport Security.
 
 ## Test
 

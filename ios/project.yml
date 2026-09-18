@@ -14,6 +14,8 @@ settings:
   base:
     SWIFT_VERSION: "6.0"
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    # Production API for every configuration; override at runtime with -WC_API_BASE_URL.
+    API_BASE_URL: https://watch-compare-api-m7slk5b25q-de.a.run.app
 targets:
   WatchCompare:
     type: application
@@ -38,8 +40,3 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TARGETED_DEVICE_FAMILY: "1,2"
         SWIFT_EMIT_LOC_STRINGS: YES
-      configs:
-        Debug:
-          API_BASE_URL: http://localhost:8080
-        Release:
-          API_BASE_URL: https://CHANGE-ME.a.run.app

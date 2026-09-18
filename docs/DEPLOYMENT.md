@@ -181,10 +181,13 @@ One-time setup:
 1. Join the Apple Developer Program. In App Store Connect create the app record for bundle id
    `com.hsuanlee.watchcompare` and add a 1024 px icon to `ios/WatchCompare/Assets.xcassets/AppIcon.appiconset`
    (uploads without one are rejected).
-2. In the `WatchCompare` target set your team under *Signing & Capabilities*, and replace the
-   `CHANGE-ME` placeholder in the **Release** `API_BASE_URL` build setting with the Cloud Run URL
-   (`https://watch-compare-api-….a.run.app`). Native clients are not subject to CORS, so the API
-   needs no change.
+2. In the `WatchCompare` target set your team under *Signing & Capabilities*. The
+   **project-level** `API_BASE_URL` build setting holds the Cloud Run URL
+   (`https://watch-compare-api-m7slk5b25q-de.a.run.app`); Debug and Release share it, so local
+   development also runs against production data, and developers point a build at a local backend
+   with the `-WC_API_BASE_URL http://localhost:8080` launch argument. If the service URL ever
+   changes, update that one setting. Native clients are not subject to CORS, so the API needs no
+   change.
 3. Xcode → *Product → Xcode Cloud → Create Workflow*. Grant access to the GitHub repository when
    asked. Two workflows cover the usual flow:
 
