@@ -15,6 +15,7 @@
 "home.popularBrands" = "熱門品牌";
 "home.newest" = "最新上架";
 "home.viewAll" = "查看全部";
+"search.title" = "搜尋結果";
 "search.noResults" = "沒有符合條件的手錶。";
 "search.noResultsHint" = "試著移除篩選條件、放寬價格範圍，或直接搜尋型號。";
 "search.clearAll" = "清除全部";
@@ -128,5 +129,4 @@
 "common.retry" = "重試";
 "settings.currencyNote" = "價格依每日匯率換算，並同時顯示賣家的原始價格。";
 "settings.changeLanguage" = "在「設定」中變更 App 語言";
-"settings.languageNote" = "WatchCompare 會跟隨 iOS 的語言設定：English、繁體中文、日本語 或 Deutsch。";
-"search.title" = "搜尋結果";
+"settings.languageNote" = "WatchCompare 會跟隨 iOS 的語言設定：English、繁體中文、简体中文、日本語 或 Deutsch。";

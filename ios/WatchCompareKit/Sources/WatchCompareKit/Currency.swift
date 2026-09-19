@@ -51,7 +51,7 @@ public enum Money {
     }
 
     /// Default display currency: the device region's currency when the API supports it, else USD
-    /// (the web picks per locale: en→USD, zh-TW→TWD, ja→JPY, de→EUR).
+    /// (the web picks per locale: en→USD, zh-TW→TWD, zh-CN→CNY, ja→JPY, de→EUR).
     public static func defaultCurrency(for locale: Locale = .current) -> String {
         if let code = locale.currency?.identifier, supportedCurrencies.contains(code) { return code }
         return "USD"

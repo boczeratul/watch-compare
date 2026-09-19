@@ -46,6 +46,7 @@ final class CurrencyTests: XCTestCase {
 
     func testDefaultCurrencyFollowsRegion() {
         XCTAssertEqual(Money.defaultCurrency(for: Locale(identifier: "zh_TW")), "TWD")
+        XCTAssertEqual(Money.defaultCurrency(for: Locale(identifier: "zh_CN")), "CNY")
         XCTAssertEqual(Money.defaultCurrency(for: Locale(identifier: "ja_JP")), "JPY")
         XCTAssertEqual(Money.defaultCurrency(for: Locale(identifier: "de_DE")), "EUR")
         XCTAssertEqual(Money.defaultCurrency(for: Locale(identifier: "th_TH")), "USD")

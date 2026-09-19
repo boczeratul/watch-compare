@@ -19,7 +19,7 @@ final class LocalizationTests: XCTestCase {
     func testEveryLocaleHasTheSameKeys() throws {
         let en = try keys(in: "en")
         XCTAssertFalse(en.isEmpty)
-        for loc in ["zh-Hant", "ja", "de"] {
+        for loc in ["zh-Hant", "zh-Hans", "ja", "de"] {
             let other = try keys(in: loc)
             XCTAssertEqual(other.subtracting(en), [], "\(loc) has keys missing from en")
             XCTAssertEqual(en.subtracting(other), [], "\(loc) is missing keys")

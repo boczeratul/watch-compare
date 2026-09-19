@@ -15,6 +15,7 @@
 "home.popularBrands" = "人気ブランド";
 "home.newest" = "新着";
 "home.viewAll" = "すべて見る";
+"search.title" = "検索結果";
 "search.noResults" = "条件に合う時計がありません。";
 "search.noResultsHint" = "条件を減らす、価格帯を広げる、または型番で検索してみてください。";
 "search.clearAll" = "すべて解除";
@@ -128,5 +129,4 @@
 "common.retry" = "再試行";
 "settings.currencyNote" = "価格は日次レートで換算され、販売店の元の価格も常に表示されます。";
 "settings.changeLanguage" = "「設定」でアプリの言語を変更";
-"settings.languageNote" = "WatchCompare は iOS の言語設定に従います：English、繁體中文、日本語、Deutsch。";
-"search.title" = "検索結果";
+"settings.languageNote" = "WatchCompare は iOS の言語設定に従います：English、繁體中文、简体中文、日本語、Deutsch。";

@@ -39,7 +39,9 @@ fi
 "$SIMCTL" ui "$UDID" appearance light
 
 mkdir -p "$OUT"
-for spec in "en en US USD" "zh-Hant zh-Hant TW TWD" "ja ja JP JPY" "de de DE EUR"; do
+# LOCALES="zh-Hans de" limits the run to some of them.
+for spec in "en en US USD" "zh-Hant zh-Hant TW TWD" "zh-Hans zh-Hans CN CNY" "ja ja JP JPY" "de de DE EUR"; do
+  case " ${LOCALES:-en zh-Hant zh-Hans ja de} " in *" ${spec%% *} "*) ;; *) continue ;; esac
   set -- $spec
   locale=$1; language=$2; region=$3; currency=$4
   echo "==> $locale"

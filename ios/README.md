@@ -18,7 +18,7 @@ ios/
 │   │   ├── AppSettings.swift      # display currency + exchange rates
 │   │   ├── Localization.swift     # L10n.t("section.key") over the .strings tables
 │   │   ├── Views/                 # Home, results, filters, detail, brands, settings
-│   │   └── Resources/*.lproj      # en, zh-Hant, ja, de — keys mirror frontend/messages/*.json
+│   │   └── Resources/*.lproj      # en, zh-Hant, zh-Hans, ja, de — keys mirror frontend/messages/*.json
 │   └── Tests/WatchCompareKitTests # decoding, currency, query, recent searches, string tables
 └── project.yml                # XcodeGen spec, only needed to regenerate the .xcodeproj
 ```
@@ -63,7 +63,7 @@ Or run the WatchCompare scheme's tests in Xcode.
   `swift scripts/make-icon.swift <out.png> [size]` after changing the drawing.
 - **Screenshots**: `scripts/screenshots.sh` boots a 6.9" iPhone simulator (1320×2868, the size
   App Store Connect scales down for every other iPhone), sets the 9:41 status bar and runs the
-  `ScreenshotTests` UI test once per locale (en, zh-Hant, ja, de) against the live API. Output
+  `ScreenshotTests` UI test once per locale (en, zh-Hant, zh-Hans, ja, de) against the live API. Output
   lands in `Screenshots/iphone/<locale>/01-home.png … 05-brands.png` (git-ignored; regenerate as
   needed). The app also targets iPad, so App Store Connect additionally asks for 13" iPad
   screenshots (2064×2752): `DEVICE=ipad scripts/screenshots.sh` writes them to `Screenshots/ipad/`.

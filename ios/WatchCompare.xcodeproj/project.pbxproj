@@ -165,6 +165,7 @@
 				en,
 				Base,
 				"zh-Hant",
+				"zh-Hans",
 				ja,
 				de,
 			);

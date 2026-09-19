@@ -31,7 +31,7 @@ targets:
         APIBaseURL: $(API_BASE_URL)
         CFBundleDisplayName: WatchCompare
         CFBundleDevelopmentRegion: en
-        CFBundleLocalizations: [en, zh-Hant, ja, de]
+        CFBundleLocalizations: [en, zh-Hant, zh-Hans, ja, de]
         ITSAppUsesNonExemptEncryption: false
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true

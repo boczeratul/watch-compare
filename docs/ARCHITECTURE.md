@@ -86,9 +86,9 @@ Traditional Chinese while buyers search in any of four languages:
 
 * Next.js 16 App Router, all data fetched in Server Components from the Go API (`API_URL` is
   server-only), with `revalidate` windows per endpoint. Backend outages degrade to empty states.
-* `next-intl` with `[locale]` routing (`en`, `zh-TW`, `ja`, `de`; default locale un-prefixed).
+* `next-intl` with `[locale]` routing (`en`, `zh-TW`, `zh-CN`, `ja`, `de`; default locale un-prefixed).
 * Currency is a cookie (`wc_currency`, set through a Server Action); defaults per locale
-  (en→USD, zh-TW→TWD, ja→JPY, de→EUR). `<Price>` converts `price_usd` client-side with the rates
+  (en→USD, zh-TW→TWD, zh-CN→CNY, ja→JPY, de→EUR). `<Price>` converts `price_usd` client-side with the rates
   provided by the layout and always shows the seller's original price when it differs.
 * Listing images are hot-linked with `referrerPolicy="no-referrer"`; the Next image optimizer is
   disabled so no third-party image passes through Vercel.

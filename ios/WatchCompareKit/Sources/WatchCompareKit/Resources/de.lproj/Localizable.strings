@@ -15,6 +15,7 @@
 "home.popularBrands" = "Beliebte Marken";
 "home.newest" = "Neu eingestellt";
 "home.viewAll" = "Alle anzeigen";
+"search.title" = "Suchergebnisse";
 "search.noResults" = "Keine Uhren entsprechen diesen Filtern.";
 "search.noResultsHint" = "Entfernen Sie einen Filter, erweitern Sie den Preisbereich oder suchen Sie nach der Referenznummer.";
 "search.clearAll" = "Alle löschen";
@@ -128,5 +129,4 @@
 "common.retry" = "Erneut versuchen";
 "settings.currencyNote" = "Preise werden mit tagesaktuellen Wechselkursen umgerechnet; der Originalpreis des Verkäufers wird immer mit angezeigt.";
 "settings.changeLanguage" = "App-Sprache in den Einstellungen ändern";
-"settings.languageNote" = "WatchCompare folgt Ihrer iOS-Sprache: English, 繁體中文, 日本語 oder Deutsch.";
-"search.title" = "Suchergebnisse";
+"settings.languageNote" = "WatchCompare folgt Ihrer iOS-Sprache: English, 繁體中文, 简体中文, 日本語 oder Deutsch.";
