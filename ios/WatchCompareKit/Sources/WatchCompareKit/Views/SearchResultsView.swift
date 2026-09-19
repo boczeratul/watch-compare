@@ -74,7 +74,7 @@ struct SearchResultsView: View {
                 grid
             }
         }
-        .navigationTitle(L10n.resultsTitle(count: model.total, query: model.query.text))
+        .navigationTitle(model.query.text.isEmpty ? L10n.t("search.title") : model.query.text)
         .inlineNavigationTitle()
         .toolbar { toolbar }
         .sheet(isPresented: $showFilters) {
@@ -86,6 +86,12 @@ struct SearchResultsView: View {
 
     private var grid: some View {
         ScrollView {
+            if model.page > 0 {
+                Text(L10n.resultsTitle(count: model.total, query: model.query.text))
+                    .font(.subheadline).foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal).padding(.top, 8)
+            }
             LazyVGrid(columns: cardColumns, spacing: 16) {
                 ForEach(model.items) { l in
                     NavigationLink(value: l) { ListingCardView(listing: l) }
@@ -94,6 +100,7 @@ struct SearchResultsView: View {
                 }
             }
             .padding()
+            .accessibilityIdentifier("search.results")
             if model.loading { ProgressView().padding() }
             else if model.total > 0 {
                 Text(L10n.t("search.showing", model.items.count.formatted() as NSString, model.total.formatted() as NSString))
@@ -121,6 +128,7 @@ struct SearchResultsView: View {
                 Label(L10n.t("search.filters"), systemImage: "line.3.horizontal.decrease.circle")
                     .symbolVariant(model.query.activeFilterCount > 0 ? .fill : .none)
             }
+            .accessibilityIdentifier("search.filters")
             .badge(model.query.activeFilterCount)
         }
     }

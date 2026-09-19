@@ -129,3 +129,4 @@
 "settings.currencyNote" = "価格は日次レートで換算され、販売店の元の価格も常に表示されます。";
 "settings.changeLanguage" = "「設定」でアプリの言語を変更";
 "settings.languageNote" = "WatchCompare は iOS の言語設定に従います：English、繁體中文、日本語、Deutsch。";
+"search.title" = "検索結果";

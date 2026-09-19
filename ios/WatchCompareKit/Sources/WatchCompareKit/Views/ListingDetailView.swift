@@ -81,7 +81,7 @@ struct ListingDetailView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color.orange.opacity(0.15), in: RoundedRectangle(cornerRadius: 8))
                 }
-                ImageGallery(urls: l.imageUrls.compactMap(URL.init(string:)))
+                ImageGallery(urls: l.displayImageUrls.compactMap(URL.init(string:)))
                 header(l)
                 priceBox(l)
                 specs(l)
@@ -137,6 +137,7 @@ struct ListingDetailView: View {
                         .frame(maxWidth: .infinity).padding(.vertical, 6)
                 }
                 .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier("listing.viewOnSource")
             }
         }
         .padding()

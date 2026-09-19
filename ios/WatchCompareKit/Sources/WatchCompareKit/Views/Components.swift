@@ -8,7 +8,7 @@ struct RemoteImage: View {
         AsyncImage(url: url, transaction: Transaction(animation: .easeIn(duration: 0.15))) { phase in
             switch phase {
             case .success(let image):
-                image.resizable().aspectRatio(contentMode: contentMode)
+                image.resizable().aspectRatio(contentMode: contentMode).accessibilityIdentifier("image.loaded")
             case .failure:
                 placeholder(symbol: "photo")
             case .empty:

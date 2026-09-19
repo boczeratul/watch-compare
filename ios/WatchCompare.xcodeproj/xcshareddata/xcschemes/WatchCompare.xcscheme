@@ -5,12 +5,18 @@
          <BuildActionEntry buildForTesting = "YES" buildForRunning = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
             <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "WC0000000000000000000T01" BuildableName = "WatchCompare.app" BlueprintName = "WatchCompare" ReferencedContainer = "container:WatchCompare.xcodeproj"/>
          </BuildActionEntry>
+         <BuildActionEntry buildForTesting = "YES" buildForRunning = "NO" buildForProfiling = "NO" buildForArchiving = "NO" buildForAnalyzing = "NO">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "WC0000000000000000000T02" BuildableName = "WatchCompareUITests.xctest" BlueprintName = "WatchCompareUITests" ReferencedContainer = "container:WatchCompare.xcodeproj"/>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction buildConfiguration = "Debug" selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB" shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference skipped = "NO">
             <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "WatchCompareKitTests" BuildableName = "WatchCompareKitTests" BlueprintName = "WatchCompareKitTests" ReferencedContainer = "container:WatchCompareKit"/>
+         </TestableReference>
+         <TestableReference skipped = "NO">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "WC0000000000000000000T02" BuildableName = "WatchCompareUITests.xctest" BlueprintName = "WatchCompareUITests" ReferencedContainer = "container:WatchCompare.xcodeproj"/>
          </TestableReference>
       </Testables>
    </TestAction>

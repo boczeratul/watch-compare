@@ -25,6 +25,7 @@ struct BrandsView: View {
                     }
                 }
                 .searchable(text: $filter)
+                .accessibilityIdentifier("brands.list")
                 .overlay {
                     if filtered.isEmpty { ContentUnavailableView.search(text: filter) }
                 }

@@ -129,3 +129,4 @@
 "settings.currencyNote" = "Preise werden mit tagesaktuellen Wechselkursen umgerechnet; der Originalpreis des Verkäufers wird immer mit angezeigt.";
 "settings.changeLanguage" = "App-Sprache in den Einstellungen ändern";
 "settings.languageNote" = "WatchCompare folgt Ihrer iOS-Sprache: English, 繁體中文, 日本語 oder Deutsch.";
+"search.title" = "Suchergebnisse";

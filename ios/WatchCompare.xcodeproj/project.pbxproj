@@ -13,6 +13,7 @@
 /* Begin PBXFileReference section */
 		WC0000000000000000000F01 /* WatchCompare.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchCompare.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		WC0000000000000000000F02 /* WatchCompareKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = WatchCompareKit; sourceTree = "<group>"; };
+		WC0000000000000000000F03 /* WatchCompareUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WatchCompareUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -34,7 +35,22 @@
 			path = WatchCompare;
 			sourceTree = "<group>";
 		};
+		WC0000000000000000000G03 /* WatchCompareUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WatchCompareUITests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXContainerItemProxy section */
+		WC0000000000000000000Y01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = WC0000000000000000000R00 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = WC0000000000000000000T01;
+			remoteInfo = WatchCompare;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		WC0000000000000000000P02 /* Frameworks */ = {
@@ -45,6 +61,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		WC0000000000000000000P05 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -52,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				WC0000000000000000000G01 /* WatchCompare */,
+				WC0000000000000000000G03 /* WatchCompareUITests */,
 				WC0000000000000000000F02 /* WatchCompareKit */,
 				WC0000000000000000000G02 /* Products */,
 			);
@@ -61,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				WC0000000000000000000F01 /* WatchCompare.app */,
+				WC0000000000000000000F03 /* WatchCompareUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -91,6 +116,29 @@
 			productReference = WC0000000000000000000F01 /* WatchCompare.app */;
 			productType = "com.apple.product-type.application";
 		};
+		WC0000000000000000000T02 /* WatchCompareUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = WC0000000000000000000C03 /* Build configuration list for PBXNativeTarget "WatchCompareUITests" */;
+			buildPhases = (
+				WC0000000000000000000P04 /* Sources */,
+				WC0000000000000000000P05 /* Frameworks */,
+				WC0000000000000000000P06 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				WC0000000000000000000Z01 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				WC0000000000000000000G03 /* WatchCompareUITests */,
+			);
+			name = WatchCompareUITests;
+			packageProductDependencies = (
+			);
+			productName = WatchCompareUITests;
+			productReference = WC0000000000000000000F03 /* WatchCompareUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -103,6 +151,10 @@
 				TargetAttributes = {
 					WC0000000000000000000T01 = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					WC0000000000000000000T02 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = WC0000000000000000000T01;
 					};
 				};
 			};
@@ -127,12 +179,20 @@
 			projectRoot = "";
 			targets = (
 				WC0000000000000000000T01 /* WatchCompare */,
+				WC0000000000000000000T02 /* WatchCompareUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		WC0000000000000000000P03 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		WC0000000000000000000P06 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -149,7 +209,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		WC0000000000000000000P04 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		WC0000000000000000000Z01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = WC0000000000000000000T01 /* WatchCompare */;
+			targetProxy = WC0000000000000000000Y01 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		WC0000000000000000000X01 /* Debug */ = {
@@ -280,7 +355,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 96KTU78LQH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchCompare/Info.plist;
@@ -312,7 +387,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 96KTU78LQH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchCompare/Info.plist;
@@ -337,6 +412,54 @@
 			};
 			name = Release;
 		};
+		WC0000000000000000000X05 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hsuanlee.watchcompare.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WatchCompare;
+			};
+			name = Debug;
+		};
+		WC0000000000000000000X06 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hsuanlee.watchcompare.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WatchCompare;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -354,6 +477,15 @@
 			buildConfigurations = (
 				WC0000000000000000000X03 /* Debug */,
 				WC0000000000000000000X04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		WC0000000000000000000C03 /* Build configuration list for PBXNativeTarget "WatchCompareUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				WC0000000000000000000X05 /* Debug */,
+				WC0000000000000000000X06 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

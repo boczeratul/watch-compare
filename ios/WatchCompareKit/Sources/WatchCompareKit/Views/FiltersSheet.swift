@@ -68,13 +68,14 @@ struct FiltersSheet: View {
             }
             .navigationTitle(L10n.t("search.filters"))
             .inlineNavigationTitle()
+            .accessibilityIdentifier("filters.form")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(L10n.t("search.clearAll")) { draft = draft.clearingFilters() }
                         .disabled(draft.activeFilterCount == 0)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(L10n.t("search.apply")) { onApply(draft); dismiss() }
+                    Button(L10n.t("search.apply")) { onApply(draft); dismiss() }.accessibilityIdentifier("search.apply")
                 }
             }
         }

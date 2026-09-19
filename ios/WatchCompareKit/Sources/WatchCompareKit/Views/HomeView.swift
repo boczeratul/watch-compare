@@ -32,16 +32,13 @@ struct HomeView: View {
     @Environment(AppSettings.self) private var settings
     @State private var model = HomeModel()
     @State private var text = ""
-    @State private var searching = false
+    @FocusState private var searchFocused: Bool
     @State private var path = NavigationPath()
 
     var body: some View {
         NavigationStack(path: $path) {
             content
                 .navigationTitle("WatchCompare")
-                .searchable(text: $text, isPresented: $searching, prompt: L10n.t("home.searchPlaceholder"))
-                .searchSuggestions { suggestions }
-                .onSubmit(of: .search) { submit(text) }
                 .task { if !model.loaded { await model.load(api: api) } }
                 .refreshable { await model.load(api: api) }
                 .appDestinations()
@@ -52,7 +49,8 @@ struct HomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 hero
-                if !model.recent.isEmpty && !searching { recentSection }
+                searchBox
+                if !model.recent.isEmpty && !searchFocused { recentSection }
                 if !model.popularBrands.isEmpty { brandsSection }
                 if !model.newest.isEmpty { newestSection }
                 if !model.loaded { ProgressView().frame(maxWidth: .infinity).padding() }
@@ -139,29 +137,52 @@ struct HomeView: View {
                     NavigationLink(value: l) { ListingCardView(listing: l) }.buttonStyle(.plain)
                 }
             }
+            .accessibilityIdentifier("home.newest")
         }
     }
 
-    @ViewBuilder
-    private var suggestions: some View {
-        let matches = RecentSearchesStore.matches(in: model.recent, partial: text)
-        if !matches.isEmpty {
-            Section {
-                ForEach(matches, id: \.self) { q in
-                    Button { submit(q) } label: {
-                        Label(q, systemImage: "clock").foregroundStyle(.primary)
+    private var searchBox: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+                TextField(L10n.t("home.searchPlaceholder"), text: $text)
+                    .searchFieldStyle()
+                    .submitLabel(.search)
+                    .focused($searchFocused)
+                    .onSubmit { submit(text) }
+                    .accessibilityIdentifier("home.searchField")
+                if !text.isEmpty {
+                    Button { text = "" } label: {
+                        Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
                     }
-                    .swipeActions { Button(role: .destructive) { model.forget(q) } label: { Image(systemName: "trash") } }
+                    .buttonStyle(.plain)
                 }
-            } header: {
-                Text(L10n.t("home.recentSearches"))
+            }
+            .padding(.horizontal, 12).padding(.vertical, 11)
+            .background(Color.secondary.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
+            if searchFocused {
+                let matches = RecentSearchesStore.matches(in: model.recent, partial: text)
+                if !matches.isEmpty {
+                    VStack(alignment: .leading, spacing: 0) {
+                        ForEach(matches, id: \.self) { q in
+                            Button { submit(q) } label: {
+                                Label(q, systemImage: "clock")
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.vertical, 9).padding(.horizontal, 12)
+                            }
+                            .buttonStyle(.plain)
+                            Divider()
+                        }
+                    }
+                    .background(Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                }
             }
         }
     }
 
     private func submit(_ raw: String) {
         let q = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-        searching = false
+        searchFocused = false
         if !q.isEmpty { model.remember(q) }
         text = ""
         path.append(SearchQuery(text: q))

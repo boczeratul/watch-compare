@@ -129,3 +129,4 @@
 "settings.currencyNote" = "Prices convert with daily exchange rates; the seller's original price is always shown too.";
 "settings.changeLanguage" = "Change app language in Settings";
 "settings.languageNote" = "WatchCompare follows your iOS language: English, 繁體中文, 日本語 or Deutsch.";
+"search.title" = "Search results";

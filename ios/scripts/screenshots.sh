@@ -1,0 +1,48 @@
+#!/bin/sh
+# Captures App Store screenshots for every supported locale on a 6.9" iPhone simulator by running
+# the WatchCompareUITests/ScreenshotTests UI test against the live API.
+#
+#   ios/scripts/screenshots.sh [output-dir]        # default: ios/Screenshots
+#
+# Requires Xcode with an iOS simulator runtime (xcodebuild -downloadPlatform iOS). Set XCODE_DEV to
+# use a specific Xcode, e.g. XCODE_DEV=/Applications/Xcode.app/Contents/Developer.
+set -eu
+cd "$(dirname "$0")/.."
+OUT="${1:-$PWD/Screenshots}"
+DEV="${XCODE_DEV:-$(xcode-select -p)}"
+XCODEBUILD="$DEV/usr/bin/xcodebuild"
+SIMCTL="$DEV/usr/bin/simctl"
+DEVICE_TYPE="${DEVICE_TYPE:-com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max}"   # 6.9" → 1320×2868
+NAME="WatchCompare Screenshots"
+export DEVELOPER_DIR="$DEV"
+
+RUNTIME=$("$SIMCTL" list runtimes | grep -o 'com\.apple\.CoreSimulator\.SimRuntime\.iOS-[0-9-]*' | sort -V | tail -1)
+[ -n "$RUNTIME" ] || { echo "No iOS simulator runtime installed; run: xcodebuild -downloadPlatform iOS" >&2; exit 1; }
+UDID=$("$SIMCTL" list devices | grep "^ *$NAME (" | grep -o '[0-9A-F]\{8\}-[0-9A-F-]\{27\}' | head -1 || true)
+if [ -z "$UDID" ]; then
+  UDID=$("$SIMCTL" create "$NAME" "$DEVICE_TYPE" "$RUNTIME")
+fi
+"$SIMCTL" boot "$UDID" 2>/dev/null || true
+"$SIMCTL" bootstatus "$UDID" -b >/dev/null
+# App Store-style status bar: 9:41, full battery and signal.
+"$SIMCTL" status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --wifiBars 3 --cellularBars 4 --operatorName ""
+"$SIMCTL" ui "$UDID" appearance light
+
+mkdir -p "$OUT"
+for spec in "en en US USD" "zh-Hant zh-Hant TW TWD" "ja ja JP JPY" "de de DE EUR"; do
+  set -- $spec
+  locale=$1; language=$2; region=$3; currency=$4
+  echo "==> $locale"
+  # TEST_RUNNER_* must be environment variables of xcodebuild (not KEY=VALUE arguments, which
+  # would become build settings); xcodebuild strips the prefix and passes them to the test runner.
+  env TEST_RUNNER_SCREENSHOT_DIR="$OUT" TEST_RUNNER_SCREENSHOT_LOCALE="$locale" \
+      TEST_RUNNER_SCREENSHOT_LANGUAGE="$language" TEST_RUNNER_SCREENSHOT_REGION="$region" \
+      TEST_RUNNER_SCREENSHOT_CURRENCY="$currency" \
+  "$XCODEBUILD" test -project WatchCompare.xcodeproj -scheme WatchCompare -only-testing:WatchCompareUITests \
+    -destination "id=$UDID" -derivedDataPath "${DERIVED_DATA:-/tmp/watchcompare-dd}" \
+    CODE_SIGNING_ALLOWED=NO -quiet
+  test -f "$OUT/$locale/01-home.png" || { echo "no screenshots written for $locale" >&2; exit 1; }
+done
+"$SIMCTL" status_bar "$UDID" clear
+echo "Screenshots written to $OUT"
+find "$OUT" -name '*.png' | sort

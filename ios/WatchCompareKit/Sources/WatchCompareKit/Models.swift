@@ -93,7 +93,9 @@ public struct Listing: Decodable, Identifiable, Hashable, Sendable {
     public var lastSeenAt: Date
 
     public var externalURL: URL? { URL(string: url) }
-    public var firstImageURL: URL? { imageUrls.first.flatMap(URL.init(string:)) }
+    /// First image AsyncImage can decode: SVG badges (e.g. Chrono24's "certified" outline) are skipped.
+    public var displayImageUrls: [String] { imageUrls.filter { !$0.lowercased().hasSuffix(".svg") } }
+    public var firstImageURL: URL? { displayImageUrls.first.flatMap(URL.init(string:)) }
     public var location: String? {
         let parts = [locationCity, locationCountry].compactMap { $0 }.filter { !$0.isEmpty }
         return parts.isEmpty ? nil : parts.joined(separator: ", ")

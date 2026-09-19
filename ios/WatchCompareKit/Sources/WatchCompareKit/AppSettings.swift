@@ -46,6 +46,6 @@ public final class AppSettings {
     /// A USD amount converted and rounded for use as a placeholder or hint in the visitor's currency.
     public func hint(usd: Double?) -> String? {
         guard let usd, let c = Money.convertFromUSD(usd, to: currency, rates: rates) else { return nil }
-        return String(Int(Money.roundForDisplay(c, currency: currency)))
+        return Int(Money.roundForDisplay(c, currency: currency)).formatted()
     }
 }

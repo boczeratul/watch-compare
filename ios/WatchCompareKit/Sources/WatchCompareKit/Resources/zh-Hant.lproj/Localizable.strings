@@ -129,3 +129,4 @@
 "settings.currencyNote" = "價格依每日匯率換算，並同時顯示賣家的原始價格。";
 "settings.changeLanguage" = "在「設定」中變更 App 語言";
 "settings.languageNote" = "WatchCompare 會跟隨 iOS 的語言設定：English、繁體中文、日本語 或 Deutsch。";
+"search.title" = "搜尋結果";
