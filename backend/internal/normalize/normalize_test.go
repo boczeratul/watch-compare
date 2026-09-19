@@ -141,11 +141,68 @@ func TestDetectBoxPapers(t *testing.T) {
 		{"Full set with box and papers", b(true), b(true)},
 		{"Watch only, no box no papers", b(false), b(false)},
 		{"Submariner 2019 excellent", nil, nil},
+		// watch-only words used by HK / TW dealers (RWW writes both 淨錶 and 凈錶)
+		{"淨錶", b(false), b(false)},
+		{"凈錶", b(false), b(false)},
+		{"淨錶, 跟20格, 跟18K代用帶", b(false), b(false)},
+		{"淨錶 狀態: 40mm, 新卡!! 二手95%新", b(false), b(false)},
+		{"自動上鍊 裸錶無單", b(false), b(false)},
+		{"净表 无盒无单", b(false), b(false)},
+		{"2015年 單錶", b(false), b(false)},
+		{"原廠盒單 錶況極佳", b(true), b(true)}, // "盒單 錶" must not read as 單錶
+		{"本体のみ", b(false), b(false)},
+		{"付属品なし", b(false), b(false)},
+		// the watch plus exactly one accessory
+		{"一錶一紙", b(false), b(true)},
+		{"一表一紙 , 跟上行保養卡至2027年", b(false), b(true)},
+		{"一錶一證書", b(false), b(true)},
+		{"一錶一盒", b(true), b(false)},
+		// paper words that were missed
+		{"原廠錶盒＆原裝 2017 保證卡", b(true), b(true)},
+		{"原廠錶盒及天文台證書", b(true), b(true)},
+		{"2022 年國內 AD 保卡", nil, b(true)},
+		{"Full Set, 全齊, 跟AD單", b(true), b(true)},
+		{"有表盒 无保卡", b(true), b(false)},
+		{"箱のみ", b(true), b(false)},
+		{"保証書のみ", b(false), b(true)},
 	}
 	for _, c := range cases {
 		gb, gp := DetectBoxPapers(c.in)
 		if !eqb(gb, c.box) || !eqb(gp, c.papers) {
 			t.Errorf("DetectBoxPapers(%q) = %v,%v want %v,%v", c.in, fb(gb), fb(gp), fb(c.box), fb(c.papers))
+		}
+	}
+}
+
+func TestDetectAccessories(t *testing.T) {
+	b := func(v bool) *bool { return &v }
+	cases := []struct {
+		in          string
+		box, papers *bool
+	}{
+		{"", nil, nil},
+		{"   ", nil, nil},
+		{"-", b(false), b(false)},           // Lips: nothing included
+		{"箱", b(true), b(false)},            // Lips: box only
+		{"保証書(2008.06)", b(false), b(true)}, // Lips: papers only
+		{"箱 保証書(2026.08)", b(true), b(true)},
+		{"淨錶", b(false), b(false)}, // RWW
+		{"凈錶", b(false), b(false)},
+		{"Full Set, 全齊", b(true), b(true)},
+		{"一錶一紙", b(false), b(true)},
+		{"跟AD單", b(false), b(true)},
+		{"原盒1 保卡1 說明書2 吊牌2", b(true), b(true)}, // 仁川當舖
+		{"原盒1 保單1 說明書2 吊牌1", b(true), b(true)},
+		{"原盒1 說明書2 吊牌1", b(true), b(false)},
+		{"原盒1說明書2 &本公司出售證明", b(true), b(true)},
+		{"無盒 有保卡", b(false), b(true)}, // a naive "contains 盒" check got this wrong
+		{"盒", b(true), b(false)},      // JD Pawn note
+		{"盒、證", b(true), b(true)},
+	}
+	for _, c := range cases {
+		gb, gp := DetectAccessories(c.in)
+		if !eqb(gb, c.box) || !eqb(gp, c.papers) {
+			t.Errorf("DetectAccessories(%q) = %v,%v want %v,%v", c.in, fb(gb), fb(gp), fb(c.box), fb(c.papers))
 		}
 	}
 }

@@ -116,3 +116,40 @@ func TestBrandsAndBudget(t *testing.T) {
 		t.Errorf("brand slug alias not applied: %v", got)
 	}
 }
+
+// Certified listings render the "Certified" seal as an <img> ahead of the photo. It must never
+// become the listing's image (a third of stored Chrono24 listings had it as their first image).
+func TestCertifiedBadgeIsNotAPhoto(t *testing.T) {
+	const page = `<html><body>
+	<div class="article-item-container"><a href="/rolex/submariner-date--id12345678.htm">
+	  <img src="https://s.c24.media/images/default/certified/certified-filled.svg" alt="Certified">
+	  <img src="data:image/svg+xml;base64,AAAA" data-lazy-sweet-spot-master-src="https://img.chrono24.com/images/uhren/12345678-abcdef-Square_SIZE_.jpg" data-lazy-sweet-spot-derivate-widths="120,240,480">
+	  <div class="text-bold">Rolex Submariner Date</div><div class="text-sm">126610LN</div>
+	  <div class="wt-listing-item-price">$13,500</div></a></div>
+	<div class="article-item-container"><a href="/omega/speedmaster--id87654321.htm">
+	  <img data-src="https://s.c24.media/images/default/certified/certified-outline.svg?v=3">
+	  <div class="text-bold">Omega Speedmaster</div><div class="wt-listing-item-price">$6,200</div></a></div>
+	</body></html>`
+	doc, err := crawler.ParseHTML([]byte(page), "https://www.chrono24.com/search/index.htm")
+	if err != nil {
+		t.Fatal(err)
+	}
+	items := ParseList(doc)
+	if len(items) != 2 {
+		t.Fatalf("parsed %d listings, want 2", len(items))
+	}
+	if got := items[0].ImageURLs; len(got) != 1 || got[0] != "https://img.chrono24.com/images/uhren/12345678-abcdef-Square480.jpg" {
+		t.Errorf("certified card images = %v, want only the watch photo", got)
+	}
+	if got := items[1].ImageURLs; len(got) != 0 {
+		t.Errorf("card with only a badge must have no images, got %v", got)
+	}
+	for _, u := range []string{"https://s.c24.media/images/default/certified/certified-filled.svg", "https://x/y/ICON.SVG?v=1", "https://s.c24.media/images/default/flags/de.png"} {
+		if isPhoto(u) {
+			t.Errorf("isPhoto(%q) = true", u)
+		}
+	}
+	if !isPhoto("https://img.chrono24.com/images/uhren/1-a-Square480.jpg") {
+		t.Error("a CDN photo must pass isPhoto")
+	}
+}

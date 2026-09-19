@@ -170,10 +170,8 @@ func ParseList(doc *goquery.Document, categoryName string) []model.Listing {
 			l.ImageURLs = []string{stripQuery(crawler.AbsURL(doc, src))}
 		}
 		attrs := map[string]any{"category": categoryName}
-		if strings.Contains(title, "保卡") {
-			t := true
-			l.HasPapers = &t
-		}
+		// titles carry hints such as "保卡2022/JUN" or "裸錶無單"; the detail page refines them
+		l.HasBox, l.HasPapers = normalize.DetectBoxPapers(title)
 		l.Attributes, _ = json.Marshal(attrs)
 		out = append(out, l)
 	})
@@ -235,8 +233,7 @@ func ApplyDetail(l *model.Listing, doc *goquery.Document) {
 		return ""
 	}
 	if acc := pick("附件", "配件"); acc != "" {
-		box, papers := strings.Contains(acc, "盒"), strings.Contains(acc, "保卡") || strings.Contains(acc, "證")
-		l.HasBox, l.HasPapers = &box, &papers
+		l.HasBox, l.HasPapers = normalize.DetectAccessories(acc) // "原盒1 保單1 說明書2 吊牌1"
 		attrs["accessories"] = acc
 	}
 	if cond := pick("錶況", "目前錶況"); cond != "" {

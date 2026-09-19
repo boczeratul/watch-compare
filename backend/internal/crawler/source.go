@@ -2,6 +2,7 @@ package crawler
 
 import (
 	"context"
+	"strings"
 
 	"github.com/rs/zerolog"
 
@@ -66,6 +67,24 @@ func ComparisonPrice(l *model.Listing) (float64, bool) {
 		return *l.Price, true
 	}
 	return 0, false
+}
+
+// PhotoURLs drops image URLs that cannot be a photo of the watch. Marketplaces decorate their
+// cards with SVG badges and icons (Chrono24's "Certified" seal is the usual offender), and an <img>
+// sweep picks them up ahead of the real photo. No dealer publishes watch photos as SVG.
+func PhotoURLs(urls []string) []string {
+	out := urls[:0:0]
+	for _, u := range urls {
+		p := strings.ToLower(u)
+		if i := strings.IndexAny(p, "?#"); i >= 0 {
+			p = p[:i]
+		}
+		if strings.HasSuffix(p, ".svg") || strings.HasPrefix(p, "data:") {
+			continue
+		}
+		out = append(out, u)
+	}
+	return out
 }
 
 // EnrichFromTitle fills brand/reference/diameter/year/box-papers heuristically when the

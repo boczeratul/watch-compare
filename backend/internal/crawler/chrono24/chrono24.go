@@ -199,7 +199,7 @@ func ParseList(doc *goquery.Document) []model.Listing {
 		}
 		card.Find("img").Each(func(_ int, img *goquery.Selection) {
 			src := imageSrc(img)
-			if src != "" && !strings.HasPrefix(src, "data:") && len(l.ImageURLs) < 6 {
+			if src != "" && !strings.HasPrefix(src, "data:") && isPhoto(src) && len(l.ImageURLs) < 6 {
 				l.ImageURLs = append(l.ImageURLs, upscale(crawler.AbsURL(doc, src)))
 			}
 		})
@@ -257,6 +257,17 @@ func parsePrice(text string) (string, float64, bool) {
 		cur = map[string]string{"$": "USD", "€": "EUR", "£": "GBP", "¥": "JPY"}[m[1]]
 	}
 	return cur, p, true
+}
+
+// isPhoto rejects the decorations Chrono24 renders inside a card ahead of the watch photo: the
+// "Certified" badge (s.c24.media/images/default/certified/certified-filled.svg or -outline.svg),
+// flags and other icons. Photos live on img.chrono24.com and are never SVGs.
+func isPhoto(src string) bool {
+	u := strings.ToLower(src)
+	if i := strings.IndexAny(u, "?#"); i >= 0 {
+		u = u[:i]
+	}
+	return !strings.HasSuffix(u, ".svg") && !strings.Contains(u, "/images/default/")
 }
 
 // imageSrc returns the best image URL of a card <img>. Chrono24 lazy-loads photos: src is an

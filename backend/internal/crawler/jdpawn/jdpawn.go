@@ -158,8 +158,7 @@ func ParseList(doc *goquery.Document) []model.Listing {
 			}
 		}
 		if note := fields["附註"]; note != "" {
-			box, papers := strings.Contains(note, "盒"), strings.Contains(note, "證") || strings.Contains(note, "卡")
-			l.HasBox, l.HasPapers = &box, &papers
+			l.HasBox, l.HasPapers = normalize.DetectAccessories(note) // "盒、證", "盒", "無盒 有卡"
 		}
 		if c := fields["錶殼"]; c != "" {
 			l.CaseMaterial = normalize.CleanText(strings.TrimSuffix(strings.TrimSuffix(strings.Fields(c)[0], "材質錶殼"), "錶殼"))

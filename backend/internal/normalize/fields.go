@@ -180,10 +180,21 @@ func GenderType(s string) model.Gender {
 	return model.GenderUnknown
 }
 
-// DetectBoxPapers scans free text for box / papers mentions in English, Traditional Chinese and
-// Japanese. Explicit negatives ("無盒單", "no papers", "箱なし") set false; nil means unknown.
+var (
+	// "單錶" (watch only) must start a token: with CJK spaces squeezed out, "有盒單 錶況佳" would
+	// otherwise read as "…盒單錶況佳" and look like a watch-only listing.
+	watchOnlyTokenRe = regexp.MustCompile(`(^|[\s,，、;；:：/|()（）\[\]【】])(單錶|单表)`)
+	// "一錶一紙" / "一表一證書" / "一錶一卡": the watch plus exactly one accessory.
+	oneWatchOneRe = regexp.MustCompile(`一[錶表]一(盒|紙|纸|證書|证书|證|证|保卡|卡|單|单)`)
+)
+
+// DetectBoxPapers scans free text for box / papers mentions in English, Chinese (Traditional and
+// Simplified) and Japanese. Explicit negatives ("無盒單", "淨錶", "no papers", "箱なし") set false;
+// nil means the text says nothing either way. For a structured accessories field, where whatever
+// is not listed is absent, use DetectAccessories instead.
 func DetectBoxPapers(s string) (box, papers *bool) {
-	f := fold(s)
+	raw := fold(s)
+	f := raw
 	if hasCJK(f) {
 		f = strings.ReplaceAll(f, " ", "")
 	}
@@ -193,16 +204,39 @@ func DetectBoxPapers(s string) (box, papers *bool) {
 			*dst = v
 		}
 	}
-	// 1. explicit negatives first — they are more specific than the positive markers they contain
-	for _, m := range []string{"無盒單", "沒盒單", "無盒無單", "無盒及單", "不含盒單", "unbox&paper", "箱・保証書なし", "箱保証書なし", "no box or papers", "no box and papers", "no box/papers", "watch only", "head only"} {
+	// 0. "the watch plus one thing"
+	if m := oneWatchOneRe.FindStringSubmatch(f); m != nil {
+		if m[1] == "盒" {
+			set(&box, &t)
+			set(&papers, &no)
+		} else {
+			set(&papers, &t)
+			set(&box, &no)
+		}
+	}
+	// 1. explicit negatives first — they are more specific than the positive markers they contain.
+	// Watch-only words: 淨錶 / 凈錶 (HK dealers, both spellings occur), 裸錶 (TW pawn shops), 單錶,
+	// 本体のみ / 付属品なし (JP).
+	for _, m := range []string{
+		"淨錶", "凈錶", "淨表", "凈表", "净表", "裸錶", "裸表", "本体のみ", "時計のみ",
+		"付属品なし", "付属品無し", "付属品無", "付属なし", "付属無し",
+		"無盒單", "沒盒單", "無盒無單", "無盒及單", "不含盒單", "无盒单", "没盒单", "无盒无单",
+		"unbox&paper", "箱・保証書なし", "箱保証書なし", "箱保証書無し",
+		"no box or papers", "no box and papers", "no box/papers", "no accessories", "without accessories",
+		"watch only", "head only", "naked watch",
+	} {
 		if strings.Contains(f, m) {
 			set(&box, &no)
 			set(&papers, &no)
 		}
 	}
-	for _, m := range []string{"無盒", "沒盒", "不含盒", "缺盒", "no box", "without box", "箱なし", "box only"} {
+	if watchOnlyTokenRe.MatchString(raw) {
+		set(&box, &no)
+		set(&papers, &no)
+	}
+	for _, m := range []string{"無盒", "沒盒", "沒有盒", "不含盒", "缺盒", "無原盒", "無原廠盒", "無錶盒", "无盒", "没盒", "没有盒", "无表盒", "no box", "without box", "箱なし", "箱無し", "箱無", "箱のみ", "box only"} {
 		if strings.Contains(f, m) {
-			if m == "box only" {
+			if m == "box only" || m == "箱のみ" {
 				set(&box, &t)
 				set(&papers, &no)
 			} else {
@@ -210,9 +244,14 @@ func DetectBoxPapers(s string) (box, papers *bool) {
 			}
 		}
 	}
-	for _, m := range []string{"無單", "沒單", "無卡", "無保卡", "無保單", "缺單", "no papers", "no card", "no warranty", "without papers", "保証書なし", "ギャランティなし", "papers only"} {
+	for _, m := range []string{
+		"無單", "沒單", "無卡", "無保卡", "無保單", "無保證", "無證書", "缺單", "缺卡", "缺保卡", "沒有保卡", "沒有單",
+		"无单", "没单", "无卡", "无保卡", "无保单", "无证书", "缺单", "没有保卡",
+		"no papers", "no card", "no warranty", "without papers",
+		"保証書なし", "保証書無し", "保証書無", "ギャランティなし", "ギャラなし", "ギャラ無", "保証書のみ", "papers only",
+	} {
 		if strings.Contains(f, m) {
-			if m == "papers only" {
+			if m == "papers only" || m == "保証書のみ" {
 				set(&papers, &t)
 				set(&box, &no)
 			} else {
@@ -221,22 +260,57 @@ func DetectBoxPapers(s string) (box, papers *bool) {
 		}
 	}
 	// 2. both-in-one markers
-	for _, m := range []string{"full set", "fullset", "原廠盒單", "有盒單", "附盒單", "盒單齊", "盒單全", "盒單", "箱保", "箱・保証書あり", "箱保証書あり", "箱、保証書", "箱・保証書", "box and papers", "box & papers", "box/papers", "box, papers"} {
+	for _, m := range []string{
+		"full set", "fullset", "全套", "原廠盒單", "有盒單", "附盒單", "盒單齊", "盒單全", "盒單", "盒单", "盒卡", "盒證", "盒証", "盒证",
+		"箱保", "箱・保証書あり", "箱保証書あり", "箱、保証書", "箱・保証書",
+		"box and papers", "box & papers", "box/papers", "box, papers",
+	} {
 		if strings.Contains(f, m) {
 			set(&box, &t)
 			set(&papers, &t)
 		}
 	}
 	// 3. single markers
-	for _, m := range []string{"有盒", "附盒", "原廠盒", "錶盒", "box", "箱あり", "ボックス", "内箱", "外箱", "箱"} {
+	for _, m := range []string{"有盒", "附盒", "原廠盒", "原厂盒", "原盒", "錶盒", "表盒", "外盒", "內盒", "内盒", "木盒", "盒子", "box", "箱あり", "ボックス", "内箱", "外箱", "箱"} {
 		if strings.Contains(f, m) {
 			set(&box, &t)
 		}
 	}
-	for _, m := range []string{"有單", "附單", "保卡", "保單", "保證書", "保証書", "papers", "warranty card", "guarantee card", "card", "ギャランティ", "証書"} {
+	for _, m := range []string{
+		"有單", "附單", "有单", "附单", "跟單", "ad單", "ad单", "保卡", "新卡", "舊卡", "旧卡", "跟卡", "保單", "保单",
+		"保證卡", "保证卡", "保固卡", "保證書", "保证书", "保固書", "證書", "证书", "保証書", "証書",
+		"papers", "warranty card", "guarantee card", "card", "ギャランティ",
+	} {
 		if strings.Contains(f, m) {
 			set(&papers, &t)
 		}
+	}
+	return
+}
+
+// DetectAccessories reads a structured accessories field ("配件: 淨錶", "付属: 箱", "附件: 原盒1
+// 保單1"): the field lists everything that comes with the watch, so whatever it does not mention
+// is absent rather than unknown. An empty field stays unknown.
+func DetectAccessories(s string) (box, papers *bool) {
+	f := fold(s)
+	if f == "" {
+		return nil, nil
+	}
+	box, papers = DetectBoxPapers(s)
+	t, no := true, false
+	anyOf := func(markers ...string) *bool {
+		for _, m := range markers {
+			if strings.Contains(f, m) {
+				return &t
+			}
+		}
+		return &no
+	}
+	if box == nil {
+		box = anyOf("盒", "箱")
+	}
+	if papers == nil {
+		papers = anyOf("卡", "證", "証", "证", "保單", "保单")
 	}
 	return
 }

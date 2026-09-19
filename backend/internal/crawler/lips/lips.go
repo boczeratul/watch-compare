@@ -130,7 +130,8 @@ func ParseList(doc *goquery.Document) []model.Listing {
 			l.CaseMaterial = mat
 		}
 		if acc := rows["付属"]; acc != "" {
-			l.HasBox, l.HasPapers = normalize.DetectBoxPapers(acc)
+			// 付属 is an exhaustive list: "箱 保証書(2026.08)", "箱", "-" (nothing)
+			l.HasBox, l.HasPapers = normalize.DetectAccessories(acc)
 			l.Description = "付属: " + acc
 		}
 		attrs := map[string]any{"grade": rows["程度"], "accessories": rows["付属"], "listPrice": rows["定価"], "modelNumber": serial}

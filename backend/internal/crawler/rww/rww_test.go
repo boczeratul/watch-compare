@@ -1,6 +1,7 @@
 package rww
 
 import (
+	"encoding/json"
 	"os"
 	"testing"
 
@@ -103,5 +104,39 @@ func TestSoldAndCondition(t *testing.T) {
 		Desc: "<p>型號: Rolex&nbsp;<span>50529</span></p><p>配件: Full Set, 全齊</p><p>狀態: 新卡!!, 二手99%新, 2021年</p><p>***部分產品價格***</p>"})
 	if l.ReferenceNumber != "50529" || l.HasBox == nil || !*l.HasBox || l.HasPapers == nil || !*l.HasPapers || *l.Price != 124800 || l.Model != "Cellini" {
 		t.Errorf("description parsing: %+v", l)
+	}
+}
+
+// 配件 is an exhaustive accessories field: "淨錶" / "凈錶" (watch only) means no box and no papers,
+// and the value must stop where the next label (狀態, 年份, 銷售地點) starts.
+func TestAccessoriesField(t *testing.T) {
+	cases := []struct {
+		desc        string
+		box, papers bool
+		accessories string
+	}{
+		{"<p>型號: Rolex 116610LN</p><p>配件: 淨錶</p><p>狀態: 40mm, 二手95%新</p><p>銷售地點: 尖沙咀 店</p>", false, false, "淨錶"},
+		{"<p>型號: Rolex 16610</p><p>配件:&nbsp;<font>凈錶</font></p><p>狀態: 40mm, 新卡!!, 二手95%新</p>", false, false, "凈錶"},
+		{"<p>型號: Rolex 1601</p><p>配件: 淨錶, 跟20格, 跟18K代用帶</p><p>狀態: 36mm</p>", false, false, "淨錶, 跟20格, 跟18K代用帶"},
+		{"<p>型號: Patek Philippe 5146J</p><p>配件: 一錶一紙</p><p>狀態: 39mm</p>", false, true, "一錶一紙"},
+		{"<p>型號: Rolex 126610LN</p><p>配件: Full Set, 全齊, 跟AD單</p><p>狀態: 41mm, 100%全新 年份: 2026年 銷售地點: 尖沙咀店</p>", true, true, "Full Set, 全齊, 跟AD單"},
+	}
+	for _, c := range cases {
+		l, ok := ToListing(Record{LinkID: "z", Name: "Submariner系列 40mm 二手95%新 Rolex 116610LN(尖沙咀店)", MinFinPrice: "66800", Desc: c.desc})
+		if !ok {
+			t.Fatalf("listing skipped: %s", c.desc)
+		}
+		if l.HasBox == nil || *l.HasBox != c.box || l.HasPapers == nil || *l.HasPapers != c.papers {
+			t.Errorf("%q: box=%v papers=%v, want %v/%v", c.accessories, l.HasBox, l.HasPapers, c.box, c.papers)
+		}
+		var attrs map[string]any
+		if err := json.Unmarshal(l.Attributes, &attrs); err != nil || attrs["accessories"] != c.accessories {
+			t.Errorf("accessories attribute = %q, want %q", attrs["accessories"], c.accessories)
+		}
+	}
+	// no 配件 line at all: unknown, not "no"
+	l, _ := ToListing(Record{LinkID: "n", Name: "Datejust系列 36mm 二手 Rolex 1601(尖沙咀店)", MinFinPrice: "30000", Desc: "<p>型號: Rolex 1601</p><p>狀態: 36mm</p>"})
+	if l.HasBox != nil || l.HasPapers != nil {
+		t.Errorf("missing 配件 must stay unknown, got %v/%v", l.HasBox, l.HasPapers)
 	}
 }

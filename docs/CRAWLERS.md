@@ -56,6 +56,27 @@ carries on with the other sources; the job still exits 0. Silence the warning wi
 no tax handling of its own. If a site publishes its own 税抜 figure, parse it into `PriceExclTax`
 and the derivation will leave it alone.
 
+## Box and papers
+
+`normalize.DetectBoxPapers` reads free text (titles, prose descriptions) in English, Traditional and
+Simplified Chinese and Japanese. It returns `nil` when the text says nothing, and explicit
+negatives win over the positive words they contain. Watch-only wording means no box and no papers:
+淨錶 / 凈錶 (Hong Kong dealers write both), 裸錶 (Taiwanese pawn shops), a standalone 單錶, 本体のみ,
+付属品なし, "watch only". "一錶一紙" style phrases mean the watch plus exactly one accessory.
+
+`normalize.DetectAccessories` is for a **structured accessories field** that lists everything
+included, so whatever it does not mention is absent rather than unknown: RWW `配件` ("Full Set,
+全齊", "淨錶", "一錶一紙"), Lips `付属` ("箱 保証書(2026.08)", "箱", "-"), 仁川當舖 `附件` ("原盒1 保單1
+說明書2") and JD Pawn `附註`. An empty field stays unknown. Prose fields such as Watch & Time's
+附件狀況 keep the free-text detector.
+
+## Images
+
+The Runner passes every listing's images through `crawler.PhotoURLs`, which drops SVGs and data
+URIs: marketplaces decorate cards with badges, and an `<img>` sweep picks them up ahead of the
+photo. Chrono24's "Certified" seal (`s.c24.media/images/default/certified/certified-filled.svg`)
+is additionally rejected in its own parser together with everything under `/images/default/`.
+
 ## Non-watch items
 
 Dealers list straps, buckles and bracelet links under their watch brands. `normalize.NonWatchBrands`

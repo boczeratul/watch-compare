@@ -134,6 +134,7 @@ func (r *Runner) runOne(ctx context.Context, src model.Source) (err error) {
 			return nil
 		}
 		EnrichFromTitle(&l)
+		l.ImageURLs = PhotoURLs(l.ImageURLs)
 		ApplyTaxFreePrice(&l, src.Country)
 		if basis, ok := ComparisonPrice(&l); ok {
 			if usd, ok := r.conv.ToUSD(basis, l.Currency); ok {

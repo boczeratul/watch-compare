@@ -89,7 +89,10 @@ var (
 	tagRe     = regexp.MustCompile(`<[^>]+>`)
 	modelRe   = regexp.MustCompile(`型號[:：]\s*([^\n]+)`)
 	refTokRe  = regexp.MustCompile(`[A-Z0-9][A-Z0-9./-]{3,}`)
-	descLine  = regexp.MustCompile(`(配件|狀態|銷售地點)[:：]\s*([^\n]+)`)
+	descLine  = regexp.MustCompile(`(配件|狀態|年份|銷售地點)[:：]\s*([^\n]+)`)
+	// CleanText flattens the description's paragraphs to one line; this puts each "標籤:" field
+	// back on its own line so a field's value stops where the next label starts.
+	fieldBreak = regexp.MustCompile(`\s+(型號|配件|狀態|年份|銷售地點)([:：])`)
 )
 
 // Crawl discovers the watch categories and pages through each.
@@ -223,8 +226,9 @@ func ToListing(r Record) (model.Listing, bool) {
 		desc = strings.TrimSpace(desc[:i])
 	}
 	l.Description = desc
+	fields := fieldBreak.ReplaceAllString(desc, "\n$1$2")
 	modelLine := ""
-	if m := modelRe.FindStringSubmatch(strings.ReplaceAll(desc, " 配件", "\n配件")); m != nil {
+	if m := modelRe.FindStringSubmatch(fields); m != nil {
 		modelLine = strings.TrimSpace(m[1])
 	}
 	if b := normalize.DetectBrand(modelLine, name); b != nil {
@@ -249,11 +253,12 @@ func ToListing(r Record) (model.Listing, bool) {
 	if m := storeRe.FindStringSubmatch(name); m != nil {
 		attrs["store"] = m[1]
 	}
-	for _, m := range descLine.FindAllStringSubmatch(strings.ReplaceAll(desc, " 配件", "\n配件"), -1) {
-		key := map[string]string{"配件": "accessories", "狀態": "state", "銷售地點": "storeLocation"}[m[1]]
+	for _, m := range descLine.FindAllStringSubmatch(fields, -1) {
+		key := map[string]string{"配件": "accessories", "狀態": "state", "年份": "yearNote", "銷售地點": "storeLocation"}[m[1]]
 		attrs[key] = strings.TrimSpace(m[2])
 		if m[1] == "配件" {
-			l.HasBox, l.HasPapers = normalize.DetectBoxPapers(m[2])
+			// 配件 lists everything included: "Full Set, 全齊", "淨錶" (watch only), "一錶一紙"…
+			l.HasBox, l.HasPapers = normalize.DetectAccessories(m[2])
 		}
 	}
 	var tags []string
