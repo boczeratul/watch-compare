@@ -2,18 +2,28 @@
 # Captures App Store screenshots for every supported locale on a 6.9" iPhone simulator by running
 # the WatchCompareUITests/ScreenshotTests UI test against the live API.
 #
-#   ios/scripts/screenshots.sh [output-dir]        # default: ios/Screenshots
+#   ios/scripts/screenshots.sh [output-dir]        # default: ios/Screenshots/<device>
+#   DEVICE=ipad ios/scripts/screenshots.sh         # 13" iPad (2064×2752) instead of the 6.9" iPhone
 #
 # Requires Xcode with an iOS simulator runtime (xcodebuild -downloadPlatform iOS). Set XCODE_DEV to
 # use a specific Xcode, e.g. XCODE_DEV=/Applications/Xcode.app/Contents/Developer.
 set -eu
 cd "$(dirname "$0")/.."
-OUT="${1:-$PWD/Screenshots}"
+DEVICE="${DEVICE:-iphone}"
+OUT="${1:-$PWD/Screenshots/$DEVICE}"
 DEV="${XCODE_DEV:-$(xcode-select -p)}"
 XCODEBUILD="$DEV/usr/bin/xcodebuild"
 SIMCTL="$DEV/usr/bin/simctl"
-DEVICE_TYPE="${DEVICE_TYPE:-com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max}"   # 6.9" → 1320×2868
-NAME="WatchCompare Screenshots"
+# Device-type identifiers vary between Xcode releases (…-M4, …-M4-8GB, …-M5), so pick the first
+# matching one installed. Override with DEVICE_TYPE=<identifier> if you need a specific model.
+pick_type() { "$SIMCTL" list devicetypes | grep -o "com\.apple\.CoreSimulator\.SimDeviceType\.$1[A-Za-z0-9-]*" | head -1; }
+case "$DEVICE" in
+  iphone) DEVICE_TYPE="${DEVICE_TYPE:-$(pick_type iPhone-17-Pro-Max)}" ;;  # 6.9" → 1320×2868
+  ipad)   DEVICE_TYPE="${DEVICE_TYPE:-$(pick_type iPad-Pro-13-inch)}" ;;   # 13"  → 2064×2752
+  *) echo "DEVICE must be iphone or ipad" >&2; exit 1 ;;
+esac
+[ -n "$DEVICE_TYPE" ] || { echo "No simulator device type found for $DEVICE" >&2; exit 1; }
+NAME="WatchCompare Screenshots ($DEVICE)"
 export DEVELOPER_DIR="$DEV"
 
 RUNTIME=$("$SIMCTL" list runtimes | grep -o 'com\.apple\.CoreSimulator\.SimRuntime\.iOS-[0-9-]*' | sort -V | tail -1)

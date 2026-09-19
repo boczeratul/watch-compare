@@ -69,8 +69,12 @@ final class ScreenshotTests: XCTestCase {
         waitForImages()
         try snap("04-listing")
 
-        // 5. Brands tab.
-        app.tabBars.buttons.element(boundBy: 1).tap()
+        // 5. Brands tab. iPhone exposes a TabBar; the iPad floating tab bar only exposes plain
+        // buttons whose identifier is the tab's SF Symbol name.
+        let tabBarItem = app.tabBars.buttons.element(boundBy: 1)
+        let brandsTab = tabBarItem.waitForExistence(timeout: 3) ? tabBarItem : app.buttons["list.bullet"].firstMatch
+        XCTAssertTrue(brandsTab.waitForExistence(timeout: 10), "brands tab missing")
+        brandsTab.tap()
         XCTAssertTrue(app.descendants(matching: .any)["brands.list"].waitForExistence(timeout: 30))
         XCTAssertTrue(app.cells.firstMatch.waitForExistence(timeout: 30), "brands did not load")
         waitForNetwork(seconds: 1)
