@@ -144,7 +144,8 @@
   },
   "footer": {
     "disclaimer": "Prices are indexed once a day and converted with daily exchange rates. Always verify the final price with the seller. WatchCompare is not affiliated with any marketplace.",
-    "sources": "Sources"
+    "sources": "Sources",
+    "privacy": "Privacy policy"
   },
   "common": {
     "loading": "Loading…",
@@ -172,5 +173,45 @@
     "meteorite": "Meteorite",
     "cream": "Cream / ivory",
     "bronze": "Bronze"
+  },
+  "privacy": {
+    "title": "Privacy policy",
+    "updatedOn": "2026-09-19",
+    "updated": "Last updated {date}",
+    "intro": "WatchCompare is a price-comparison index for watches. This policy explains what the website and the WatchCompare iOS app collect, and what they do not. The short version: no accounts, no tracking, no advertising, and nothing about you is sold or shared.",
+    "scopeTitle": "What this covers",
+    "scopeBody": [
+      "This policy applies to the WatchCompare website and the WatchCompare app for iPhone and iPad. Both read from the same public listing index. Marketplaces and sellers we link to have their own privacy policies."
+    ],
+    "collectTitle": "What we collect",
+    "collectBody": [
+      "Server logs. When you load a page or the app requests data, our hosting providers (Vercel for the website, Google Cloud Run for the API) record standard request logs: your IP address, the page or endpoint requested, the time, and your browser or app version. We use these only to keep the service running and to diagnose problems. Logs are kept for up to 30 days and then deleted.",
+      "Preferences. The website stores your chosen display currency and language in cookies so that pages render in your currency on the next visit. These cookies contain no identifier and are not used for tracking. Your recent searches are saved in your browser's local storage so they can be suggested again; they never leave your device.",
+      "The iOS app stores the same preferences (display currency and recent searches) on your device only. The app sends the search filters you choose to our API in order to return results; it does not send your name, contacts, location, photos or device identifiers."
+    ],
+    "notCollectTitle": "What we do not collect",
+    "notCollectBody": [
+      "There are no user accounts, so we hold no names, e-mail addresses or passwords. We use no analytics, advertising or tracking SDKs, no fingerprinting and no cross-site cookies. We do not sell, rent or share any data with third parties for their own purposes."
+    ],
+    "thirdPartiesTitle": "Third parties",
+    "thirdPartiesBody": [
+      "Listing photos are loaded directly from the marketplace that published the listing (for example Chrono24, eBay or a dealer's own site). When your browser or the app fetches a photo, that marketplace's servers see your IP address and standard request information, just as if you visited their site.",
+      "When you follow a link to a seller, you leave WatchCompare and the seller's terms and privacy policy apply.",
+      "The website is hosted on Vercel and the API on Google Cloud (region asia-east1, Taiwan). Both providers process request data on our behalf under their own privacy commitments."
+    ],
+    "choicesTitle": "Your choices",
+    "choicesBody": [
+      "You can clear the currency and language cookies and the recent-search history at any time by clearing this site's data in your browser. In the app, use “Clear” next to Recent searches, or delete the app to remove all of its stored preferences. Because we keep no account data, there is nothing else to export or delete; if you believe a log entry concerns you, contact us and we will help."
+    ],
+    "childrenTitle": "Children",
+    "childrenBody": [
+      "WatchCompare is not directed at children under 13 and we do not knowingly collect any information from them."
+    ],
+    "changesTitle": "Changes to this policy",
+    "changesBody": [
+      "If we change how the website or the app handles data, we will update this page and the date at the top."
+    ],
+    "contactTitle": "Contact",
+    "contactBody": "Questions about this policy can be raised on the project's issue tracker:"
   }
 }

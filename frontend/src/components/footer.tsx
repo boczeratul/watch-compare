@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import type { Source } from "@/lib/api";
 
 export async function Footer({ sources }: { sources: Source[] }) {
@@ -21,7 +22,10 @@ export async function Footer({ sources }: { sources: Source[] }) {
             </ul>
           </div>
         </div>
-        <p className="mt-8 text-xs text-slate-400">© {new Date().getFullYear()} WatchCompare</p>
+        <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
+          <span>© {new Date().getFullYear()} WatchCompare</span>
+          <Link href="/privacy" className="hover:text-slate-700">{t("privacy")}</Link>
+        </p>
       </div>
     </footer>
   );

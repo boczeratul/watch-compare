@@ -144,7 +144,8 @@
   },
   "footer": {
     "disclaimer": "Preise werden einmal täglich indexiert und mit Tageskursen umgerechnet. Prüfen Sie den Endpreis immer beim Verkäufer. WatchCompare ist mit keinem Marktplatz verbunden.",
-    "sources": "Quellen"
+    "sources": "Quellen",
+    "privacy": "Datenschutz"
   },
   "common": {
     "loading": "Lädt…",
@@ -172,5 +173,45 @@
     "meteorite": "Meteorit",
     "cream": "Creme / Elfenbein",
     "bronze": "Bronze"
+  },
+  "privacy": {
+    "title": "Datenschutzerklärung",
+    "updatedOn": "2026-09-19",
+    "updated": "Zuletzt aktualisiert am {date}",
+    "intro": "WatchCompare ist ein Preisvergleichsindex für Uhren. Diese Erklärung beschreibt, welche Daten die Website und die WatchCompare-App für iOS erheben – und welche nicht. Kurz gesagt: keine Konten, kein Tracking, keine Werbung, und nichts über Sie wird verkauft oder weitergegeben.",
+    "scopeTitle": "Geltungsbereich",
+    "scopeBody": [
+      "Diese Erklärung gilt für die WatchCompare-Website und die WatchCompare-App für iPhone und iPad. Beide greifen auf denselben öffentlichen Angebotsindex zu. Marktplätze und Verkäufer, auf die wir verlinken, haben eigene Datenschutzerklärungen."
+    ],
+    "collectTitle": "Welche Daten wir erheben",
+    "collectBody": [
+      "Server-Logs. Wenn Sie eine Seite laden oder die App Daten abruft, zeichnen unsere Hosting-Anbieter (Vercel für die Website, Google Cloud Run für die API) übliche Zugriffsprotokolle auf: Ihre IP-Adresse, die angeforderte Seite bzw. den Endpunkt, den Zeitpunkt sowie Ihre Browser- oder App-Version. Wir nutzen sie ausschließlich für den Betrieb und die Fehlersuche. Die Protokolle werden bis zu 30 Tage aufbewahrt und dann gelöscht.",
+      "Einstellungen. Die Website speichert Ihre gewählte Anzeigewährung und Sprache in Cookies, damit Seiten beim nächsten Besuch in Ihrer Währung erscheinen. Diese Cookies enthalten keine Kennung und dienen nicht dem Tracking. Ihre letzten Suchen werden im lokalen Speicher Ihres Browsers abgelegt, um sie erneut vorzuschlagen; sie verlassen Ihr Gerät nicht.",
+      "Die iOS-App speichert dieselben Einstellungen (Anzeigewährung und letzte Suchen) ausschließlich auf Ihrem Gerät. Die App sendet die von Ihnen gewählten Suchfilter an unsere API, um Ergebnisse zu liefern; Name, Kontakte, Standort, Fotos oder Gerätekennungen werden nicht übertragen."
+    ],
+    "notCollectTitle": "Welche Daten wir nicht erheben",
+    "notCollectBody": [
+      "Es gibt keine Benutzerkonten, daher speichern wir weder Namen noch E-Mail-Adressen oder Passwörter. Wir setzen keine Analyse-, Werbe- oder Tracking-SDKs, kein Fingerprinting und keine seitenübergreifenden Cookies ein. Wir verkaufen, vermieten oder teilen keine Daten mit Dritten für deren eigene Zwecke."
+    ],
+    "thirdPartiesTitle": "Dritte",
+    "thirdPartiesBody": [
+      "Angebotsfotos werden direkt vom Marktplatz geladen, der das Angebot veröffentlicht hat (z. B. Chrono24, eBay oder die Website eines Händlers). Wenn Ihr Browser oder die App ein Foto abruft, sehen die Server dieses Marktplatzes Ihre IP-Adresse und übliche Anfragedaten – so, als hätten Sie dessen Website besucht.",
+      "Wenn Sie einem Link zu einem Verkäufer folgen, verlassen Sie WatchCompare; es gelten dann die Bedingungen und die Datenschutzerklärung des Verkäufers.",
+      "Die Website wird bei Vercel gehostet, die API bei Google Cloud (Region asia-east1, Taiwan). Beide Anbieter verarbeiten Anfragedaten in unserem Auftrag gemäß ihren eigenen Datenschutzverpflichtungen."
+    ],
+    "choicesTitle": "Ihre Möglichkeiten",
+    "choicesBody": [
+      "Sie können die Währungs- und Sprach-Cookies sowie den Suchverlauf jederzeit löschen, indem Sie die Website-Daten in Ihrem Browser entfernen. In der App nutzen Sie „Löschen“ neben „Letzte Suchen“ oder deinstallieren die App, um alle gespeicherten Einstellungen zu entfernen. Da wir keine Kontodaten führen, gibt es nichts weiter zu exportieren oder zu löschen; falls Sie glauben, dass ein Protokolleintrag Sie betrifft, kontaktieren Sie uns – wir helfen weiter."
+    ],
+    "childrenTitle": "Kinder",
+    "childrenBody": [
+      "WatchCompare richtet sich nicht an Kinder unter 13 Jahren, und wir erheben wissentlich keine Daten von ihnen."
+    ],
+    "changesTitle": "Änderungen dieser Erklärung",
+    "changesBody": [
+      "Ändert sich der Umgang der Website oder der App mit Daten, aktualisieren wir diese Seite und das Datum oben."
+    ],
+    "contactTitle": "Kontakt",
+    "contactBody": "Fragen zu dieser Erklärung können Sie im Issue-Tracker des Projekts stellen:"
   }
 }
