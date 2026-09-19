@@ -1,0 +1,9 @@
+{
+  "id" : "45fd37fe-719c-4f91-8a93-e33ab80bc60f",
+  "targets" : [
+    {
+      "id" : "f61e23a8-8f31-490a-9c79-40f202ab7b42",
+      "name" : "WatchCompare"
+    }
+  ]
+}

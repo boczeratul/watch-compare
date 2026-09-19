@@ -145,7 +145,8 @@
   "footer": {
     "disclaimer": "Preise werden einmal täglich indexiert und mit Tageskursen umgerechnet. Prüfen Sie den Endpreis immer beim Verkäufer. WatchCompare ist mit keinem Marktplatz verbunden.",
     "sources": "Quellen",
-    "privacy": "Datenschutz"
+    "privacy": "Datenschutz",
+    "support": "Support"
   },
   "common": {
     "loading": "Lädt…",
@@ -212,6 +213,30 @@
       "Ändert sich der Umgang der Website oder der App mit Daten, aktualisieren wir diese Seite und das Datum oben."
     ],
     "contactTitle": "Kontakt",
-    "contactBody": "Fragen zu dieser Erklärung können Sie im Issue-Tracker des Projekts stellen:"
+    "contactBody": "Fragen zu dieser Erklärung richten Sie bitte an"
+  },
+  "support": {
+    "title": "Support",
+    "intro": "Hilfe zur WatchCompare-Website und zur WatchCompare-App für iPhone und iPad.",
+    "contactTitle": "Kontakt",
+    "contactBody": "Falscher Preis, ein Angebot, das nicht hierhergehört, oder ein Fehler? Schreiben Sie uns eine E-Mail – möglichst mit dem Link zum Angebot oder einem Screenshot.",
+    "issuesBody": "Entwickler können Probleme auch melden oder Quellen vorschlagen auf",
+    "responseTime": "Wir antworten in der Regel innerhalb von zwei Werktagen.",
+    "faqTitle": "Häufige Fragen",
+    "faq": {
+      "outdatedQ": "Ein Angebot wird als nicht mehr verfügbar angezeigt.",
+      "outdatedA": "Wir indexieren jeden Marktplatz einmal pro Nacht (02:00 Uhr Taipeh). Eine tagsüber verkaufte Uhr bleibt bis zum nächsten Crawl sichtbar und wird dann als nicht verfügbar markiert. Maßgeblich ist immer die Seite des Verkäufers.",
+      "priceQ": "Der angezeigte Preis weicht von der Verkäuferseite ab.",
+      "priceA": "Preise werden mit tagesaktuellen Wechselkursen umgerechnet und gerundet; japanische Händler werden mit dem für den Export geltenden Nettopreis angezeigt. Den exakten Preis samt Steuern und Versand finden Sie beim Verkäufer.",
+      "currencyQ": "Wie ändere ich Währung oder Sprache?",
+      "currencyA": "Auf der Website über die Menüs in der Kopfzeile. In der App unter Einstellungen für die Währung; die Sprache folgt Ihrer iOS-Spracheinstellung.",
+      "wrongDataQ": "Bei einem Angebot stimmen Marke, Referenz oder Zustand nicht.",
+      "wrongDataA": "Die Details werden automatisch von der Verkäuferseite ausgelesen und vereinheitlicht, dabei passieren Fehler. Schicken Sie uns den Link zum Angebot, und wir korrigieren die verantwortliche Regel.",
+      "sourcesQ": "Könnt ihr einen Marktplatz oder Händler hinzufügen?",
+      "sourcesA": "Möglicherweise. Wir indexieren nur Seiten, deren Bedingungen das erlauben. Nennen Sie uns die Seite, wir schauen sie uns an.",
+      "dataQ": "Was speichert ihr über mich?",
+      "dataA": "Kein Konto, kein Tracking. Ihre Währungswahl und die letzten Suchen bleiben auf Ihrem Gerät. Details stehen in der Datenschutzerklärung."
+    },
+    "privacyLink": "Datenschutzerklärung"
   }
 }

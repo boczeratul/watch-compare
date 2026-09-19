@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { SUPPORT_EMAIL, ISSUES_URL } from "@/lib/contact";
 
 const SECTIONS = ["scope", "collect", "notCollect", "thirdParties", "choices", "children", "changes"] as const;
-const CONTACT_URL = "https://github.com/boczeratul/watch-compare/issues";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -33,7 +33,9 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
         <h2 className="text-xl font-semibold text-slate-900">{t("contactTitle")}</h2>
         <p className="mt-3 text-base leading-relaxed text-slate-700">
           {t("contactBody")}{" "}
-          <a href={CONTACT_URL} target="_blank" rel="noopener noreferrer" className="underline">{CONTACT_URL}</a>
+          <a href={`mailto:${SUPPORT_EMAIL}`} className="underline">{SUPPORT_EMAIL}</a>
+          {" · "}
+          <a href={ISSUES_URL} target="_blank" rel="noopener noreferrer" className="underline">GitHub</a>
         </p>
       </section>
     </article>

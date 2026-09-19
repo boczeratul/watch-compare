@@ -24,6 +24,7 @@ export async function Footer({ sources }: { sources: Source[] }) {
         </div>
         <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
           <span>© {new Date().getFullYear()} WatchCompare</span>
+          <Link href="/support" className="hover:text-slate-700">{t("support")}</Link>
           <Link href="/privacy" className="hover:text-slate-700">{t("privacy")}</Link>
         </p>
       </div>

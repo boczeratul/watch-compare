@@ -145,7 +145,8 @@
   "footer": {
     "disclaimer": "Prices are indexed once a day and converted with daily exchange rates. Always verify the final price with the seller. WatchCompare is not affiliated with any marketplace.",
     "sources": "Sources",
-    "privacy": "Privacy policy"
+    "privacy": "Privacy policy",
+    "support": "Support"
   },
   "common": {
     "loading": "Loading…",
@@ -212,6 +213,30 @@
       "If we change how the website or the app handles data, we will update this page and the date at the top."
     ],
     "contactTitle": "Contact",
-    "contactBody": "Questions about this policy can be raised on the project's issue tracker:"
+    "contactBody": "Questions about this policy can be sent to"
+  },
+  "support": {
+    "title": "Support",
+    "intro": "Help for the WatchCompare website and the WatchCompare app for iPhone and iPad.",
+    "contactTitle": "Contact us",
+    "contactBody": "Found a wrong price, a listing that should not be there, or a bug? Email us and include the listing link or a screenshot if you can.",
+    "issuesBody": "Developers can also report problems or suggest sources on",
+    "responseTime": "We usually reply within two working days.",
+    "faqTitle": "Frequently asked questions",
+    "faq": {
+      "outdatedQ": "A listing says it is no longer available.",
+      "outdatedA": "We re-index every marketplace once a night (02:00 Taipei time). A watch sold during the day stays visible until the next crawl, and is then marked unavailable. The seller's page is always the source of truth.",
+      "priceQ": "The price shown differs from the seller's page.",
+      "priceA": "Prices are converted with daily exchange rates and rounded, and Japanese dealers are shown at the tax-free amount used for export. Tap through to the seller for the exact price, tax and shipping.",
+      "currencyQ": "How do I change the currency or language?",
+      "currencyA": "On the website use the menus in the header. In the app, open Settings for the currency; the language follows your iOS language setting.",
+      "wrongDataQ": "A listing has the wrong brand, reference or condition.",
+      "wrongDataA": "Details are extracted automatically from the seller's page and normalized, so mistakes happen. Email us the listing link and we will fix the rule that caused it.",
+      "sourcesQ": "Can you add a marketplace or dealer?",
+      "sourcesA": "Possibly. We only index sites whose terms allow it. Send us the site and we will take a look.",
+      "dataQ": "What do you store about me?",
+      "dataA": "No account, no tracking. Your currency choice and recent searches stay on your device. See the privacy policy for the full picture."
+    },
+    "privacyLink": "Privacy policy"
   }
 }
