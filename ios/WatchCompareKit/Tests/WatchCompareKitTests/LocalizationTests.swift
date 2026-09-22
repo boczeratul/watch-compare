@@ -48,6 +48,27 @@ final class LocalizationTests: XCTestCase {
         for s in SortKey.allCases { XCTAssertTrue(en.contains("sort.\(s.rawValue)")) }
     }
 
+    /// Every "%" in a table must be a positional/typed specifier or an escaped "%%": a bare
+    /// "%1$d%" once rendered "11% cheaper" as "11heaper".
+    func testNoStrayPercentSpecifiers() throws {
+        let valid = try NSRegularExpression(pattern: #"%(\d+\$)?[@d]|%%"#)
+        for loc in ["en", "zh-Hant", "zh-Hans", "ja", "de"] {
+            let url = packageRoot.appending(path: "Sources/WatchCompareKit/Resources/\(loc).lproj/Localizable.strings")
+            let text = try String(contentsOf: url, encoding: .utf8)
+            for line in text.split(separator: "\n") where line.hasPrefix("\"") {
+                var value = String(line)
+                let ns = value as NSString
+                value = valid.stringByReplacingMatches(in: value, range: NSRange(location: 0, length: ns.length), withTemplate: "")
+                XCTAssertFalse(value.contains("%"), "\(loc): stray % in \(line)")
+            }
+        }
+    }
+
+    func testSaveVsRendersPercentSign() {
+        XCTAssertEqual(L10n.t("listing.saveVs", 11), "11% cheaper than the next offer")
+        XCTAssertEqual(L10n.t("search.price", "TWD" as NSString), "Price (TWD)")
+    }
+
     func testLookupsResolve() {
         XCTAssertEqual(L10n.dial("black"), "Black")
         XCTAssertEqual(L10n.dial("teal_blue"), "Teal Blue")
