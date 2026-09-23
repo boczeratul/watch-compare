@@ -177,9 +177,9 @@
   },
   "privacy": {
     "title": "Privacy policy",
-    "updatedOn": "2026-09-19",
+    "updatedOn": "2026-09-23",
     "updated": "Last updated {date}",
-    "intro": "WatchCompare is a price-comparison index for watches. This policy explains what the website and the WatchCompare iOS app collect, and what they do not. The short version: no accounts, no tracking, no advertising, and nothing about you is sold or shared.",
+    "intro": "WatchCompare is a price-comparison index for watches. This policy explains what the website and the WatchCompare iOS app collect, and what they do not. The short version: no accounts, no advertising, anonymous usage statistics only, and nothing about you is sold or shared.",
     "scopeTitle": "What this covers",
     "scopeBody": [
       "This policy applies to the WatchCompare website and the WatchCompare app for iPhone and iPad. Both read from the same public listing index. Marketplaces and sellers we link to have their own privacy policies."
@@ -187,12 +187,14 @@
     "collectTitle": "What we collect",
     "collectBody": [
       "Server logs. When you load a page or the app requests data, our hosting providers (Vercel for the website, Google Cloud Run for the API) record standard request logs: your IP address, the page or endpoint requested, the time, and your browser or app version. We use these only to keep the service running and to diagnose problems. Logs are kept for up to 30 days and then deleted.",
+      "Usage analytics. We use Amplitude to count searches and listing views on the website and in the app, so we can see which brands, references and marketplaces people look for. Each event carries the search terms and filters or the listing opened, your display currency and language, the platform, a random identifier for your browser or device, and a coarse location that Amplitude derives from your IP address. Events never contain a name, e-mail address or advertising identifier. Amplitude stores them on our behalf in the United States under its own privacy policy.",
       "Preferences. The website stores your chosen display currency and language in cookies so that pages render in your currency on the next visit. These cookies contain no identifier and are not used for tracking. Your recent searches are saved in your browser's local storage so they can be suggested again; they never leave your device.",
-      "The iOS app stores the same preferences (display currency and recent searches) on your device only. The app sends the search filters you choose to our API in order to return results; it does not send your name, contacts, location, photos or device identifiers."
+      "The iOS app stores the same preferences (display currency and recent searches) on your device only. The app sends the search filters you choose to our API in order to return results; it does not send your name, contacts, location, photos or device identifiers.",
+      "Tracking permission (iOS app). The app asks once, through Apple's App Tracking Transparency prompt, whether it may track your activity across other companies' apps and websites. Nothing is tracked unless you allow it, and you can change your answer at any time under Settings › Privacy & Security › Tracking. If you allow it, we may use that permission to measure which searches and marketplaces lead to purchases and to show you relevant offers; we will describe any such use here before it starts."
     ],
     "notCollectTitle": "What we do not collect",
     "notCollectBody": [
-      "There are no user accounts, so we hold no names, e-mail addresses or passwords. We use no analytics, advertising or tracking SDKs, no fingerprinting and no cross-site cookies. We do not sell, rent or share any data with third parties for their own purposes."
+      "There are no user accounts, so we hold no names, e-mail addresses or passwords. Beyond the usage analytics described above we use no advertising or tracking SDKs, no fingerprinting and no cross-site cookies. We do not sell, rent or share any data with third parties for their own purposes."
     ],
     "thirdPartiesTitle": "Third parties",
     "thirdPartiesBody": [
@@ -235,7 +237,7 @@
       "sourcesQ": "Can you add a marketplace or dealer?",
       "sourcesA": "Possibly. We only index sites whose terms allow it. Send us the site and we will take a look.",
       "dataQ": "What do you store about me?",
-      "dataA": "No account, no tracking. Your currency choice and recent searches stay on your device. See the privacy policy for the full picture."
+      "dataA": "No account, no advertising. Your currency choice and recent searches stay on your device. Searches and listing views are counted anonymously with Amplitude so we can see what people look for. See the privacy policy for the full picture."
     },
     "privacyLink": "Privacy policy"
   }

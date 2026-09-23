@@ -49,6 +49,10 @@ APP_ONLY = {
         "settings.currencyNote": "Prices convert with daily exchange rates; the seller's original price is always shown too.",
         "settings.changeLanguage": "Change app language in Settings",
         "settings.languageNote": "WatchCompare follows your iOS language: English, 繁體中文, 简体中文, 日本語 or Deutsch.",
+        "settings.tracking": "Tracking", "settings.trackingStatus": "Permission", "settings.trackingAllowed": "Allowed",
+        "settings.trackingDenied": "Not allowed", "settings.trackingNotAsked": "Not asked yet",
+        "settings.trackingChange": "Change in Settings",
+        "settings.trackingNote": "iOS asks once whether WatchCompare may track your activity across other apps and websites. Nothing is tracked unless you allow it; you can change your answer any time in Settings › Privacy & Security › Tracking.",
     },
     "zh-TW": {
         "home.removeRecent": "從最近搜尋中移除",
@@ -58,6 +62,10 @@ APP_ONLY = {
         "settings.currencyNote": "價格依每日匯率換算，並同時顯示賣家的原始價格。",
         "settings.changeLanguage": "在「設定」中變更 App 語言",
         "settings.languageNote": "WatchCompare 會跟隨 iOS 的語言設定：English、繁體中文、简体中文、日本語 或 Deutsch。",
+        "settings.tracking": "追蹤", "settings.trackingStatus": "權限", "settings.trackingAllowed": "已允許",
+        "settings.trackingDenied": "不允許", "settings.trackingNotAsked": "尚未詢問",
+        "settings.trackingChange": "在「設定」中變更",
+        "settings.trackingNote": "iOS 會詢問一次是否允許 WatchCompare 跨其他 App 與網站追蹤您的活動。除非您允許，否則不會進行任何追蹤；您隨時可在「設定 › 隱私權與安全性 › 追蹤」中變更。",
     },
     "zh-CN": {
         "home.removeRecent": "从最近搜索中移除",
@@ -67,6 +75,10 @@ APP_ONLY = {
         "settings.currencyNote": "价格按每日汇率换算，并同时显示卖家的原始价格。",
         "settings.changeLanguage": "在“设置”中更改应用语言",
         "settings.languageNote": "WatchCompare 会跟随 iOS 的语言设置：English、繁體中文、简体中文、日本語 或 Deutsch。",
+        "settings.tracking": "跟踪", "settings.trackingStatus": "权限", "settings.trackingAllowed": "已允许",
+        "settings.trackingDenied": "不允许", "settings.trackingNotAsked": "尚未询问",
+        "settings.trackingChange": "在“设置”中更改",
+        "settings.trackingNote": "iOS 会询问一次是否允许 WatchCompare 跨其他应用与网站跟踪您的活动。除非您允许，否则不会进行任何跟踪；您可随时在“设置 › 隐私与安全性 › 跟踪”中更改。",
     },
     "ja": {
         "home.removeRecent": "最近の検索から削除",
@@ -76,6 +88,10 @@ APP_ONLY = {
         "settings.currencyNote": "価格は日次レートで換算され、販売店の元の価格も常に表示されます。",
         "settings.changeLanguage": "「設定」でアプリの言語を変更",
         "settings.languageNote": "WatchCompare は iOS の言語設定に従います：English、繁體中文、简体中文、日本語、Deutsch。",
+        "settings.tracking": "トラッキング", "settings.trackingStatus": "許可", "settings.trackingAllowed": "許可済み",
+        "settings.trackingDenied": "許可しない", "settings.trackingNotAsked": "未確認",
+        "settings.trackingChange": "「設定」で変更",
+        "settings.trackingNote": "WatchCompare が他社のアプリや Web サイトを横断してアクティビティを追跡することを許可するか、iOS が一度だけ確認します。許可しない限りトラッキングは行われません。「設定 › プライバシーとセキュリティ › トラッキング」からいつでも変更できます。",
     },
     "de": {
         "home.removeRecent": "Aus den letzten Suchen entfernen",
@@ -85,6 +101,10 @@ APP_ONLY = {
         "settings.currencyNote": "Preise werden mit tagesaktuellen Wechselkursen umgerechnet; der Originalpreis des Verkäufers wird immer mit angezeigt.",
         "settings.changeLanguage": "App-Sprache in den Einstellungen ändern",
         "settings.languageNote": "WatchCompare folgt Ihrer iOS-Sprache: English, 繁體中文, 简体中文, 日本語 oder Deutsch.",
+        "settings.tracking": "Tracking", "settings.trackingStatus": "Berechtigung", "settings.trackingAllowed": "Erlaubt",
+        "settings.trackingDenied": "Nicht erlaubt", "settings.trackingNotAsked": "Noch nicht gefragt",
+        "settings.trackingChange": "In den Einstellungen ändern",
+        "settings.trackingNote": "iOS fragt einmalig, ob WatchCompare Ihre Aktivitäten über andere Apps und Websites hinweg verfolgen darf. Ohne Ihre Erlaubnis wird nichts erfasst; Sie können die Antwort jederzeit unter Einstellungen › Datenschutz & Sicherheit › Tracking ändern.",
     },
 }
 

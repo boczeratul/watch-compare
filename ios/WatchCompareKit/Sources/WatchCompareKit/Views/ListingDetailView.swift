@@ -18,12 +18,15 @@ final class ListingDetailModel {
         self.listing = listing
     }
 
-    func load(api: APIClient) async {
+    func load(api: APIClient, currency: String) async {
+        if let l = listing { Analytics.trackViewListing(l, currency: currency) }
         async let fresh = api.listing(id: id)
         async let similar = api.similar(id: id)
         async let history = api.priceHistory(id: id)
         do {
-            listing = try await fresh
+            let l = try await fresh
+            if listing == nil { Analytics.trackViewListing(l, currency: currency) }
+            listing = l
         } catch let e as APIError where e.isNotFound {
             notFound = listing == nil
         } catch {
@@ -56,7 +59,7 @@ struct ListingDetailView: View {
             } else if model.notFound {
                 ContentUnavailableView(L10n.t("listing.notFound"), systemImage: "questionmark.circle", description: Text(L10n.t("listing.notFoundBody")))
             } else if let err = model.error {
-                ErrorView(message: err) { Task { await model.load(api: api) } }
+                ErrorView(message: err) { Task { await model.load(api: api, currency: settings.currency) } }
             } else {
                 ProgressView()
             }
@@ -68,7 +71,7 @@ struct ListingDetailView: View {
                 ToolbarItem(placement: .primaryAction) { ShareLink(item: url) }
             }
         }
-        .task { if !model.loaded { await model.load(api: api) } }
+        .task { if !model.loaded { await model.load(api: api, currency: settings.currency) } }
         .appDestinations()
     }
 

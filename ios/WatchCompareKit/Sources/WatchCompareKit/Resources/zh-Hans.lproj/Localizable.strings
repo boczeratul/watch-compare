@@ -130,3 +130,10 @@
 "settings.currencyNote" = "价格按每日汇率换算，并同时显示卖家的原始价格。";
 "settings.changeLanguage" = "在“设置”中更改应用语言";
 "settings.languageNote" = "WatchCompare 会跟随 iOS 的语言设置：English、繁體中文、简体中文、日本語 或 Deutsch。";
+"settings.tracking" = "跟踪";
+"settings.trackingStatus" = "权限";
+"settings.trackingAllowed" = "已允许";
+"settings.trackingDenied" = "不允许";
+"settings.trackingNotAsked" = "尚未询问";
+"settings.trackingChange" = "在“设置”中更改";
+"settings.trackingNote" = "iOS 会询问一次是否允许 WatchCompare 跨其他应用与网站跟踪您的活动。除非您允许，否则不会进行任何跟踪；您可随时在“设置 › 隐私与安全性 › 跟踪”中更改。";

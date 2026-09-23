@@ -130,3 +130,10 @@
 "settings.currencyNote" = "Prices convert with daily exchange rates; the seller's original price is always shown too.";
 "settings.changeLanguage" = "Change app language in Settings";
 "settings.languageNote" = "WatchCompare follows your iOS language: English, 繁體中文, 简体中文, 日本語 or Deutsch.";
+"settings.tracking" = "Tracking";
+"settings.trackingStatus" = "Permission";
+"settings.trackingAllowed" = "Allowed";
+"settings.trackingDenied" = "Not allowed";
+"settings.trackingNotAsked" = "Not asked yet";
+"settings.trackingChange" = "Change in Settings";
+"settings.trackingNote" = "iOS asks once whether WatchCompare may track your activity across other apps and websites. Nothing is tracked unless you allow it; you can change your answer any time in Settings › Privacy & Security › Tracking.";

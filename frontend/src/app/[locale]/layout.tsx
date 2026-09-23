@@ -9,6 +9,7 @@ import { CURRENCY_COOKIE, isCurrency, SUPPORTED_CURRENCIES } from "@/lib/setting
 import { CurrencyProvider } from "@/components/providers";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { Analytics } from "@/components/analytics";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -52,6 +53,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
             <Header />
             <main className="flex-1">{children}</main>
             <Footer sources={sourcesRes.items.filter((s) => s.enabled)} />
+            <Analytics />
           </CurrencyProvider>
         </NextIntlClientProvider>
       </body>

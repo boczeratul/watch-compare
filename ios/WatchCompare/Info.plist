@@ -19,5 +19,7 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This lets WatchCompare measure which searches and marketplaces lead to purchases, so we can improve results and show you relevant offers.</string>
 </dict>
 </plist>

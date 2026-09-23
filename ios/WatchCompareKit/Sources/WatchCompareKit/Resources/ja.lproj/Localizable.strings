@@ -130,3 +130,10 @@
 "settings.currencyNote" = "価格は日次レートで換算され、販売店の元の価格も常に表示されます。";
 "settings.changeLanguage" = "「設定」でアプリの言語を変更";
 "settings.languageNote" = "WatchCompare は iOS の言語設定に従います：English、繁體中文、简体中文、日本語、Deutsch。";
+"settings.tracking" = "トラッキング";
+"settings.trackingStatus" = "許可";
+"settings.trackingAllowed" = "許可済み";
+"settings.trackingDenied" = "許可しない";
+"settings.trackingNotAsked" = "未確認";
+"settings.trackingChange" = "「設定」で変更";
+"settings.trackingNote" = "WatchCompare が他社のアプリや Web サイトを横断してアクティビティを追跡することを許可するか、iOS が一度だけ確認します。許可しない限りトラッキングは行われません。「設定 › プライバシーとセキュリティ › トラッキング」からいつでも変更できます。";

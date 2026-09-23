@@ -86,6 +86,10 @@ Traditional Chinese while buyers search in any of four languages:
 
 * Next.js 16 App Router, all data fetched in Server Components from the Go API (`API_URL` is
   server-only), with `revalidate` windows per endpoint. Backend outages degrade to empty states.
+* Analytics: Amplitude (`src/lib/analytics.ts`, `<Analytics>` in the layout) with two events,
+  `search` on every results page and `view_listing` on every listing page — the same names and
+  properties the iOS app sends. Session autocapture only; `NEXT_PUBLIC_AMPLITUDE_API_KEY=` (empty)
+  disables it for an environment.
 * `next-intl` with `[locale]` routing (`en`, `zh-TW`, `zh-CN`, `ja`, `de`; default locale un-prefixed).
 * Currency is a cookie (`wc_currency`, set through a Server Action); defaults per locale
   (en→USD, zh-TW→TWD, zh-CN→CNY, ja→JPY, de→EUR). `<Price>` converts `price_usd` client-side with the rates

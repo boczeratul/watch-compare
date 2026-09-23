@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@amplitude/analytics-browser':
+        specifier: ^2.46.0
+        version: 2.46.0
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -60,6 +63,42 @@ packages:
   '@alloc/quick-lru@5.3.0':
     resolution: {integrity: sha512-U4+70Pc5ZS9osnCBCE5Jha/ciHM+Yp+CNMNC/7HvYbNRk1Ldd+f7qO65W5qfhu/TCv+/ozljlXXe9Nj8419DMA==}
     engines: {node: '>=10'}
+
+  '@amplitude/analytics-browser@2.46.0':
+    resolution: {integrity: sha512-OIQ5d3YBtXQOVDT1OAETnEESXilx33H2MdIlC+1PcmWFc2yZrUWHoYRG/zEvwO4sRN70fFirr6ReqYUncAjfdQ==}
+
+  '@amplitude/analytics-connector@1.6.8':
+    resolution: {integrity: sha512-ryZUsakytEZZ+g/O5mTsObckhCKtZrNdZw+KKcbuzVCZa1LJFPWHvKj+jwQpPO0ngsbb6oEpC5laaIEM5B4XKQ==}
+
+  '@amplitude/analytics-core@2.55.0':
+    resolution: {integrity: sha512-fzjXEWX2o5I58Tl5jYaw2G5Tp5ejfcDkayWMogEThCl/fd6AqRKkrl/dVVqGV3h/GS3HZws7J4baIWkaq92jkQ==}
+
+  '@amplitude/analytics-core@2.57.0':
+    resolution: {integrity: sha512-h+9zdNcEhNd5nRFIMKgU35x5DSBGWfzJJB3mWcLXF47JrRv2hLFzCthOCJjaIhbX/VmeiZcSkx0bFeImPpr/Hg==}
+
+  '@amplitude/element-selector@0.3.0':
+    resolution: {integrity: sha512-rfjXGjXqQiitxse3ZcoPLny2Uy8AXYnWAqB6oqZj39zYVuieoxhfWT50HZks3F4Ny4Zyf45tJqyLCnfvGGMs4A==}
+
+  '@amplitude/plugin-autocapture-browser@1.29.2':
+    resolution: {integrity: sha512-LSsJgs1EKV7wWjG8IljuFo6+LGUI69scPAmPAjipqwJH4NiRNylYFFXpmTsrHaSjIWGWl6J3TeXdEad38bXehA==}
+
+  '@amplitude/plugin-custom-enrichment-browser@0.1.22':
+    resolution: {integrity: sha512-KDTVCOmivrLzp1Q9EJuU61Yzw0Mip9DU/VnMnfROD37rCv0QX78O7RuYVzN+R6sprgUw+tkmS512PmkbVLOFsA==}
+
+  '@amplitude/plugin-event-property-attribution-browser@0.2.16':
+    resolution: {integrity: sha512-4kjE0iKntqa2peD+2IlzfSVFW3Lbo+5UPxYCNLy3SrF9eYWEFhdyv/CN/azljUDY9MSzCrLsoYH9+g+1HEGMoA==}
+
+  '@amplitude/plugin-network-capture-browser@1.10.16':
+    resolution: {integrity: sha512-P2Mtcu+9nKsMTWzzEknNOvi7l/EH6GjS7lrcP7LJxBaI65ePxFroo9Po/Qag0qSfPRMQnBQJLLOC/BZ86iSfqw==}
+
+  '@amplitude/plugin-page-url-enrichment-browser@0.7.26':
+    resolution: {integrity: sha512-kbCYgGqnMt7H4Dv7pn6UB8uIprWtLeux/vl8JCXKBzeXYIHTHNkGi+5lWdGNJTK1uLI4lz5QcNPvGAGGR7ZhKg==}
+
+  '@amplitude/plugin-page-view-tracking-browser@2.11.16':
+    resolution: {integrity: sha512-pKVHi+ax5f71aEdTBjV/YJVoJkazXoQoh41G1pEM1B4yevf+vgwj7vAc8WrvEi1WpEOkkiN9mGG+txthk7Hsow==}
+
+  '@amplitude/plugin-web-vitals-browser@1.1.48':
+    resolution: {integrity: sha512-VOB78tzuMOYFGcObQzMlEDINPGrPbzIuPWvMx2VsASkZBngubbZFnUNpnnPonqOFPrS+21nX9+oAtx3647IP3A==}
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -782,6 +821,9 @@ packages:
 
   '@types/react@19.2.18':
     resolution: {integrity: sha512-AnzbBERsrLKtk2XSfTbYRLjQPdy116Sty4q+T+Bp3IC4l6jNBvreVPAHmpq9qhXQM7CXZPjLVmGMw9sy+hxQ3w==}
+
+  '@types/zen-observable@0.8.3':
+    resolution: {integrity: sha512-fbF6oTd4sGGy0xjHPKAt+eS2CrxJ3+6gQ3FGcBoIJR2TLAyCkCyI8JqZNy+FeON0AhVgNJoUumVoZQjBFUqHkw==}
 
   '@typescript-eslint/eslint-plugin@8.69.0':
     resolution: {integrity: sha512-t5jQTKPIgVW1PE6dR6H6Qz5gm8zjMlX5/2gRaOGd9eO6V7J+tQc6iWKukEe7dY8u9HyYasQ0yfF0/FSSTEO2gA==}
@@ -2010,6 +2052,9 @@ packages:
     resolution: {integrity: sha512-wtZlHyOje6OZTGqAoaDKxFkgRtkF9CnHAVnCHKfuj200wAgL+bSJhdsCD2l0Qx/2ekEXjPWcyKkfGb5CPboslg==}
     engines: {node: '>=0.4'}
 
+  safe-json-stringify@1.2.0:
+    resolution: {integrity: sha512-gH8eh2nZudPQO6TytOvbxnuhYBOvDBBLW52tz5q6X58lJcd/tkmqFR+5Z9adS8aJtURSXWThWy/xJtJwixErvg==}
+
   safe-push-apply@1.0.0:
     resolution: {integrity: sha512-iKE9w/Z7xCzUMIZqdBsp6pEQvwuEebH4vdpjcDWnyzaI6yl6O9FHvVpmGelvEHNsoY6wGblkxR6Zty/h00WiSA==}
     engines: {node: '>= 0.4'}
@@ -2224,6 +2269,9 @@ packages:
     peerDependencies:
       react: ^17.0.0 || ^18.0.0 || >=19.0.0-rc <19.0.0 || ^19.0.0
 
+  web-vitals@5.1.0:
+    resolution: {integrity: sha512-ArI3kx5jI0atlTtmV0fWU3fjpLmq/nD3Zr1iFFlJLaqa5wLBkUSzINwBPySCX/8jRyjlmy1Volw1kz1g9XE4Jg==}
+
   which-boxed-primitive@1.1.1:
     resolution: {integrity: sha512-TbX3mj8n0odCBFVlY8AxkqcHASw3L60jIuF8jFP78az3C2YhmGvqbHBpAjTRH2/xqYunrJ9g1jSyjCjpoWzIAA==}
     engines: {node: '>= 0.4'}
@@ -2256,6 +2304,9 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+  zen-observable@0.10.0:
+    resolution: {integrity: sha512-iI3lT0iojZhKwT5DaFy2Ce42n3yFcLdFyOh01G7H0flMY60P8MJuVFEoJoNwXlmAyQ45GrjL6AcZmmlv8A5rbw==}
+
   zod-validation-error@4.0.2:
     resolution: {integrity: sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ==}
     engines: {node: '>=18.0.0'}
@@ -2268,6 +2319,77 @@ packages:
 snapshots:
 
   '@alloc/quick-lru@5.3.0': {}
+
+  '@amplitude/analytics-browser@2.46.0':
+    dependencies:
+      '@amplitude/analytics-core': 2.57.0
+      '@amplitude/plugin-autocapture-browser': 1.29.2
+      '@amplitude/plugin-custom-enrichment-browser': 0.1.22
+      '@amplitude/plugin-event-property-attribution-browser': 0.2.16
+      '@amplitude/plugin-network-capture-browser': 1.10.16
+      '@amplitude/plugin-page-url-enrichment-browser': 0.7.26
+      '@amplitude/plugin-page-view-tracking-browser': 2.11.16
+      '@amplitude/plugin-web-vitals-browser': 1.1.48
+      tslib: 2.8.1
+
+  '@amplitude/analytics-connector@1.6.8': {}
+
+  '@amplitude/analytics-core@2.55.0':
+    dependencies:
+      '@amplitude/analytics-connector': 1.6.8
+      '@types/zen-observable': 0.8.3
+      safe-json-stringify: 1.2.0
+      tslib: 2.8.1
+      zen-observable: 0.10.0
+
+  '@amplitude/analytics-core@2.57.0':
+    dependencies:
+      '@amplitude/analytics-connector': 1.6.8
+      '@types/zen-observable': 0.8.3
+      safe-json-stringify: 1.2.0
+      tslib: 2.8.1
+      zen-observable: 0.10.0
+
+  '@amplitude/element-selector@0.3.0':
+    dependencies:
+      tslib: 2.8.1
+
+  '@amplitude/plugin-autocapture-browser@1.29.2':
+    dependencies:
+      '@amplitude/analytics-core': 2.57.0
+      '@amplitude/element-selector': 0.3.0
+      tslib: 2.8.1
+
+  '@amplitude/plugin-custom-enrichment-browser@0.1.22':
+    dependencies:
+      '@amplitude/analytics-core': 2.55.0
+      tslib: 2.8.1
+
+  '@amplitude/plugin-event-property-attribution-browser@0.2.16':
+    dependencies:
+      '@amplitude/analytics-core': 2.57.0
+      tslib: 2.8.1
+
+  '@amplitude/plugin-network-capture-browser@1.10.16':
+    dependencies:
+      '@amplitude/analytics-core': 2.57.0
+      tslib: 2.8.1
+
+  '@amplitude/plugin-page-url-enrichment-browser@0.7.26':
+    dependencies:
+      '@amplitude/analytics-core': 2.57.0
+      tslib: 2.8.1
+
+  '@amplitude/plugin-page-view-tracking-browser@2.11.16':
+    dependencies:
+      '@amplitude/analytics-core': 2.57.0
+      tslib: 2.8.1
+
+  '@amplitude/plugin-web-vitals-browser@1.1.48':
+    dependencies:
+      '@amplitude/analytics-core': 2.57.0
+      tslib: 2.8.1
+      web-vitals: 5.1.0
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -2877,6 +2999,8 @@ snapshots:
     dependencies:
       csstype: 3.2.3
 
+  '@types/zen-observable@0.8.3': {}
+
   '@typescript-eslint/eslint-plugin@8.69.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
@@ -3398,7 +3522,7 @@ snapshots:
       '@next/eslint-plugin-next': 16.3.4(eslint@9.39.5(jiti@2.7.0))
       eslint: 9.39.5(jiti@2.7.0)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.5(jiti@2.7.0))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0))
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@2.7.0))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.5(jiti@2.7.0))
       eslint-plugin-react: 7.37.5(eslint@9.39.5(jiti@2.7.0))
@@ -3421,7 +3545,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.5(jiti@2.7.0)):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3
@@ -3436,14 +3560,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.14.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@2.7.0)):
+  eslint-module-utils@2.14.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
       eslint: 9.39.5(jiti@2.7.0)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.5(jiti@2.7.0))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0))
     transitivePeerDependencies:
       - supports-color
 
@@ -3458,7 +3582,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.39.5(jiti@2.7.0)
       eslint-import-resolver-node: 0.3.10
-      eslint-module-utils: 2.14.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.5(jiti@2.7.0))
+      eslint-module-utils: 2.14.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.69.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0)))(eslint@9.39.5(jiti@2.7.0))
       hasown: 2.0.4
       is-core-module: 2.16.2
       is-glob: 4.0.3
@@ -4263,6 +4387,8 @@ snapshots:
       has-symbols: 1.1.0
       isarray: 2.0.5
 
+  safe-json-stringify@1.2.0: {}
+
   safe-push-apply@1.0.0:
     dependencies:
       es-errors: 1.3.0
@@ -4579,6 +4705,8 @@ snapshots:
       intl-messageformat: 11.2.14
       react: 19.2.8
 
+  web-vitals@5.1.0: {}
+
   which-boxed-primitive@1.1.1:
     dependencies:
       is-bigint: 1.1.0
@@ -4629,6 +4757,8 @@ snapshots:
   yallist@3.1.1: {}
 
   yocto-queue@0.1.0: {}
+
+  zen-observable@0.10.0: {}
 
   zod-validation-error@4.0.2(zod@4.5.4):
     dependencies:

@@ -47,9 +47,9 @@ extension View {
     }
 }
 
-/// Opens the system Settings app on iOS so the visitor can change the app language.
+/// Opens the app's page in the system Settings app on iOS (language, tracking permission).
 enum SystemSettings {
-    static var languageURL: URL? {
+    static var appSettingsURL: URL? {
         #if os(iOS)
         return URL(string: UIApplication.openSettingsURLString)
         #else

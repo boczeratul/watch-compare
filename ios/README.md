@@ -56,6 +56,18 @@ swift test           # 19 unit tests (needs the Xcode toolchain for XCTest)
 
 Or run the WatchCompare scheme's tests in Xcode.
 
+## Analytics and tracking permission
+
+`Analytics.swift` sends two Amplitude events, `search` (query, filters, sort, page, result count)
+and `view_listing` (id, source, brand, reference, condition, price), with the same names and
+properties as the web app so one dashboard covers both. Autocapture is limited to sessions and the
+SDK never reads the advertising identifier. The key is in `Analytics.apiKey`; the launch argument
+`-WC_DISABLE_ANALYTICS YES` turns it off (the screenshot UI test passes it).
+
+`TrackingConsent.swift` shows Apple's App Tracking Transparency prompt once after the first screen
+renders and exposes the answer as `isAuthorized`; gate any cross-app attribution SDK behind it.
+`-WC_SKIP_TRACKING_PROMPT YES` suppresses the prompt for automated runs.
+
 ## Localization
 
 The string tables are generated, not hand-edited: `python3 ios/scripts/gen-strings.py` rebuilds

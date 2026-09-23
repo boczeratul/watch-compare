@@ -27,6 +27,8 @@ final class ScreenshotTests: XCTestCase {
             "-AppleLanguages", "(\(language))",
             "-AppleLocale", "\(language)_\(region)",
             "-wc_currency", currency,          // AppSettings reads this UserDefaults key
+            "-WC_SKIP_TRACKING_PROMPT", "YES", // no App Tracking Transparency alert during captures
+            "-WC_DISABLE_ANALYTICS", "YES",    // screenshot runs must not show up in Amplitude
             "-wc_recent_searches", "(\"Submariner 116610LN\", \"Omega Speedmaster\", \"Daytona\")",
         ]
         app.launch()

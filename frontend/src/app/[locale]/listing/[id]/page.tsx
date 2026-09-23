@@ -10,6 +10,7 @@ import { Price } from "@/components/price";
 import { SourceBadge } from "@/components/source-badge";
 import { CompareTable } from "@/components/compare-table";
 import { PriceHistory } from "@/components/price-history";
+import { TrackListingView } from "@/components/analytics";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
 
@@ -74,6 +75,12 @@ export default async function ListingPage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      <TrackListingView
+        event={{
+          listing_id: listing.id, source: listing.source, brand: listing.brand, model: listing.model, ref: listing.referenceNumber,
+          condition: listing.condition, price_usd: listing.priceUsd, currency: listing.currency ?? "", locale,
+        }}
+      />
       {!listing.isActive && (
         <p className="mb-4 rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-900">{t("inactive", { source: listing.sourceName })}</p>
       )}

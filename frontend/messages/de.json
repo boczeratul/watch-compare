@@ -177,9 +177,9 @@
   },
   "privacy": {
     "title": "Datenschutzerklärung",
-    "updatedOn": "2026-09-19",
+    "updatedOn": "2026-09-23",
     "updated": "Zuletzt aktualisiert am {date}",
-    "intro": "WatchCompare ist ein Preisvergleichsindex für Uhren. Diese Erklärung beschreibt, welche Daten die Website und die WatchCompare-App für iOS erheben – und welche nicht. Kurz gesagt: keine Konten, kein Tracking, keine Werbung, und nichts über Sie wird verkauft oder weitergegeben.",
+    "intro": "WatchCompare ist ein Preisvergleichsindex für Uhren. Diese Erklärung beschreibt, welche Daten die Website und die WatchCompare-App für iOS erheben – und welche nicht. Kurz gesagt: keine Konten, keine Werbung, nur anonyme Nutzungsstatistiken, und nichts über Sie wird verkauft oder weitergegeben.",
     "scopeTitle": "Geltungsbereich",
     "scopeBody": [
       "Diese Erklärung gilt für die WatchCompare-Website und die WatchCompare-App für iPhone und iPad. Beide greifen auf denselben öffentlichen Angebotsindex zu. Marktplätze und Verkäufer, auf die wir verlinken, haben eigene Datenschutzerklärungen."
@@ -187,12 +187,14 @@
     "collectTitle": "Welche Daten wir erheben",
     "collectBody": [
       "Server-Logs. Wenn Sie eine Seite laden oder die App Daten abruft, zeichnen unsere Hosting-Anbieter (Vercel für die Website, Google Cloud Run für die API) übliche Zugriffsprotokolle auf: Ihre IP-Adresse, die angeforderte Seite bzw. den Endpunkt, den Zeitpunkt sowie Ihre Browser- oder App-Version. Wir nutzen sie ausschließlich für den Betrieb und die Fehlersuche. Die Protokolle werden bis zu 30 Tage aufbewahrt und dann gelöscht.",
+      "Nutzungsanalyse. Wir verwenden Amplitude, um Suchen und Angebotsaufrufe auf der Website und in der App zu zählen und so zu sehen, welche Marken, Referenzen und Marktplätze gesucht werden. Jedes Ereignis enthält die Suchbegriffe und Filter bzw. das geöffnete Angebot, Ihre Anzeigewährung und Sprache, die Plattform, eine zufällige Kennung für Ihren Browser oder Ihr Gerät sowie einen groben Standort, den Amplitude aus Ihrer IP-Adresse ableitet. Ereignisse enthalten nie einen Namen, eine E-Mail-Adresse oder eine Werbe-ID. Amplitude speichert sie in unserem Auftrag in den USA gemäß seiner eigenen Datenschutzerklärung.",
       "Einstellungen. Die Website speichert Ihre gewählte Anzeigewährung und Sprache in Cookies, damit Seiten beim nächsten Besuch in Ihrer Währung erscheinen. Diese Cookies enthalten keine Kennung und dienen nicht dem Tracking. Ihre letzten Suchen werden im lokalen Speicher Ihres Browsers abgelegt, um sie erneut vorzuschlagen; sie verlassen Ihr Gerät nicht.",
-      "Die iOS-App speichert dieselben Einstellungen (Anzeigewährung und letzte Suchen) ausschließlich auf Ihrem Gerät. Die App sendet die von Ihnen gewählten Suchfilter an unsere API, um Ergebnisse zu liefern; Name, Kontakte, Standort, Fotos oder Gerätekennungen werden nicht übertragen."
+      "Die iOS-App speichert dieselben Einstellungen (Anzeigewährung und letzte Suchen) ausschließlich auf Ihrem Gerät. Die App sendet die von Ihnen gewählten Suchfilter an unsere API, um Ergebnisse zu liefern; Name, Kontakte, Standort, Fotos oder Gerätekennungen werden nicht übertragen.",
+      "Tracking-Berechtigung (iOS-App). Die App fragt einmalig über Apples App-Tracking-Transparenz-Dialog, ob sie Ihre Aktivitäten über Apps und Websites anderer Unternehmen hinweg verfolgen darf. Ohne Ihre Erlaubnis wird nichts erfasst, und Sie können Ihre Antwort jederzeit unter Einstellungen › Datenschutz & Sicherheit › Tracking ändern. Mit Ihrer Erlaubnis können wir messen, welche Suchen und Marktplätze zu Käufen führen, und Ihnen passende Angebote zeigen; jede solche Nutzung beschreiben wir hier, bevor sie beginnt."
     ],
     "notCollectTitle": "Welche Daten wir nicht erheben",
     "notCollectBody": [
-      "Es gibt keine Benutzerkonten, daher speichern wir weder Namen noch E-Mail-Adressen oder Passwörter. Wir setzen keine Analyse-, Werbe- oder Tracking-SDKs, kein Fingerprinting und keine seitenübergreifenden Cookies ein. Wir verkaufen, vermieten oder teilen keine Daten mit Dritten für deren eigene Zwecke."
+      "Es gibt keine Benutzerkonten, daher speichern wir weder Namen noch E-Mail-Adressen oder Passwörter. Abgesehen von der oben beschriebenen Nutzungsanalyse setzen wir keine Werbe- oder Tracking-SDKs, kein Fingerprinting und keine seitenübergreifenden Cookies ein. Wir verkaufen, vermieten oder teilen keine Daten mit Dritten für deren eigene Zwecke."
     ],
     "thirdPartiesTitle": "Dritte",
     "thirdPartiesBody": [
@@ -235,7 +237,7 @@
       "sourcesQ": "Könnt ihr einen Marktplatz oder Händler hinzufügen?",
       "sourcesA": "Möglicherweise. Wir indexieren nur Seiten, deren Bedingungen das erlauben. Nennen Sie uns die Seite, wir schauen sie uns an.",
       "dataQ": "Was speichert ihr über mich?",
-      "dataA": "Kein Konto, kein Tracking. Ihre Währungswahl und die letzten Suchen bleiben auf Ihrem Gerät. Details stehen in der Datenschutzerklärung."
+      "dataA": "Kein Konto, keine Werbung. Ihre Währungswahl und die letzten Suchen bleiben auf Ihrem Gerät. Suchen und Angebotsaufrufe werden mit Amplitude anonym gezählt, damit wir sehen, wonach gesucht wird. Details stehen in der Datenschutzerklärung."
     },
     "privacyLink": "Datenschutzerklärung"
   }

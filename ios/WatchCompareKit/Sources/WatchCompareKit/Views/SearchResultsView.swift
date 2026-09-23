@@ -41,6 +41,7 @@ final class SearchModel {
             guard gen == generation else { return }
             if page == 1 { items = r.items } else { items.append(contentsOf: r.items) }
             facets = r.facets; total = r.total; self.page = r.page; totalPages = r.totalPages
+            Analytics.trackSearch(query, currency: currency, page: r.page, resultCount: r.total)
         } catch {
             guard gen == generation else { return }
             self.error = error.localizedDescription

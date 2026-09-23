@@ -11,9 +11,13 @@ let package = Package(
     products: [
         .library(name: "WatchCompareKit", targets: ["WatchCompareKit"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/amplitude/Amplitude-Swift", from: "1.9.0"),
+    ],
     targets: [
         .target(
             name: "WatchCompareKit",
+            dependencies: [.product(name: "AmplitudeSwift", package: "Amplitude-Swift")],
             resources: [.process("Resources")]
         ),
         .testTarget(

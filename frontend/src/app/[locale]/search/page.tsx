@@ -9,6 +9,7 @@ import { FiltersSidebar } from "@/components/filters-sidebar";
 import { SortSelect } from "@/components/sort-select";
 import { ListingGrid } from "@/components/listing-grid";
 import { Pagination } from "@/components/pagination";
+import { TrackSearch } from "@/components/analytics";
 
 const EMPTY: SearchResult = { items: [], total: 0, page: 1, perPage: 30, totalPages: 0, facets: { brands: [], sources: [], conditions: [], movements: [], countries: [], dialColors: [], years: [] } };
 
@@ -33,11 +34,22 @@ export default async function SearchPage({ params, searchParams }: Props) {
 
   const result = await safe(api.searchListings(toApiParams(sp, currency)), EMPTY);
   const q = typeof sp.q === "string" ? sp.q.trim() : "";
+  const filters = toApiParams(sp, currency);
   const from = result.total === 0 ? 0 : (result.page - 1) * result.perPage + 1;
   const to = Math.min(result.total, result.page * result.perPage);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      <TrackSearch
+        event={{
+          query: q || undefined,
+          brand: filters.brand, model: filters.model, ref: filters.ref, source: filters.source, condition: filters.condition,
+          movement: filters.movement, gender: filters.gender, country: filters.country, dial: filters.dial,
+          price_min: filters.price_min, price_max: filters.price_max, year_min: filters.year_min, year_max: filters.year_max,
+          diameter_min: filters.diameter_min, diameter_max: filters.diameter_max, box: filters.box, papers: filters.papers,
+          sort: filters.sort ?? (q ? "relevance" : "newest"), page: result.page, result_count: result.total, currency, locale,
+        }}
+      />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold text-slate-900">{t("resultsFor", { count: result.total, query: q || "none" })}</h1>

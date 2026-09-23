@@ -32,6 +32,7 @@ targets:
         CFBundleDisplayName: WatchCompare
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, zh-Hant, zh-Hans, ja, de]
+        NSUserTrackingUsageDescription: This lets WatchCompare measure which searches and marketplaces lead to purchases, so we can improve results and show you relevant offers.
         ITSAppUsesNonExemptEncryption: false
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
