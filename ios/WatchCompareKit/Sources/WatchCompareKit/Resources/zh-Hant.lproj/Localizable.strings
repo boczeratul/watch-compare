@@ -136,4 +136,4 @@
 "settings.trackingDenied" = "不允許";
 "settings.trackingNotAsked" = "尚未詢問";
 "settings.trackingChange" = "在「設定」中變更";
-"settings.trackingNote" = "iOS 會詢問一次是否允許 WatchCompare 跨其他 App 與網站追蹤您的活動。除非您允許，否則不會進行任何追蹤；您隨時可在「設定 › 隱私權與安全性 › 追蹤」中變更。";
+"settings.trackingNote" = "iOS 會詢問一次是否允許 WatchCompare 跨其他 App 與網站追蹤您的活動。使用分析（搜尋與物件瀏覽）僅在您允許後才會傳送；未允許時 App 不會記錄任何內容。您隨時可在「設定 › 隱私權與安全性 › 追蹤」中變更。";

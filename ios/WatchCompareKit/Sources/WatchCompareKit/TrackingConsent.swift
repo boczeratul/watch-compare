@@ -5,8 +5,8 @@ import AppTrackingTransparency
 #endif
 
 /// App Tracking Transparency: asks the visitor once whether the app may track them, and exposes
-/// the answer. Nothing in the app reads an advertising identifier or shares data with a third
-/// party unless `isAuthorized` is true; wire any analytics or attribution SDK behind that check.
+/// the answer. `Analytics` (Amplitude) is switched on and off from here, so no event leaves the
+/// device unless `trackingAuthorizationStatus` is `.authorized`.
 @MainActor
 @Observable
 public final class TrackingConsent {
@@ -19,11 +19,14 @@ public final class TrackingConsent {
     /// Launch argument / user default that suppresses the prompt (screenshot and UI-test runs).
     public static let skipPromptKey = "WC_SKIP_TRACKING_PROMPT"
 
-    public private(set) var status: Status
+    public private(set) var status: Status {
+        didSet { Analytics.setEnabled(status == .authorized) }
+    }
     private var requested = false
 
     public init() {
         status = Self.currentStatus()
+        Analytics.setEnabled(status == .authorized) // didSet does not run from init
     }
 
     public var isAuthorized: Bool { status == .authorized }

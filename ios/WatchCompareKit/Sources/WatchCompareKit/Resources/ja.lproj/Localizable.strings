@@ -136,4 +136,4 @@
 "settings.trackingDenied" = "許可しない";
 "settings.trackingNotAsked" = "未確認";
 "settings.trackingChange" = "「設定」で変更";
-"settings.trackingNote" = "WatchCompare が他社のアプリや Web サイトを横断してアクティビティを追跡することを許可するか、iOS が一度だけ確認します。許可しない限りトラッキングは行われません。「設定 › プライバシーとセキュリティ › トラッキング」からいつでも変更できます。";
+"settings.trackingNote" = "WatchCompare が他社のアプリや Web サイトを横断してアクティビティを追跡することを許可するか、iOS が一度だけ確認します。利用状況の分析（検索と出品の閲覧）は許可した場合にのみ送信され、許可しなければアプリは何も記録しません。「設定 › プライバシーとセキュリティ › トラッキング」からいつでも変更できます。";

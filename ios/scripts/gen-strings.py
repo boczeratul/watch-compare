@@ -52,7 +52,7 @@ APP_ONLY = {
         "settings.tracking": "Tracking", "settings.trackingStatus": "Permission", "settings.trackingAllowed": "Allowed",
         "settings.trackingDenied": "Not allowed", "settings.trackingNotAsked": "Not asked yet",
         "settings.trackingChange": "Change in Settings",
-        "settings.trackingNote": "iOS asks once whether WatchCompare may track your activity across other apps and websites. Nothing is tracked unless you allow it; you can change your answer any time in Settings › Privacy & Security › Tracking.",
+        "settings.trackingNote": "iOS asks once whether WatchCompare may track your activity across other apps and websites. Usage analytics (searches and listing views) are only sent with your permission; without it the app records nothing. Change your answer any time in Settings › Privacy & Security › Tracking.",
     },
     "zh-TW": {
         "home.removeRecent": "從最近搜尋中移除",
@@ -65,7 +65,7 @@ APP_ONLY = {
         "settings.tracking": "追蹤", "settings.trackingStatus": "權限", "settings.trackingAllowed": "已允許",
         "settings.trackingDenied": "不允許", "settings.trackingNotAsked": "尚未詢問",
         "settings.trackingChange": "在「設定」中變更",
-        "settings.trackingNote": "iOS 會詢問一次是否允許 WatchCompare 跨其他 App 與網站追蹤您的活動。除非您允許，否則不會進行任何追蹤；您隨時可在「設定 › 隱私權與安全性 › 追蹤」中變更。",
+        "settings.trackingNote": "iOS 會詢問一次是否允許 WatchCompare 跨其他 App 與網站追蹤您的活動。使用分析（搜尋與物件瀏覽）僅在您允許後才會傳送；未允許時 App 不會記錄任何內容。您隨時可在「設定 › 隱私權與安全性 › 追蹤」中變更。",
     },
     "zh-CN": {
         "home.removeRecent": "从最近搜索中移除",
@@ -78,7 +78,7 @@ APP_ONLY = {
         "settings.tracking": "跟踪", "settings.trackingStatus": "权限", "settings.trackingAllowed": "已允许",
         "settings.trackingDenied": "不允许", "settings.trackingNotAsked": "尚未询问",
         "settings.trackingChange": "在“设置”中更改",
-        "settings.trackingNote": "iOS 会询问一次是否允许 WatchCompare 跨其他应用与网站跟踪您的活动。除非您允许，否则不会进行任何跟踪；您可随时在“设置 › 隐私与安全性 › 跟踪”中更改。",
+        "settings.trackingNote": "iOS 会询问一次是否允许 WatchCompare 跨其他应用与网站跟踪您的活动。使用分析（搜索与商品浏览）仅在您允许后才会发送；未允许时应用不会记录任何内容。您可随时在“设置 › 隐私与安全性 › 跟踪”中更改。",
     },
     "ja": {
         "home.removeRecent": "最近の検索から削除",
@@ -91,7 +91,7 @@ APP_ONLY = {
         "settings.tracking": "トラッキング", "settings.trackingStatus": "許可", "settings.trackingAllowed": "許可済み",
         "settings.trackingDenied": "許可しない", "settings.trackingNotAsked": "未確認",
         "settings.trackingChange": "「設定」で変更",
-        "settings.trackingNote": "WatchCompare が他社のアプリや Web サイトを横断してアクティビティを追跡することを許可するか、iOS が一度だけ確認します。許可しない限りトラッキングは行われません。「設定 › プライバシーとセキュリティ › トラッキング」からいつでも変更できます。",
+        "settings.trackingNote": "WatchCompare が他社のアプリや Web サイトを横断してアクティビティを追跡することを許可するか、iOS が一度だけ確認します。利用状況の分析（検索と出品の閲覧）は許可した場合にのみ送信され、許可しなければアプリは何も記録しません。「設定 › プライバシーとセキュリティ › トラッキング」からいつでも変更できます。",
     },
     "de": {
         "home.removeRecent": "Aus den letzten Suchen entfernen",
@@ -104,7 +104,7 @@ APP_ONLY = {
         "settings.tracking": "Tracking", "settings.trackingStatus": "Berechtigung", "settings.trackingAllowed": "Erlaubt",
         "settings.trackingDenied": "Nicht erlaubt", "settings.trackingNotAsked": "Noch nicht gefragt",
         "settings.trackingChange": "In den Einstellungen ändern",
-        "settings.trackingNote": "iOS fragt einmalig, ob WatchCompare Ihre Aktivitäten über andere Apps und Websites hinweg verfolgen darf. Ohne Ihre Erlaubnis wird nichts erfasst; Sie können die Antwort jederzeit unter Einstellungen › Datenschutz & Sicherheit › Tracking ändern.",
+        "settings.trackingNote": "iOS fragt einmalig, ob WatchCompare Ihre Aktivitäten über andere Apps und Websites hinweg verfolgen darf. Nutzungsanalysen (Suchen und Angebotsaufrufe) werden nur mit Ihrer Erlaubnis gesendet; ohne sie zeichnet die App nichts auf. Sie können die Antwort jederzeit unter Einstellungen › Datenschutz & Sicherheit › Tracking ändern.",
     },
 }
 

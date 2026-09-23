@@ -4,8 +4,10 @@ import AmplitudeSwift
 /// Product analytics (Amplitude). Two events, shared with the web app so dashboards line up:
 ///   search        — a results page was loaded (query, filters, sort, page, result count)
 ///   view_listing  — a listing detail screen was opened
-/// Autocapture is limited to sessions; the SDK never reads the advertising identifier, so this is
-/// first-party measurement rather than cross-app tracking (see TrackingConsent for the latter).
+/// Gated by App Tracking Transparency: `TrackingConsent` calls `setEnabled` with its status, so
+/// the SDK is only created once `trackingAuthorizationStatus` is `.authorized`, is opted out if
+/// the answer later changes to denied, and re-enabled if the visitor allows it in Settings.
+/// Autocapture is limited to sessions.
 @MainActor
 public enum Analytics {
     public static let apiKey = "0f8cd19c77fc0325b6bdd8807e466e13"
@@ -13,17 +15,25 @@ public enum Analytics {
     public static let disableKey = "WC_DISABLE_ANALYTICS"
 
     private static var client: Amplitude?
+    /// True while events are being recorded (tracking authorized and not disabled by argument).
+    public private(set) static var isEnabled = false
 
-    public static func start() {
-        guard client == nil, !UserDefaults.standard.bool(forKey: disableKey) else { return }
-        let configuration = Configuration(apiKey: apiKey, autocapture: [.sessions])
-        client = Amplitude(configuration: configuration)
+    /// Called by TrackingConsent whenever the authorization status is (re)read.
+    public static func setEnabled(_ enabled: Bool) {
+        let allowed = enabled && !UserDefaults.standard.bool(forKey: disableKey)
+        isEnabled = allowed
+        if allowed, client == nil {
+            client = Amplitude(configuration: Configuration(apiKey: apiKey, autocapture: [.sessions]))
+        }
+        // Opting out stops sends and discards queued events without tearing the client down.
+        client?.configuration.optOut = !allowed
     }
 
     public static func track(_ event: String, _ properties: [String: Any] = [:]) {
         var props = properties
         props["platform"] = "ios"
         props["locale"] = Locale.current.identifier
+        guard isEnabled else { return }
         client?.track(eventType: event, eventProperties: props)
     }
 

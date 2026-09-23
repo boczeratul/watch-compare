@@ -136,4 +136,4 @@
 "settings.trackingDenied" = "Not allowed";
 "settings.trackingNotAsked" = "Not asked yet";
 "settings.trackingChange" = "Change in Settings";
-"settings.trackingNote" = "iOS asks once whether WatchCompare may track your activity across other apps and websites. Nothing is tracked unless you allow it; you can change your answer any time in Settings › Privacy & Security › Tracking.";
+"settings.trackingNote" = "iOS asks once whether WatchCompare may track your activity across other apps and websites. Usage analytics (searches and listing views) are only sent with your permission; without it the app records nothing. Change your answer any time in Settings › Privacy & Security › Tracking.";

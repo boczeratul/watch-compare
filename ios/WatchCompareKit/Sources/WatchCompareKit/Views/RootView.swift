@@ -13,7 +13,6 @@ public struct RootView: View {
     public init(apiBaseURL: URL) {
         api = APIClient(baseURL: apiBaseURL)
         _settings = State(initialValue: AppSettings())
-        Analytics.start()
     }
 
     public var body: some View {
