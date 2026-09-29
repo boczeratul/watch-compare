@@ -13,11 +13,16 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/amplitude/Amplitude-Swift", from: "1.9.0"),
+        .package(url: "https://github.com/OneSignal/OneSignal-XCFramework", from: "5.7.0"),
     ],
     targets: [
         .target(
             name: "WatchCompareKit",
-            dependencies: [.product(name: "AmplitudeSwift", package: "Amplitude-Swift")],
+            dependencies: [
+                .product(name: "AmplitudeSwift", package: "Amplitude-Swift"),
+                // iOS-only binary SDK: the macOS host build (`swift test`) compiles push out.
+                .product(name: "OneSignalFramework", package: "OneSignal-XCFramework", condition: .when(platforms: [.iOS])),
+            ],
             resources: [.process("Resources")]
         ),
         .testTarget(

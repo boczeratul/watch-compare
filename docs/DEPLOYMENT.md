@@ -101,6 +101,8 @@ Steps, in order:
 | `_RENDER_SERVICE_URL` | `https://production-lon.browserless.io` — empty (default) keeps Chrono24 skipped, even if `BROWSERLESS_TOKEN` is set |
 | `_RENDER_EXTRA_QUERY` | `proxy=residential&proxyCountry=de` (optional) |
 | `_CHRONO24_BRANDS` / `_CHRONO24_MAX_PAGES` | `rolex,omega,iwc,audemarspiguet,patekphilippe` / `3` |
+| `_ONESIGNAL_APP_ID` | OneSignal app id (public); empty (default) skips push alerts |
+| `_PUBLIC_SITE_URL` | `https://watch-compare.vercel.app` — web origin in notification links |
 
 ### Manual operations
 
@@ -147,6 +149,7 @@ gcloud run jobs execute watch-compare-api-migrate --region asia-east1 --args=dow
    |------|-------|
    | `API_URL` | `https://watch-compare-api-xxxxx-de.a.run.app` (Cloud Run URL; server-only) |
    | `NEXT_PUBLIC_SITE_URL` | `https://watch-compare.vercel.app` (or your domain) |
+   | `NEXT_PUBLIC_ONESIGNAL_APP_ID` | OneSignal app id (public); empty hides alerts on the web |
 
    Preview deployments can point at the same production API (it is read-only) or at a staging
    Cloud Run service.
@@ -296,3 +299,41 @@ gcloud run jobs update watch-compare-crawler --region asia-east1 \
   (e.g. Cloud Monitoring log-based alert on `severity=ERROR AND job="crawler"`).
 * Typical monthly cost at hobby scale: Cloud SQL `db-g1-small` ≈ $25–30, Cloud Run < $5,
   Artifact Registry < $1, Vercel Hobby $0.
+
+---
+
+## 8. Push alerts (OneSignal)
+
+Users save a search as an alert; after each nightly crawl the crawler job pushes new matches
+through OneSignal to the browser (Web Push) or the iOS app (APNs). Everything stays off until the
+steps below are done, so deploying the code first is safe.
+
+1. Create a OneSignal app and enable two platforms:
+   * **Apple iOS (APNs)**: upload an APNs auth key (.p8) from the Apple Developer account
+     (Keys → Apple Push Notifications service), with key id, team id and bundle id
+     `com.hsuanlee.watchcompare`.
+   * **Web**: "Typical site", site URL = the production domain. The service worker is already
+     served at `/OneSignalSDKWorker.js` (`frontend/public/`). Leave OneSignal's own prompts off;
+     the site asks for permission when someone saves an alert.
+2. Backend: store the REST API key and point the job at the app.
+   ```bash
+   printf '%s' "<REST API key>" | gcloud secrets versions add ONESIGNAL_REST_API_KEY --data-file=-
+   # (first time: gcloud secrets create ONESIGNAL_REST_API_KEY --replication-policy=automatic --data-file=-)
+   ```
+   Set `_ONESIGNAL_APP_ID` (and `_PUBLIC_SITE_URL` if the domain differs) on the Cloud Build
+   trigger. The secret must exist before the next backend deploy, because the crawler job mounts
+   it; `infra/gcp/setup.sh` creates a `replace-me` placeholder, which the crawler treats as unset.
+3. Vercel: set `NEXT_PUBLIC_ONESIGNAL_APP_ID` for Production (and Preview if wanted) and redeploy.
+4. iOS: set the project-level `ONESIGNAL_APP_ID` build setting (also in `ios/project.yml`). The
+   target already has the Push Notifications entitlement (`WatchCompare.entitlements`) and the
+   remote-notification background mode; with automatic signing, Xcode / Xcode Cloud adds the push
+   capability to the App ID. Update the App Store privacy details: the app now links a device
+   identifier to saved searches for push.
+
+Try it without waiting for the nightly run:
+
+```bash
+gcloud run jobs execute watch-compare-crawler --region asia-east1 --args="-alerts-only,-skip-fx"
+# locally
+cd backend && go run ./cmd/crawler -alerts-only -skip-fx
+```

@@ -156,6 +156,7 @@ type ListingQuery struct {
 	DiameterMax     *float64
 	HasBox          *bool
 	HasPapers       *bool
+	FirstSeenAfter  *time.Time // only listings first crawled after this instant (alert matching)
 	Sort            SortKey
 	Page            int
 	PerPage         int
@@ -211,4 +212,15 @@ type ExchangeRate struct {
 	Quote     string    `json:"quote"`
 	Rate      float64   `json:"rate"`
 	FetchedAt time.Time `json:"fetchedAt"`
+}
+
+// Alert is a saved search that sends a push notification when new listings match it.
+type Alert struct {
+	ID             int64      `json:"id"`
+	SubscriberID   string     `json:"-"`     // OneSignal external_id of the device that saved it
+	Name           string     `json:"name"`  // human-readable summary of the criteria
+	Query          string     `json:"query"` // URL-encoded /api/v1/listings criteria, incl. currency
+	CheckedAt      time.Time  `json:"-"`     // listings first seen after this are new finds
+	LastNotifiedAt *time.Time `json:"lastNotifiedAt,omitempty"`
+	CreatedAt      time.Time  `json:"createdAt"`
 }

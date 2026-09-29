@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { cookies } from "next/headers";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { api, safe, toApiParams, type SearchParams, type SearchResult } from "@/lib/api";
+import { alertQuery, api, safe, toApiParams, type SearchParams, type SearchResult } from "@/lib/api";
 import { CURRENCY_COOKIE, isCurrency } from "@/lib/settings";
 import { defaultCurrencyForLocale, type Locale } from "@/i18n/routing";
 import { FiltersSidebar } from "@/components/filters-sidebar";
@@ -10,6 +10,7 @@ import { SortSelect } from "@/components/sort-select";
 import { ListingGrid } from "@/components/listing-grid";
 import { Pagination } from "@/components/pagination";
 import { TrackSearch } from "@/components/analytics";
+import { AlertButton } from "@/components/alert-button";
 
 const EMPTY: SearchResult = { items: [], total: 0, page: 1, perPage: 30, totalPages: 0, facets: { brands: [], sources: [], conditions: [], movements: [], countries: [], dialColors: [], years: [] } };
 
@@ -55,7 +56,8 @@ export default async function SearchPage({ params, searchParams }: Props) {
           <h1 className="text-xl font-semibold text-slate-900">{t("resultsFor", { count: result.total, query: q || "none" })}</h1>
           {result.total > 0 && <p className="text-sm text-slate-500">{t("showing", { from, to, total: result.total.toLocaleString(locale) })}</p>}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-start gap-2">
+          <AlertButton query={alertQuery(sp, currency)} />
           <Suspense>
             <FiltersSidebarMobile facets={result.facets} />
           </Suspense>

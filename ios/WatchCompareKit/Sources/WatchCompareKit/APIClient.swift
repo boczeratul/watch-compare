@@ -20,8 +20,9 @@ public enum APIError: Error, LocalizedError, Sendable {
     }
 }
 
-/// Read-only client for the Go API (backend/internal/api). Every call is a GET returning JSON;
-/// responses are normalized while decoding (see `EmptyIfNull`) so views never see `null` arrays.
+/// Client for the Go API (backend/internal/api). Listings and reference data are GETs returning
+/// JSON; push alerts are also created and deleted, authenticated by the device's subscriber id.
+/// Responses are normalized while decoding (see `EmptyIfNull`) so views never see `null` arrays.
 public final class APIClient: Sendable {
     public let baseURL: URL
     private let session: URLSession
@@ -65,16 +66,54 @@ public final class APIClient: Sendable {
         try await get("/api/v1/stats")
     }
 
+    // MARK: Push alerts
+
+    /// Header carrying the random subscriber id that is also this device's OneSignal external_id.
+    public static let subscriberHeader = "X-Subscriber-ID"
+
+    public func alerts(subscriberID: String) async throws -> [PushAlert] {
+        let data = try await send("GET", "/api/v1/alerts", subscriberID: subscriberID)
+        return try decode(ItemsResponse<PushAlert>.self, from: data).items
+    }
+
+    /// Throws `APIError.http` with status 409 at the per-device limit and 422 for a query without criteria.
+    public func createAlert(subscriberID: String, query: String) async throws -> PushAlert {
+        let body = try JSONEncoder().encode(["query": query])
+        let data = try await send("POST", "/api/v1/alerts", subscriberID: subscriberID, body: body)
+        return try decode(PushAlert.self, from: data)
+    }
+
+    public func deleteAlert(subscriberID: String, id: Int64) async throws {
+        do {
+            _ = try await send("DELETE", "/api/v1/alerts/\(id)", subscriberID: subscriberID)
+        } catch let error as APIError where error.isNotFound {
+            // Already gone.
+        }
+    }
+
     // MARK: Transport
 
     private func get<T: Decodable>(_ path: String, query: [URLQueryItem] = [], as type: T.Type = T.self) async throws -> T {
+        try decode(T.self, from: await send("GET", path, query: query))
+    }
+
+    private func send(_ method: String, _ path: String, query: [URLQueryItem] = [], subscriberID: String? = nil, body: Data? = nil) async throws -> Data {
         guard var components = URLComponents(url: baseURL.appending(path: path), resolvingAgainstBaseURL: false) else {
             throw APIError.invalidURL
         }
         if !query.isEmpty { components.queryItems = query }
         guard let url = components.url else { throw APIError.invalidURL }
         var request = URLRequest(url: url)
+        request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        if let subscriberID {
+            request.setValue(subscriberID, forHTTPHeaderField: Self.subscriberHeader)
+            request.cachePolicy = .reloadIgnoringLocalCacheData
+        }
+        if let body {
+            request.httpBody = body
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        }
         request.timeoutInterval = 20
 
         let data: Data
@@ -87,6 +126,10 @@ public final class APIClient: Sendable {
         if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
             throw APIError.http(status: http.statusCode, path: path)
         }
+        return data
+    }
+
+    private func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
         do {
             return try JSONDecoder.api.decode(T.self, from: data)
         } catch {

@@ -255,8 +255,8 @@ func collect(rows pgx.Rows) ([]model.Listing, error) {
 	return out, rows.Err()
 }
 
-// SearchListings runs a filtered, sorted, paginated query plus facet counts.
-func (r *Repo) SearchListings(ctx context.Context, q model.ListingQuery) (*model.SearchResult, error) {
+// listingFilter builds the WHERE clause shared by SearchListings and NewMatches.
+func listingFilter(q model.ListingQuery) *builder {
 	b := newBuilder()
 	if !q.IncludeInactive {
 		b.where("l.is_active")
@@ -340,8 +340,17 @@ func (r *Repo) SearchListings(ctx context.Context, q model.ListingQuery) (*model
 	if q.HasPapers != nil {
 		b.where("l.has_papers = " + b.arg(*q.HasPapers))
 	}
+	if q.FirstSeenAfter != nil {
+		b.where("l.first_seen_at > " + b.arg(*q.FirstSeenAfter))
+	}
+	return b
+}
 
-	// Everything above is part of the WHERE clause and shared by count, page and facet queries.
+// SearchListings runs a filtered, sorted, paginated query plus facet counts.
+func (r *Repo) SearchListings(ctx context.Context, q model.ListingQuery) (*model.SearchResult, error) {
+	b := listingFilter(q)
+
+	// The filter is the WHERE clause and is shared by count, page and facet queries.
 	whereSQL := b.whereSQL()
 	whereArgs := append([]any(nil), b.args...)
 

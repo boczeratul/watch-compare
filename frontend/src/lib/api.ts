@@ -82,6 +82,8 @@ export interface Stats {
   sources: { key: string; name: string; count: number }[];
 }
 
+export interface Alert { id: number; name: string; query: string; createdAt: string; lastNotifiedAt?: string }
+
 export type SortKey = "relevance" | "price_asc" | "price_desc" | "newest" | "oldest" | "year_desc" | "year_asc" | "size_asc" | "size_desc";
 export const SORT_KEYS: SortKey[] = ["relevance", "newest", "price_asc", "price_desc", "year_desc", "year_asc", "size_asc", "size_desc"];
 
@@ -159,6 +161,46 @@ export const api = {
   rates: () => get<RatesResponse>("/api/v1/rates", undefined, 600).then((r) => ({ ...r, items: arr(r.items), supported: arr(r.supported) })),
   stats: () => get<Stats>("/api/v1/stats", undefined, 300).then((r) => ({ ...r, sources: arr(r.sources) })),
 };
+
+/** Push alerts are per device and writable, so these calls are never cached. */
+async function alertsRequest(method: "GET" | "POST" | "DELETE", path: string, subscriberId: string, body?: unknown): Promise<Response> {
+  return fetch(new URL(path, API_URL), {
+    method,
+    cache: "no-store",
+    headers: { Accept: "application/json", "Content-Type": "application/json", "X-Subscriber-ID": subscriberId },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+}
+
+export type CreateAlertResult = { ok: true; alert: Alert } | { ok: false; error: "limit" | "criteria" | "error" };
+
+export const alertsApi = {
+  list: async (subscriberId: string): Promise<Alert[]> => {
+    const res = await alertsRequest("GET", "/api/v1/alerts", subscriberId);
+    if (!res.ok) throw new ApiError(res.status, `${res.status} listing alerts`);
+    return arr(((await res.json()) as { items: Alert[] }).items);
+  },
+  create: async (subscriberId: string, query: string): Promise<CreateAlertResult> => {
+    const res = await alertsRequest("POST", "/api/v1/alerts", subscriberId, { query });
+    if (res.ok) return { ok: true, alert: (await res.json()) as Alert };
+    if (res.status === 409) return { ok: false, error: "limit" };
+    if (res.status === 422) return { ok: false, error: "criteria" };
+    return { ok: false, error: "error" };
+  },
+  remove: async (subscriberId: string, id: number): Promise<boolean> => {
+    const res = await alertsRequest("DELETE", `/api/v1/alerts/${id}`, subscriberId);
+    return res.ok || res.status === 404;
+  },
+};
+
+/** Criteria of a search (everything but sort and paging) as an alert query string, or "" if none. */
+export function alertQuery(sp: SearchParams, currency: string): string {
+  const out = new URLSearchParams();
+  for (const [k, v] of Object.entries(toApiParams(sp, currency))) {
+    if (v && k !== "sort" && k !== "page" && k !== "per_page") out.set(k, v);
+  }
+  return [...out.keys()].some((k) => k !== "currency") ? out.toString() : "";
+}
 
 export { ApiError };
 

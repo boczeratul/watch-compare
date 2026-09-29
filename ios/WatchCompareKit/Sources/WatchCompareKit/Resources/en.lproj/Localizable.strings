@@ -2,6 +2,7 @@
 
 "nav.search" = "Search";
 "nav.brands" = "Brands";
+"nav.alerts" = "Alerts";
 "nav.settings" = "Settings";
 "nav.currency" = "Currency";
 "nav.language" = "Language";
@@ -112,12 +113,23 @@
 "common.error" = "Something went wrong.";
 "footer.sources" = "Sources";
 "footer.disclaimer" = "Prices are indexed once a day and converted with daily exchange rates. Always verify the final price with the seller. WatchCompare is not affiliated with any marketplace.";
+"alerts.title" = "Alerts";
+"alerts.intro" = "Get a push notification when a newly listed watch matches a saved search. We check once a day, right after the nightly crawl.";
+"alerts.create" = "Notify me of new matches";
+"alerts.created" = "Alert saved. We'll notify you about new matches.";
+"alerts.empty" = "No alerts yet. Run a search, set your filters, then choose “Notify me of new matches”.";
+"alerts.delete" = "Delete";
+"alerts.permissionDenied" = "Notifications are blocked. Allow them in your browser or system settings to receive alerts.";
+"alerts.limit" = "You have reached the maximum of 20 alerts. Delete one to add another.";
+"alerts.needsCriteria" = "Add a search term or a filter first, so the alert doesn't match every new listing.";
+"alerts.error" = "Something went wrong. Please try again.";
 "home.heroSubtitle" = "We index %1$@ watches from %2$d marketplaces every night and show them in your currency, so you can spot the best deal for a brand, a reference or a budget.";
 "home.lastUpdated" = "Updated %1$@";
 "search.price" = "Price (%1$@)";
 "listing.inactive" = "This listing is no longer available on %1$@.";
 "listing.viewOnSource" = "View on %1$@";
 "listing.saveVs" = "%1$d%% cheaper than the next offer";
+"alerts.done" = "Done";
 "home.removeRecent" = "Remove from recent searches";
 "search.resultsNone" = "No watches";
 "search.resultsOne" = "1 watch";

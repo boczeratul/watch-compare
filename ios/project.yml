@@ -16,13 +16,15 @@ settings:
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     # Production API for every configuration; override at runtime with -WC_API_BASE_URL.
     API_BASE_URL: https://watch-compare-api-m7slk5b25q-de.a.run.app
+    # OneSignal app id for push alerts (public, not a secret). Empty builds the app without push.
+    ONESIGNAL_APP_ID: ""
 targets:
   WatchCompare:
     type: application
     platform: iOS
     sources:
       - path: WatchCompare
-        excludes: ["Info.plist"]
+        excludes: ["Info.plist", "WatchCompare.entitlements"]
     dependencies:
       - package: WatchCompareKit
     info:
@@ -32,6 +34,8 @@ targets:
         CFBundleDisplayName: WatchCompare
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, zh-Hant, zh-Hans, ja, de]
+        OneSignalAppID: $(ONESIGNAL_APP_ID)
+        UIBackgroundModes: [remote-notification]
         NSUserTrackingUsageDescription: This lets WatchCompare measure which searches and marketplaces lead to purchases, so we can improve results and show you relevant offers.
         ITSAppUsesNonExemptEncryption: false
         NSAppTransportSecurity:
@@ -40,6 +44,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hsuanlee.watchcompare
+        CODE_SIGN_ENTITLEMENTS: WatchCompare/WatchCompare.entitlements
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         TARGETED_DEVICE_FAMILY: "1,2"
         SWIFT_EMIT_LOC_STRINGS: YES

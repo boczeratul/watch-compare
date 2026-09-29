@@ -299,6 +299,61 @@ func TestRepositoryEndToEnd(t *testing.T) {
 	if err != nil || sr.Total != 1 {
 		t.Errorf("ref filter: total=%d err=%v", sr.Total, err)
 	}
+	// alerts: CRUD scoped to the subscriber, per-subscriber limit, duplicate query reuse
+	sub := "0b6f1a2e-5c1d-4b8e-9f3a-2d7c6e1f0a9b"
+	al, ok, err := repo.CreateAlert(ctx, sub, "Rolex", "brand=rolex&currency=USD", 2)
+	if err != nil || !ok || al.ID == 0 {
+		t.Fatalf("create alert: %+v %v %v", al, ok, err)
+	}
+	if again, ok, err := repo.CreateAlert(ctx, sub, "Rolex", "brand=rolex&currency=USD", 2); err != nil || !ok || again.ID != al.ID {
+		t.Errorf("duplicate alert: %+v %v %v", again, ok, err)
+	}
+	if _, ok, err := repo.CreateAlert(ctx, sub, "Omega", "brand=omega&currency=USD", 2); err != nil || !ok {
+		t.Errorf("second alert: %v %v", ok, err)
+	}
+	if _, ok, err := repo.CreateAlert(ctx, sub, "Tudor", "brand=tudor&currency=USD", 2); err != nil || ok {
+		t.Errorf("limit: ok=%v err=%v", ok, err)
+	}
+	if mine, err := repo.AlertsFor(ctx, sub); err != nil || len(mine) != 2 {
+		t.Errorf("alerts for: %+v %v", mine, err)
+	}
+	if err := repo.DeleteAlert(ctx, "someone-else-0000000000000000000000", al.ID); err != repository.ErrNotFound {
+		t.Errorf("delete other's alert: %v", err)
+	}
+	// new finds: nothing was first seen after the alert was created; a fresh listing is
+	before := al.CheckedAt
+	if total, _, err := repo.NewMatches(ctx, model.ListingQuery{Brands: []string{"rolex"}, FirstSeenAfter: &before}, 5); err != nil || total != 0 {
+		t.Errorf("new matches before: %d %v", total, err)
+	}
+	p4, u4 := 9000.0, 9000.0
+	l3 := model.Listing{SourceID: hs.ID, ExternalID: "new1", URL: "https://example.com/3", Title: "Rolex GMT-Master II 126710BLRO",
+		BrandID: &rolex, BrandName: "Rolex", ReferenceNumber: "126710BLRO", Condition: model.ConditionGood,
+		Movement: model.MovementAutomatic, Gender: model.GenderMen, Price: &p4, Currency: "USD", PriceUSD: &u4, ImageURLs: []string{}}
+	if _, err := repo.UpsertListing(ctx, &l3); err != nil {
+		t.Fatal(err)
+	}
+	total, items, err := repo.NewMatches(ctx, model.ListingQuery{Brands: []string{"rolex"}, FirstSeenAfter: &before}, 5)
+	if err != nil || total != 1 || len(items) != 1 || items[0].ExternalID != "new1" {
+		t.Errorf("new matches after: %d %+v %v", total, items, err)
+	}
+	checked := time.Now()
+	if err := repo.MarkAlertChecked(ctx, al.ID, checked, true); err != nil {
+		t.Fatal(err)
+	}
+	all, err := repo.AllAlerts(ctx)
+	if err != nil || len(all) != 2 || all[0].LastNotifiedAt == nil || !all[0].CheckedAt.After(before) {
+		t.Errorf("all alerts after check: %+v %v", all, err)
+	}
+	if total, _, err := repo.NewMatches(ctx, model.ListingQuery{Brands: []string{"rolex"}, FirstSeenAfter: &all[0].CheckedAt}, 5); err != nil || total != 0 {
+		t.Errorf("new matches after watermark: %d %v", total, err)
+	}
+	if err := repo.DeleteAlert(ctx, sub, al.ID); err != nil {
+		t.Errorf("delete: %v", err)
+	}
+	if _, err := pool.Exec(ctx, `DELETE FROM listings WHERE external_id = 'new1'`); err != nil {
+		t.Fatal(err)
+	}
+
 	// similar
 	got, err := repo.GetListing(ctx, res.ID)
 	if err != nil {

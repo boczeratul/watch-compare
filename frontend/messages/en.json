@@ -10,7 +10,8 @@
     "brands": "Brands",
     "language": "Language",
     "currency": "Currency",
-    "settings": "Settings"
+    "settings": "Settings",
+    "alerts": "Alerts"
   },
   "home": {
     "heroTitle": "One search. Every marketplace.",
@@ -177,7 +178,7 @@
   },
   "privacy": {
     "title": "Privacy policy",
-    "updatedOn": "2026-09-23",
+    "updatedOn": "2026-09-29",
     "updated": "Last updated {date}",
     "intro": "WatchCompare is a price-comparison index for watches. This policy explains what the website and the WatchCompare iOS app collect, and what they do not. The short version: no accounts, no advertising, anonymous usage statistics only, and nothing about you is sold or shared.",
     "scopeTitle": "What this covers",
@@ -190,7 +191,8 @@
       "Usage analytics. We use Amplitude to count searches and listing views on the website and in the app, so we can see which brands, references and marketplaces people look for. Each event carries the search terms and filters or the listing opened, your display currency and language, the platform, a random identifier for your browser or device, and a coarse location that Amplitude derives from your IP address. Events never contain a name, e-mail address or advertising identifier. Amplitude stores them on our behalf in the United States under its own privacy policy.",
       "Preferences. The website stores your chosen display currency and language in cookies so that pages render in your currency on the next visit. These cookies contain no identifier and are not used for tracking. Your recent searches are saved in your browser's local storage so they can be suggested again; they never leave your device.",
       "The iOS app stores the same preferences (display currency and recent searches) on your device only. The app sends the search filters you choose to our API in order to return results; it does not send your name, contacts, location, photos or device identifiers.",
-      "Tracking permission (iOS app). The app asks once, through Apple's App Tracking Transparency prompt, whether it may track your activity across other companies' apps and websites. Nothing is tracked unless you allow it, and you can change your answer at any time under Settings › Privacy & Security › Tracking. In the app, the usage analytics described above are only sent if you allow this; if you decline, the app records nothing."
+      "Tracking permission (iOS app). The app asks once, through Apple's App Tracking Transparency prompt, whether it may track your activity across other companies' apps and websites. Nothing is tracked unless you allow it, and you can change your answer at any time under Settings › Privacy & Security › Tracking. In the app, the usage analytics described above are only sent if you allow this; if you decline, the app records nothing.",
+      "Push alerts (optional). If you save a search as an alert, your browser or device generates a random identifier and registers it, together with its push token, with OneSignal, the service that delivers the notifications. We store the identifier with the search filters of each alert and nothing else. Delete an alert to remove it; turning off notifications for the site or the app stops delivery."
     ],
     "notCollectTitle": "What we do not collect",
     "notCollectBody": [
@@ -200,7 +202,8 @@
     "thirdPartiesBody": [
       "Listing photos are loaded directly from the marketplace that published the listing (for example Chrono24, eBay or a dealer's own site). When your browser or the app fetches a photo, that marketplace's servers see your IP address and standard request information, just as if you visited their site.",
       "When you follow a link to a seller, you leave WatchCompare and the seller's terms and privacy policy apply.",
-      "The website is hosted on Vercel and the API on Google Cloud (region asia-east1, Taiwan). Both providers process request data on our behalf under their own privacy commitments."
+      "The website is hosted on Vercel and the API on Google Cloud (region asia-east1, Taiwan). Both providers process request data on our behalf under their own privacy commitments.",
+      "Push notifications are delivered by OneSignal (United States) through Apple Push Notification service or your browser's push service. OneSignal processes the device identifier and push token on our behalf under its own privacy policy."
     ],
     "choicesTitle": "Your choices",
     "choicesBody": [
@@ -240,5 +243,21 @@
       "dataA": "No account, no advertising. Your currency choice and recent searches stay on your device. Searches and listing views are counted anonymously with Amplitude so we can see what people look for. See the privacy policy for the full picture."
     },
     "privacyLink": "Privacy policy"
+  },
+  "alerts": {
+    "title": "Alerts",
+    "intro": "Get a push notification when a newly listed watch matches a saved search. We check once a day, right after the nightly crawl.",
+    "create": "Notify me of new matches",
+    "saving": "Saving…",
+    "created": "Alert saved. We'll notify you about new matches.",
+    "empty": "No alerts yet. Run a search, set your filters, then choose “Notify me of new matches”.",
+    "delete": "Delete",
+    "viewResults": "View matches",
+    "permissionDenied": "Notifications are blocked. Allow them in your browser or system settings to receive alerts.",
+    "unsupported": "Push notifications are not available in this browser. On iPhone, add the site to your Home Screen or use the WatchCompare app.",
+    "limit": "You have reached the maximum of 20 alerts. Delete one to add another.",
+    "needsCriteria": "Add a search term or a filter first, so the alert doesn't match every new listing.",
+    "error": "Something went wrong. Please try again.",
+    "manage": "Manage alerts"
   }
 }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-public enum Tab: Hashable { case search, brands, settings }
+public enum Tab: Hashable { case search, brands, alerts, settings }
 
 /// Entry point used by the app target. Owns the API client and settings for the whole app.
 public struct RootView: View {
@@ -8,6 +8,7 @@ public struct RootView: View {
     @State private var settings: AppSettings
     @State private var tracking = TrackingConsent()
     @State private var tab: Tab = .search
+    @State private var push = PushCenter.shared
     @Environment(\.scenePhase) private var scenePhase
 
     public init(apiBaseURL: URL) {
@@ -23,9 +24,31 @@ public struct RootView: View {
             NavigationStack { BrandsView() }
                 .tabItem { Label(L10n.t("nav.brands"), systemImage: "list.bullet") }
                 .tag(Tab.brands)
+            if push.isAvailable {
+                NavigationStack { AlertsView() }
+                    .tabItem { Label(L10n.t("nav.alerts"), systemImage: "bell") }
+                    .tag(Tab.alerts)
+            }
             NavigationStack { SettingsView() }
                 .tabItem { Label(L10n.t("nav.settings"), systemImage: "gearshape") }
                 .tag(Tab.settings)
+        }
+        // A tapped alert notification opens its listing, or its search when several matched.
+        .sheet(item: $push.opened) { opened in
+            NavigationStack {
+                Group {
+                    if let id = opened.listingID {
+                        ListingDetailView(id: id)
+                    } else if let query = opened.query {
+                        SearchResultsView(query: SearchQuery(alertQuery: query, displayCurrency: settings.currency, rates: settings.rates))
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(L10n.t("alerts.done")) { push.opened = nil }
+                    }
+                }
+            }
         }
         .environment(\.api, api)
         .environment(settings)

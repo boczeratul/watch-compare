@@ -18,6 +18,7 @@ export async function Header() {
         <nav className="hidden items-center gap-5 text-sm font-medium text-slate-600 md:flex" aria-label="Primary">
           <Link href="/search" className="hover:text-slate-900">{t("search")}</Link>
           <Link href="/brands" className="hover:text-slate-900">{t("brands")}</Link>
+          {process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID && <Link href="/alerts" className="hover:text-slate-900">{t("alerts")}</Link>}
         </nav>
         <div className="hidden flex-1 md:block">
           <Suspense>

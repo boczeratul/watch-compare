@@ -2,7 +2,8 @@
 
 Find the best deal for a watch across marketplaces. A nightly crawler indexes listings from
 **Chrono24, eBay, Watchnian, Jackroad, Commit Ginza, 7hours, Brand Shop LIPS, ALLU, BEST ISHIDA, RWW Watch, Watchfinder HK, Wristcheck, Ken's Watches, GINZA RASIN, Quark, Belle Monde, Kitamura, James Huang Vintage Watches, JD Pawn, 仁川當舖, Hourstack and RD Watch** into PostgreSQL; a Next.js frontend lets you
-search, filter and sort them Chrono24-style, in your own currency and language.
+search, filter and sort them Chrono24-style, in your own currency and language. Saved searches
+send web and iOS push notifications (OneSignal) when a new listing matches.
 
 ```
 ┌────────────┐   02:00 Asia/Taipei   ┌───────────────────┐        ┌──────────────┐
@@ -57,7 +58,7 @@ cd backend && make crawl-dry ARGS="-sources=jackroad"
 
 ## API at a glance
 
-All endpoints are `GET`, JSON, CORS-enabled for the configured origins, and cached for `CACHE_TTL`.
+Listing and reference endpoints are `GET`, JSON, CORS-enabled for the configured origins, and cached for `CACHE_TTL`.
 
 | Endpoint | Purpose |
 |----------|---------|
@@ -66,6 +67,7 @@ All endpoints are `GET`, JSON, CORS-enabled for the configured origins, and cach
 | `/api/v1/listings/{id}/similar` | Same reference on other marketplaces, cheapest first |
 | `/api/v1/listings/{id}/price-history` | Observed price points |
 | `/api/v1/brands` · `/api/v1/sources` · `/api/v1/rates` · `/api/v1/stats` · `/api/v1/crawls` | Reference data & ops |
+| `GET/POST /api/v1/alerts` · `DELETE /api/v1/alerts/{id}` | Push alerts for one device (header `X-Subscriber-ID`, never cached); see [Architecture](docs/ARCHITECTURE.md#push-alerts) |
 | `/healthz` · `/readyz` | Liveness / DB readiness |
 
 `sort` accepts `relevance, newest, oldest, price_asc, price_desc, year_desc, year_asc, size_asc, size_desc`.

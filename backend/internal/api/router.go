@@ -1,4 +1,5 @@
-// Package api exposes the read-only HTTP API consumed by the Next.js frontend.
+// Package api exposes the HTTP API consumed by the Next.js frontend and the iOS app: read-only
+// listings and reference data, plus per-device push alerts.
 package api
 
 import (
@@ -45,16 +46,27 @@ func NewRouter(repo *repository.Repo, cfg *config.Config, logger zerolog.Logger)
 	r.Get("/readyz", s.ready)
 
 	r.Route("/api/v1", func(r chi.Router) {
-		r.Use(cacheControl(cfg.CacheTTL))
-		r.Get("/listings", s.searchListings)
-		r.Get("/listings/{id}", s.getListing)
-		r.Get("/listings/{id}/similar", s.similarListings)
-		r.Get("/listings/{id}/price-history", s.priceHistory)
-		r.Get("/brands", s.brands)
-		r.Get("/sources", s.sources)
-		r.Get("/rates", s.getRates)
-		r.Get("/stats", s.stats)
-		r.Get("/crawls", s.crawls)
+		// Per-device and writable: never cached. The web client calls these from server actions and
+		// the iOS app natively, so CORS stays GET-only.
+		r.Route("/alerts", func(r chi.Router) {
+			r.Use(noStore)
+			r.Get("/", s.listAlerts)
+			r.Post("/", s.createAlert)
+			r.Delete("/{id}", s.deleteAlert)
+		})
+
+		r.Group(func(r chi.Router) {
+			r.Use(cacheControl(cfg.CacheTTL))
+			r.Get("/listings", s.searchListings)
+			r.Get("/listings/{id}", s.getListing)
+			r.Get("/listings/{id}/similar", s.similarListings)
+			r.Get("/listings/{id}/price-history", s.priceHistory)
+			r.Get("/brands", s.brands)
+			r.Get("/sources", s.sources)
+			r.Get("/rates", s.getRates)
+			r.Get("/stats", s.stats)
+			r.Get("/crawls", s.crawls)
+		})
 	})
 	return r
 }
@@ -66,6 +78,13 @@ func cacheControl(ttl time.Duration) func(http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+func noStore(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store")
+		next.ServeHTTP(w, r)
+	})
 }
 
 func requestLogger(logger zerolog.Logger) func(http.Handler) http.Handler {
