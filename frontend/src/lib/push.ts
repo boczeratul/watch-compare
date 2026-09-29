@@ -4,10 +4,12 @@
  * Web push for alerts, through the OneSignal Web SDK (v16, loaded from OneSignal's CDN on demand).
  * Each browser gets a random subscriber id, kept in localStorage, which it registers with
  * OneSignal as its external_id; alerts are saved under the same id and the crawler job pushes to
- * it. The app id is public; leave NEXT_PUBLIC_ONESIGNAL_APP_ID empty to hide alerts entirely.
+ * it. The app id is in lib/onesignal.ts.
  */
 
-export const ONESIGNAL_APP_ID = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID ?? "";
+import { ONESIGNAL_APP_ID } from "./onesignal";
+
+export { ONESIGNAL_APP_ID };
 export const SUBSCRIBER_KEY = "wc_push_subscriber";
 
 interface OneSignalSDK {

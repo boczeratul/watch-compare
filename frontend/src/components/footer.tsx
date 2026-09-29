@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Source } from "@/lib/api";
+import { ONESIGNAL_APP_ID } from "@/lib/onesignal";
 
 export async function Footer({ sources }: { sources: Source[] }) {
   const t = await getTranslations("footer");
@@ -25,7 +26,7 @@ export async function Footer({ sources }: { sources: Source[] }) {
         </div>
         <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
           <span>© {new Date().getFullYear()} WatchCompare</span>
-          {process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID && <Link href="/alerts" className="hover:text-slate-700">{nav("alerts")}</Link>}
+          {ONESIGNAL_APP_ID && <Link href="/alerts" className="hover:text-slate-700">{nav("alerts")}</Link>}
           <Link href="/support" className="hover:text-slate-700">{t("support")}</Link>
           <Link href="/privacy" className="hover:text-slate-700">{t("privacy")}</Link>
         </p>

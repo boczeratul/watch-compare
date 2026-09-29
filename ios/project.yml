@@ -17,7 +17,7 @@ settings:
     # Production API for every configuration; override at runtime with -WC_API_BASE_URL.
     API_BASE_URL: https://watch-compare-api-m7slk5b25q-de.a.run.app
     # OneSignal app id for push alerts (public, not a secret). Empty builds the app without push.
-    ONESIGNAL_APP_ID: ""
+    ONESIGNAL_APP_ID: 6e12337f-212f-4ec3-9c38-01e83635d2fe
 targets:
   WatchCompare:
     type: application

@@ -12,7 +12,7 @@
 #   _CORS_ORIGINS     Comma-separated allowed origins (Vercel production + preview domains)
 #   _RENDER_SERVICE_URL   Browserless base URL for Chrono24 (docs/BROWSERLESS.md); secret BROWSERLESS_TOKEN must exist
 #   _RENDER_EXTRA_QUERY   Extra browserless.io query options (residential proxy, stealth)
-#   _ONESIGNAL_APP_ID     OneSignal app id for push alerts (empty = alerts skipped); secret ONESIGNAL_REST_API_KEY must exist
+#   _ONESIGNAL_APP_ID     OneSignal app id for push alerts (public client config); secret ONESIGNAL_REST_API_KEY must exist
 #   _PUBLIC_SITE_URL      Web origin used in notification links
 substitutions:
   _REGION: asia-east1
@@ -26,7 +26,7 @@ substitutions:
   _RENDER_EXTRA_QUERY: ""          # e.g. proxy=residential&proxyCountry=de
   _CHRONO24_BRANDS: "rolex,omega,iwc,audemarspiguet,patekphilippe"
   _CHRONO24_MAX_PAGES: "10"
-  _ONESIGNAL_APP_ID: ""
+  _ONESIGNAL_APP_ID: "6e12337f-212f-4ec3-9c38-01e83635d2fe"
   _PUBLIC_SITE_URL: "https://watch-compare.vercel.app"
 
 options:
