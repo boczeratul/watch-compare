@@ -57,12 +57,26 @@ type createRequest struct {
 	CollapseID     string              `json:"collapse_id,omitempty"`
 }
 
+// Result is OneSignal's answer to a create call. ID is empty when nothing was queued; Errors then
+// says why (e.g. {"invalid_aliases": ...} or ["All included players are not subscribed"]).
+type Result struct {
+	ID     string          `json:"id"`
+	Errors json.RawMessage `json:"errors,omitempty"`
+}
+
 // Send creates a push notification. A request OneSignal accepts but cannot deliver to anyone
 // (every targeted device unsubscribed) is not an error: there is nobody to retry for.
 func (o *OneSignal) Send(ctx context.Context, n Notification) error {
 	if len(n.ExternalIDs) == 0 {
 		return nil
 	}
+	_, err := o.Create(ctx, n)
+	return err
+}
+
+// Create is Send that also returns OneSignal's response, for diagnostics.
+func (o *OneSignal) Create(ctx context.Context, n Notification) (Result, error) {
+	var out Result
 	body, err := json.Marshal(createRequest{
 		AppID:          o.AppID,
 		IncludeAliases: map[string][]string{"external_id": n.ExternalIDs},
@@ -74,23 +88,24 @@ func (o *OneSignal) Send(ctx context.Context, n Notification) error {
 		CollapseID:     n.CollapseID,
 	})
 	if err != nil {
-		return err
+		return out, err
 	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, o.BaseURL+"/notifications?c=push", bytes.NewReader(body))
 	if err != nil {
-		return err
+		return out, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Authorization", "Key "+o.APIKey)
 	res, err := o.HTTP.Do(req)
 	if err != nil {
-		return fmt.Errorf("onesignal: %w", err)
+		return out, fmt.Errorf("onesignal: %w", err)
 	}
 	defer res.Body.Close()
 	raw, _ := io.ReadAll(io.LimitReader(res.Body, 64<<10))
 	if res.StatusCode/100 != 2 {
-		return fmt.Errorf("onesignal: HTTP %d: %s", res.StatusCode, bytes.TrimSpace(raw))
+		return out, fmt.Errorf("onesignal: HTTP %d: %s", res.StatusCode, bytes.TrimSpace(raw))
 	}
-	return nil
+	_ = json.Unmarshal(raw, &out)
+	return out, nil
 }

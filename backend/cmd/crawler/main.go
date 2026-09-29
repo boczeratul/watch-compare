@@ -55,6 +55,7 @@ func main() {
 		timeout     = flag.Duration("timeout", 5*time.Hour, "overall run timeout")
 		skipAlerts  = flag.Bool("skip-alerts", false, "do not send push notifications for new finds")
 		alertsOnly  = flag.Bool("alerts-only", false, "skip crawling; only send push notifications for new finds")
+		testPush    = flag.String("test-push", "", "send one test notification to this subscriber id (OneSignal external_id) and exit")
 	)
 	flag.Parse()
 
@@ -73,6 +74,13 @@ func main() {
 		cfg.CrawlMaxPages = *maxPages
 	}
 	logger := newLogger(cfg)
+
+	if *testPush != "" {
+		if err := sendTestPush(cfg, *testPush, logger); err != nil {
+			logger.Fatal().Err(err).Msg("test push")
+		}
+		return
+	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
@@ -176,6 +184,38 @@ func sendAlerts(ctx context.Context, cfg *config.Config, repo *repository.Repo, 
 	res, err := n.Run(ctx)
 	logger.Info().Int("alerts", res.Alerts).Int("notified", res.Notified).Int("failed", res.Failed).Msg("alerts sent")
 	return err
+}
+
+// sendTestPush checks the OneSignal path end to end without touching the database. OneSignal
+// answers 200 even when nobody is reachable, so an empty id is reported as a failure.
+func sendTestPush(cfg *config.Config, externalID string, logger zerolog.Logger) error {
+	if !cfg.PushEnabled() {
+		return fmt.Errorf("ONESIGNAL_APP_ID / ONESIGNAL_REST_API_KEY not set")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	res, err := push.NewOneSignal(cfg.OneSignalAppID, cfg.OneSignalRESTAPIKey).Create(ctx, push.Notification{
+		ExternalIDs: []string{externalID},
+		Headings:    map[string]string{"en": "Watch Compare"},
+		Contents:    map[string]string{"en": "Test notification from the backend."},
+		WebURL:      cfg.PublicSiteURL,
+		Data:        map[string]any{"test": true},
+	})
+	if err != nil {
+		return err
+	}
+	if res.ID == "" {
+		return fmt.Errorf("onesignal queued nothing for %s: %s", externalID, res.Errors)
+	}
+	logger.Info().Str("notification_id", res.ID).RawJSON("errors", orNull(res.Errors)).Msg("test push queued")
+	return nil
+}
+
+func orNull(b []byte) []byte {
+	if len(b) == 0 {
+		return []byte("null")
+	}
+	return b
 }
 
 func newLogger(cfg *config.Config) zerolog.Logger {

@@ -341,3 +341,17 @@ gcloud run jobs execute watch-compare-crawler --region asia-east1 --args="-alert
 # locally
 cd backend && go run ./cmd/crawler -alerts-only -skip-fx
 ```
+
+Check delivery to one device (no database needed). Get the subscriber id from
+`SELECT DISTINCT subscriber_id FROM alerts` or OneSignal → Audience → Subscriptions (External ID):
+
+```bash
+gcloud run jobs execute watch-compare-crawler --region asia-east1 --args="-test-push=<subscriber id>"
+# locally, with the real key in the environment
+cd backend && ONESIGNAL_REST_API_KEY=... go run ./cmd/crawler -test-push=<subscriber id>
+```
+
+Success logs `test push queued` with a `notification_id` (look it up under Delivery in the
+OneSignal dashboard). OneSignal answers 200 even when nobody is reachable; the command fails with
+its `errors` field in that case (e.g. `invalid_aliases`: the device never logged in with that id,
+or `All included players are not subscribed`: permission denied or APNs not configured).
