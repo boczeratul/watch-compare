@@ -20,8 +20,8 @@ public struct OpenedNotification: Identifiable, Hashable, Sendable {
 @Observable
 public final class PushCenter {
     public static let shared = PushCenter()
-    public static let subscriberKey = "wc_push_subscriber"
-    public static let appIDInfoKey = "OneSignalAppID"
+    nonisolated public static let subscriberKey = "wc_push_subscriber"
+    nonisolated public static let appIDInfoKey = "OneSignalAppID"
 
     /// True once the SDK has been initialized with an app id.
     public private(set) var isAvailable = false
