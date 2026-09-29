@@ -2,6 +2,7 @@
 
 "nav.search" = "Suche";
 "nav.brands" = "Marken";
+"nav.alerts" = "Alarme";
 "nav.settings" = "Einstellungen";
 "nav.currency" = "Währung";
 "nav.language" = "Sprache";
@@ -112,12 +113,23 @@
 "common.error" = "Etwas ist schiefgelaufen.";
 "footer.sources" = "Quellen";
 "footer.disclaimer" = "Preise werden einmal täglich indexiert und mit Tageskursen umgerechnet. Prüfen Sie den Endpreis immer beim Verkäufer. WatchCompare ist mit keinem Marktplatz verbunden.";
+"alerts.title" = "Alarme";
+"alerts.intro" = "Erhalten Sie eine Push-Benachrichtigung, wenn eine neu eingestellte Uhr zu einer gespeicherten Suche passt. Wir prüfen einmal täglich direkt nach dem nächtlichen Crawl.";
+"alerts.create" = "Bei neuen Treffern benachrichtigen";
+"alerts.created" = "Alarm gespeichert. Wir benachrichtigen Sie über neue Treffer.";
+"alerts.empty" = "Noch keine Alarme. Suchen Sie, setzen Sie Filter und wählen Sie dann „Bei neuen Treffern benachrichtigen“.";
+"alerts.delete" = "Löschen";
+"alerts.permissionDenied" = "Benachrichtigungen sind blockiert. Erlauben Sie sie in den Browser- oder Systemeinstellungen, um Alarme zu erhalten.";
+"alerts.limit" = "Sie haben das Maximum von 20 Alarmen erreicht. Löschen Sie einen, um einen neuen anzulegen.";
+"alerts.needsCriteria" = "Geben Sie zuerst einen Suchbegriff ein oder setzen Sie einen Filter, damit der Alarm nicht bei jedem neuen Angebot auslöst.";
+"alerts.error" = "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.";
 "home.heroSubtitle" = "Wir indexieren jede Nacht %1$@ Uhren von %2$d Marktplätzen und zeigen sie in Ihrer Währung – so finden Sie das beste Angebot für eine Marke, eine Referenz oder ein Budget.";
 "home.lastUpdated" = "Aktualisiert %1$@";
 "search.price" = "Preis (%1$@)";
 "listing.inactive" = "Dieses Angebot ist auf %1$@ nicht mehr verfügbar.";
 "listing.viewOnSource" = "Auf %1$@ ansehen";
 "listing.saveVs" = "%1$d %% günstiger als das nächste Angebot";
+"alerts.done" = "Fertig";
 "home.removeRecent" = "Aus den letzten Suchen entfernen";
 "search.resultsNone" = "Keine Uhren";
 "search.resultsOne" = "1 Uhr";

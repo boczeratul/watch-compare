@@ -213,3 +213,13 @@ public struct Stats: Decodable, Sendable {
 public struct ItemsResponse<T: Decodable & Sendable>: Decodable, Sendable {
     @EmptyIfNull public var items: [T]
 }
+
+/// A saved search that pushes new matches (`/api/v1/alerts`). `query` holds the same parameters as
+/// a listings search, including the currency its price bounds are in.
+public struct PushAlert: Decodable, Hashable, Identifiable, Sendable {
+    public var id: Int64
+    public var name: String
+    public var query: String
+    public var createdAt: Date
+    public var lastNotifiedAt: Date?
+}

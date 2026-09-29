@@ -76,6 +76,8 @@ echo "   DATABASE_URL secret updated (password applied to Cloud SQL user 'watch'
 gcloud secrets describe EBAY_CLIENT_ID >/dev/null 2>&1 || upsert_secret EBAY_CLIENT_ID "replace-me"
 gcloud secrets describe EBAY_CLIENT_SECRET >/dev/null 2>&1 || upsert_secret EBAY_CLIENT_SECRET "replace-me"
 gcloud secrets describe BROWSERLESS_TOKEN >/dev/null 2>&1 || upsert_secret BROWSERLESS_TOKEN "replace-me"
+# OneSignal REST API key for push alerts; the crawler treats "replace-me" as unset and skips alerts.
+gcloud secrets describe ONESIGNAL_REST_API_KEY >/dev/null 2>&1 || upsert_secret ONESIGNAL_REST_API_KEY "replace-me"
 
 echo "▶ Cloud Build trigger (connect the GitHub repo in the console first if prompted)"
 gcloud builds triggers describe watch-compare-backend >/dev/null 2>&1 || \
@@ -105,6 +107,8 @@ Done. Next steps:
        gcloud run jobs add-iam-policy-binding ${CRAWLER_JOB} --region=${REGION} \\
          --member=serviceAccount:${SCHED_SA} --role=roles/run.invoker
   3. Put real eBay keys into Secret Manager (EBAY_CLIENT_ID / EBAY_CLIENT_SECRET).
+     For push alerts, put the OneSignal REST API key into ONESIGNAL_REST_API_KEY and set the
+     trigger substitution _ONESIGNAL_APP_ID (docs/DEPLOYMENT.md, "Push alerts").
   4. Copy the API URL into Vercel as API_URL:
        gcloud run services describe ${API_SERVICE} --region=${REGION} --format='value(status.url)'
 MSG

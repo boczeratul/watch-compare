@@ -10,7 +10,8 @@
     "brands": "Marken",
     "language": "Sprache",
     "currency": "Währung",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "alerts": "Alarme"
   },
   "home": {
     "heroTitle": "Eine Suche. Alle Marktplätze.",
@@ -177,7 +178,7 @@
   },
   "privacy": {
     "title": "Datenschutzerklärung",
-    "updatedOn": "2026-09-23",
+    "updatedOn": "2026-09-29",
     "updated": "Zuletzt aktualisiert am {date}",
     "intro": "WatchCompare ist ein Preisvergleichsindex für Uhren. Diese Erklärung beschreibt, welche Daten die Website und die WatchCompare-App für iOS erheben – und welche nicht. Kurz gesagt: keine Konten, keine Werbung, nur anonyme Nutzungsstatistiken, und nichts über Sie wird verkauft oder weitergegeben.",
     "scopeTitle": "Geltungsbereich",
@@ -190,7 +191,8 @@
       "Nutzungsanalyse. Wir verwenden Amplitude, um Suchen und Angebotsaufrufe auf der Website und in der App zu zählen und so zu sehen, welche Marken, Referenzen und Marktplätze gesucht werden. Jedes Ereignis enthält die Suchbegriffe und Filter bzw. das geöffnete Angebot, Ihre Anzeigewährung und Sprache, die Plattform, eine zufällige Kennung für Ihren Browser oder Ihr Gerät sowie einen groben Standort, den Amplitude aus Ihrer IP-Adresse ableitet. Ereignisse enthalten nie einen Namen, eine E-Mail-Adresse oder eine Werbe-ID. Amplitude speichert sie in unserem Auftrag in den USA gemäß seiner eigenen Datenschutzerklärung.",
       "Einstellungen. Die Website speichert Ihre gewählte Anzeigewährung und Sprache in Cookies, damit Seiten beim nächsten Besuch in Ihrer Währung erscheinen. Diese Cookies enthalten keine Kennung und dienen nicht dem Tracking. Ihre letzten Suchen werden im lokalen Speicher Ihres Browsers abgelegt, um sie erneut vorzuschlagen; sie verlassen Ihr Gerät nicht.",
       "Die iOS-App speichert dieselben Einstellungen (Anzeigewährung und letzte Suchen) ausschließlich auf Ihrem Gerät. Die App sendet die von Ihnen gewählten Suchfilter an unsere API, um Ergebnisse zu liefern; Name, Kontakte, Standort, Fotos oder Gerätekennungen werden nicht übertragen.",
-      "Tracking-Berechtigung (iOS-App). Die App fragt einmalig über Apples App-Tracking-Transparenz-Dialog, ob sie Ihre Aktivitäten über Apps und Websites anderer Unternehmen hinweg verfolgen darf. Ohne Ihre Erlaubnis wird nichts erfasst, und Sie können Ihre Antwort jederzeit unter Einstellungen › Datenschutz & Sicherheit › Tracking ändern. In der App wird die oben beschriebene Nutzungsanalyse nur mit Ihrer Erlaubnis gesendet; lehnen Sie ab, zeichnet die App nichts auf."
+      "Tracking-Berechtigung (iOS-App). Die App fragt einmalig über Apples App-Tracking-Transparenz-Dialog, ob sie Ihre Aktivitäten über Apps und Websites anderer Unternehmen hinweg verfolgen darf. Ohne Ihre Erlaubnis wird nichts erfasst, und Sie können Ihre Antwort jederzeit unter Einstellungen › Datenschutz & Sicherheit › Tracking ändern. In der App wird die oben beschriebene Nutzungsanalyse nur mit Ihrer Erlaubnis gesendet; lehnen Sie ab, zeichnet die App nichts auf.",
+      "Push-Alarme (optional). Wenn Sie eine Suche als Alarm speichern, erzeugt Ihr Browser oder Gerät eine zufällige Kennung und registriert sie zusammen mit seinem Push-Token bei OneSignal, dem Dienst, der die Benachrichtigungen zustellt. Wir speichern nur diese Kennung mit den Suchfiltern jedes Alarms. Löschen Sie einen Alarm, um ihn zu entfernen; wenn Sie Benachrichtigungen für die Website oder die App ausschalten, endet die Zustellung."
     ],
     "notCollectTitle": "Welche Daten wir nicht erheben",
     "notCollectBody": [
@@ -200,7 +202,8 @@
     "thirdPartiesBody": [
       "Angebotsfotos werden direkt vom Marktplatz geladen, der das Angebot veröffentlicht hat (z. B. Chrono24, eBay oder die Website eines Händlers). Wenn Ihr Browser oder die App ein Foto abruft, sehen die Server dieses Marktplatzes Ihre IP-Adresse und übliche Anfragedaten – so, als hätten Sie dessen Website besucht.",
       "Wenn Sie einem Link zu einem Verkäufer folgen, verlassen Sie WatchCompare; es gelten dann die Bedingungen und die Datenschutzerklärung des Verkäufers.",
-      "Die Website wird bei Vercel gehostet, die API bei Google Cloud (Region asia-east1, Taiwan). Beide Anbieter verarbeiten Anfragedaten in unserem Auftrag gemäß ihren eigenen Datenschutzverpflichtungen."
+      "Die Website wird bei Vercel gehostet, die API bei Google Cloud (Region asia-east1, Taiwan). Beide Anbieter verarbeiten Anfragedaten in unserem Auftrag gemäß ihren eigenen Datenschutzverpflichtungen.",
+      "Push-Benachrichtigungen werden von OneSignal (USA) über den Apple Push Notification Service oder den Push-Dienst Ihres Browsers zugestellt. OneSignal verarbeitet Gerätekennung und Push-Token in unserem Auftrag gemäß seiner eigenen Datenschutzerklärung."
     ],
     "choicesTitle": "Ihre Möglichkeiten",
     "choicesBody": [
@@ -240,5 +243,21 @@
       "dataA": "Kein Konto, keine Werbung. Ihre Währungswahl und die letzten Suchen bleiben auf Ihrem Gerät. Suchen und Angebotsaufrufe werden mit Amplitude anonym gezählt, damit wir sehen, wonach gesucht wird. Details stehen in der Datenschutzerklärung."
     },
     "privacyLink": "Datenschutzerklärung"
+  },
+  "alerts": {
+    "title": "Alarme",
+    "intro": "Erhalten Sie eine Push-Benachrichtigung, wenn eine neu eingestellte Uhr zu einer gespeicherten Suche passt. Wir prüfen einmal täglich direkt nach dem nächtlichen Crawl.",
+    "create": "Bei neuen Treffern benachrichtigen",
+    "saving": "Wird gespeichert…",
+    "created": "Alarm gespeichert. Wir benachrichtigen Sie über neue Treffer.",
+    "empty": "Noch keine Alarme. Suchen Sie, setzen Sie Filter und wählen Sie dann „Bei neuen Treffern benachrichtigen“.",
+    "delete": "Löschen",
+    "viewResults": "Treffer ansehen",
+    "permissionDenied": "Benachrichtigungen sind blockiert. Erlauben Sie sie in den Browser- oder Systemeinstellungen, um Alarme zu erhalten.",
+    "unsupported": "Push-Benachrichtigungen sind in diesem Browser nicht verfügbar. Fügen Sie die Website auf dem iPhone zum Home-Bildschirm hinzu oder nutzen Sie die WatchCompare-App.",
+    "limit": "Sie haben das Maximum von 20 Alarmen erreicht. Löschen Sie einen, um einen neuen anzulegen.",
+    "needsCriteria": "Geben Sie zuerst einen Suchbegriff ein oder setzen Sie einen Filter, damit der Alarm nicht bei jedem neuen Angebot auslöst.",
+    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "manage": "Alarme verwalten"
   }
 }

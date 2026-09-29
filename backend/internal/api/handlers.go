@@ -6,7 +6,6 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -14,8 +13,8 @@ import (
 
 	"github.com/hsuanlee/watch-compare/backend/internal/fx"
 	"github.com/hsuanlee/watch-compare/backend/internal/model"
-	"github.com/hsuanlee/watch-compare/backend/internal/normalize"
 	"github.com/hsuanlee/watch-compare/backend/internal/repository"
+	"github.com/hsuanlee/watch-compare/backend/internal/search"
 )
 
 // ---------- helpers ----------
@@ -82,81 +81,13 @@ func (s *Server) ready(w http.ResponseWriter, r *http.Request) {
 
 // ---------- listings ----------
 
-func parseQuery(r *http.Request, conv *fx.Converter) (model.ListingQuery, error) {
-	qv := r.URL.Query()
-	q := model.ListingQuery{
-		Text:       strings.TrimSpace(qv.Get("q")),
-		Brands:     csv(qv.Get("brand")),
-		Model:      strings.TrimSpace(qv.Get("model")),
-		Reference:  strings.TrimSpace(qv.Get("ref")),
-		Sources:    csv(qv.Get("source")),
-		Countries:  upperAll(csv(qv.Get("country"))),
-		DialColors: csv(qv.Get("dial")),
-		Sort:       model.SortKey(qv.Get("sort")),
-		Page:       atoiDefault(qv.Get("page"), 1),
-		PerPage:    atoiDefault(qv.Get("per_page"), 30),
-	}
-	if q.Text != "" {
-		q.TextAlt = normalize.CanonicalizeQuery(q.Text)
-	}
-	for _, c := range csv(qv.Get("condition")) {
-		q.Conditions = append(q.Conditions, model.Condition(c))
-	}
-	for _, m := range csv(qv.Get("movement")) {
-		q.Movements = append(q.Movements, model.Movement(m))
-	}
-	for _, g := range csv(qv.Get("gender")) {
-		q.Genders = append(q.Genders, model.Gender(g))
-	}
-	currency := strings.ToUpper(strings.TrimSpace(qv.Get("currency")))
-	if currency == "" {
-		currency = "USD"
-	}
-	toUSD := func(key string) (*float64, error) {
-		raw := strings.TrimSpace(qv.Get(key))
-		if raw == "" {
-			return nil, nil
-		}
-		v, err := strconv.ParseFloat(raw, 64)
-		if err != nil || v < 0 {
-			return nil, errors.New("invalid " + key)
-		}
-		usd, ok := conv.ToUSD(v, currency)
-		if !ok {
-			return nil, errors.New("unsupported currency " + currency)
-		}
-		return &usd, nil
-	}
-	var err error
-	if q.PriceMinUSD, err = toUSD("price_min"); err != nil {
-		return q, err
-	}
-	if q.PriceMaxUSD, err = toUSD("price_max"); err != nil {
-		return q, err
-	}
-	q.YearMin = atoiPtr(qv.Get("year_min"))
-	q.YearMax = atoiPtr(qv.Get("year_max"))
-	q.DiameterMin = atofPtr(qv.Get("diameter_min"))
-	q.DiameterMax = atofPtr(qv.Get("diameter_max"))
-	q.HasBox = boolPtr(qv.Get("box"))
-	q.HasPapers = boolPtr(qv.Get("papers"))
-	if q.Sort == "" {
-		if q.Text != "" {
-			q.Sort = model.SortRelevance
-		} else {
-			q.Sort = model.SortNewest
-		}
-	}
-	return q, nil
-}
-
 func (s *Server) searchListings(w http.ResponseWriter, r *http.Request) {
 	conv, _, err := s.rates.get(r.Context())
 	if err != nil {
 		s.fail(w, err)
 		return
 	}
-	q, err := parseQuery(r, conv)
+	q, err := search.Parse(r.URL.Query(), conv)
 	if err != nil {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return
@@ -285,59 +216,4 @@ func (s *Server) crawls(w http.ResponseWriter, r *http.Request) {
 func (s *Server) fail(w http.ResponseWriter, err error) {
 	s.log.Error().Err(err).Msg("handler error")
 	writeError(w, http.StatusInternalServerError, "internal error")
-}
-
-// ---------- parsing ----------
-
-func csv(s string) []string {
-	if strings.TrimSpace(s) == "" {
-		return nil
-	}
-	var out []string
-	for _, p := range strings.Split(s, ",") {
-		if p = strings.TrimSpace(p); p != "" {
-			out = append(out, p)
-		}
-	}
-	return out
-}
-
-func upperAll(xs []string) []string {
-	for i := range xs {
-		xs[i] = strings.ToUpper(xs[i])
-	}
-	return xs
-}
-
-func atoiDefault(s string, def int) int {
-	if n, err := strconv.Atoi(s); err == nil && n > 0 {
-		return n
-	}
-	return def
-}
-
-func atoiPtr(s string) *int {
-	if n, err := strconv.Atoi(strings.TrimSpace(s)); err == nil {
-		return &n
-	}
-	return nil
-}
-
-func atofPtr(s string) *float64 {
-	if f, err := strconv.ParseFloat(strings.TrimSpace(s), 64); err == nil {
-		return &f
-	}
-	return nil
-}
-
-func boolPtr(s string) *bool {
-	switch strings.ToLower(strings.TrimSpace(s)) {
-	case "1", "true", "yes":
-		t := true
-		return &t
-	case "0", "false", "no":
-		f := false
-		return &f
-	}
-	return nil
 }

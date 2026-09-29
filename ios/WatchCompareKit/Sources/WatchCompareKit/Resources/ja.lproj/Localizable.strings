@@ -2,6 +2,7 @@
 
 "nav.search" = "検索";
 "nav.brands" = "ブランド";
+"nav.alerts" = "通知";
 "nav.settings" = "設定";
 "nav.currency" = "通貨";
 "nav.language" = "言語";
@@ -112,12 +113,23 @@
 "common.error" = "エラーが発生しました。";
 "footer.sources" = "データ元";
 "footer.disclaimer" = "価格は1日1回インデックスし、日次レートで換算しています。最終価格は必ず販売者でご確認ください。WatchCompare はいずれのマーケットとも提携していません。";
+"alerts.title" = "通知";
+"alerts.intro" = "保存した検索条件に一致する時計が新たに出品されると、プッシュ通知でお知らせします。毎晩のクロール完了後に 1 日 1 回確認します。";
+"alerts.create" = "新着一致を通知する";
+"alerts.created" = "通知を保存しました。新着一致があればお知らせします。";
+"alerts.empty" = "通知はまだありません。検索して絞り込み条件を設定し、「新着一致を通知する」を選んでください。";
+"alerts.delete" = "削除";
+"alerts.permissionDenied" = "通知がブロックされています。通知を受け取るには、ブラウザまたはシステムの設定で許可してください。";
+"alerts.limit" = "通知は最大 20 件です。追加するには 1 件削除してください。";
+"alerts.needsCriteria" = "すべての新着に一致しないよう、先に検索語か絞り込み条件を設定してください。";
+"alerts.error" = "エラーが発生しました。もう一度お試しください。";
 "home.heroSubtitle" = "毎晩 %2$d のマーケットプレイスから %1$@ 本の時計をインデックスし、お好みの通貨で表示。ブランド・型番・予算ごとの最安値がすぐに見つかります。";
 "home.lastUpdated" = "更新：%1$@";
 "search.price" = "価格（%1$@）";
 "listing.inactive" = "この出品は %1$@ で終了しました。";
 "listing.viewOnSource" = "%1$@ で見る";
 "listing.saveVs" = "次点より %1$d%% 安い";
+"alerts.done" = "完了";
 "home.removeRecent" = "最近の検索から削除";
 "search.resultsNone" = "該当なし";
 "search.resultsOne" = "1 本";

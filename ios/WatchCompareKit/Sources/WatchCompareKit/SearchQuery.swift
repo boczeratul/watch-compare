@@ -88,3 +88,62 @@ public struct SearchQuery: Hashable, Sendable {
         return items
     }
 }
+
+// MARK: Push alerts
+
+extension SearchQuery {
+    /// The search's criteria (no sort or paging) as an alert query string, or nil when there are
+    /// none: an alert without criteria would match every new listing, and the API rejects it.
+    public func alertQuery(currency: String) -> String? {
+        let items = queryItems(currency: currency, page: 1, perPage: 30)
+            .filter { !["sort", "page", "per_page"].contains($0.name) }
+        guard items.contains(where: { $0.name != "currency" }) else { return nil }
+        var components = URLComponents()
+        components.queryItems = items
+        // URLComponents leaves "+" alone, but the Go side decodes it as a space.
+        return components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
+    }
+
+    /// Rebuilds a search from an alert's query string. Price bounds are converted from the alert's
+    /// currency into `displayCurrency` (the unit `SearchQuery` keeps them in) when rates allow;
+    /// otherwise they are dropped rather than applied in the wrong currency.
+    public init(alertQuery: String, displayCurrency: String, rates: [String: Double]) {
+        self.init()
+        var components = URLComponents()
+        components.percentEncodedQuery = alertQuery
+        var values: [String: String] = [:]
+        for item in components.queryItems ?? [] { values[item.name] = item.value ?? "" }
+        func set(_ name: String) -> Set<String> {
+            Set((values[name] ?? "").split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty })
+        }
+        text = values["q"] ?? ""
+        brands = set("brand")
+        model = values["model"] ?? ""
+        reference = values["ref"] ?? ""
+        sources = set("source")
+        conditions = Set(set("condition").compactMap(Condition.init(rawValue:)))
+        movements = Set(set("movement").compactMap(Movement.init(rawValue:)))
+        genders = Set(set("gender").compactMap(Gender.init(rawValue:)))
+        countries = set("country")
+        dialColors = set("dial")
+        yearMin = values["year_min"].flatMap { Int($0) }
+        yearMax = values["year_max"].flatMap { Int($0) }
+        diameterMin = values["diameter_min"].flatMap { Double($0) }
+        diameterMax = values["diameter_max"].flatMap { Double($0) }
+        hasBox = values["box"] == "true"
+        hasPapers = values["papers"] == "true"
+        sort = .newest
+
+        let from = (values["currency"] ?? "USD").uppercased()
+        func convert(_ raw: String?) -> Double? {
+            guard let raw, let amount = Double(raw) else { return nil }
+            if from == displayCurrency { return amount }
+            let fromRate: Double? = from == "USD" ? 1 : rates[from]
+            guard let fromRate, fromRate > 0 else { return nil }
+            return Money.convertFromUSD(amount / fromRate, to: displayCurrency, rates: rates)
+                .map { Money.roundForDisplay($0, currency: displayCurrency) }
+        }
+        priceMin = convert(values["price_min"])
+        priceMax = convert(values["price_max"])
+    }
+}

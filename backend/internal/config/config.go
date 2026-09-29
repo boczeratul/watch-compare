@@ -45,6 +45,12 @@ type Config struct {
 	EbayClientSecret string
 	EbayMarketplaces []string
 	FXProviderURL    string
+
+	// Push alerts (OneSignal). The app id defaults to the production app; the REST API key must be
+	// set for the crawler to send notifications.
+	OneSignalAppID      string
+	OneSignalRESTAPIKey string
+	PublicSiteURL       string // web origin used in notification links
 }
 
 // Load reads the environment and returns a validated Config.
@@ -76,11 +82,20 @@ func Load() (*Config, error) {
 		EbayClientSecret:          os.Getenv("EBAY_CLIENT_SECRET"),
 		EbayMarketplaces:          splitList(getenv("EBAY_MARKETPLACES", "EBAY_US")),
 		FXProviderURL:             getenv("FX_PROVIDER_URL", "https://open.er-api.com/v6/latest/USD"),
+		OneSignalAppID:            strings.TrimSpace(getenv("ONESIGNAL_APP_ID", "6e12337f-212f-4ec3-9c38-01e83635d2fe")),
+		OneSignalRESTAPIKey:       strings.TrimSpace(os.Getenv("ONESIGNAL_REST_API_KEY")),
+		PublicSiteURL:             getenv("PUBLIC_SITE_URL", "https://watch-compare.vercel.app"),
 	}
 	if c.DatabaseURL == "" {
 		return nil, fmt.Errorf("DATABASE_URL is required")
 	}
 	return c, nil
+}
+
+// PushEnabled reports whether OneSignal credentials are configured. The placeholder that
+// infra/gcp/setup.sh stores in Secret Manager ("replace-me") counts as unset.
+func (c *Config) PushEnabled() bool {
+	return c.OneSignalAppID != "" && c.OneSignalRESTAPIKey != "" && c.OneSignalRESTAPIKey != "replace-me"
 }
 
 func getenv(k, def string) string {

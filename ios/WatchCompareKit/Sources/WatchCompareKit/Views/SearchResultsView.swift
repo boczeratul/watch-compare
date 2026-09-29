@@ -113,6 +113,9 @@ struct SearchResultsView: View {
     @ToolbarContentBuilder
     private var toolbar: some ToolbarContent {
         ToolbarItemGroup(placement: .primaryAction) {
+            if PushCenter.shared.isAvailable {
+                AlertToolbarButton(query: model.query)
+            }
             Menu {
                 Picker(L10n.t("search.sortBy"), selection: Binding(
                     get: { model.query.effectiveSort },

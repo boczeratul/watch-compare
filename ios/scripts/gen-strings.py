@@ -16,7 +16,7 @@ FOLDER = {"en": "en", "zh-TW": "zh-Hant", "zh-CN": "zh-Hans", "ja": "ja", "de": 
 
 # Keys copied verbatim (no placeholders).
 PLAIN = {
-    "nav": ["search", "brands", "settings", "currency", "language"],
+    "nav": ["search", "brands", "alerts", "settings", "currency", "language"],
     "home": ["searchPlaceholder", "heroTitle", "statListings", "statBrands", "statSources", "recentSearches", "clearRecent", "popularBrands", "newest", "viewAll"],
     "search": ["title", "noResults", "noResultsHint", "clearAll", "sortBy", "filters", "brand", "dialColor", "source", "condition", "movement", "gender", "country", "year", "diameter", "boxPapers", "withBox", "withPapers", "min", "max", "apply"],
     "sort": ["relevance", "newest", "oldest", "price_asc", "price_desc", "year_desc", "year_asc", "size_asc", "size_desc"],
@@ -28,6 +28,7 @@ PLAIN = {
     "brands": ["title"],
     "common": ["error"],
     "footer": ["sources", "disclaimer"],
+    "alerts": ["title", "intro", "create", "created", "empty", "delete", "permissionDenied", "limit", "needsCriteria", "error"],
 }
 # Keys with placeholders: web name -> positional printf, in this order.
 FORMAT = {
@@ -42,6 +43,7 @@ SPEC = {"count": "@", "sources": "d", "date": "@", "currency": "@", "source": "@
 
 APP_ONLY = {
     "en": {
+        "alerts.done": "Done",
         "home.removeRecent": "Remove from recent searches",
         "search.resultsNone": "No watches", "search.resultsOne": "1 watch", "search.resultsMany": "%@ watches",
         "search.resultsFor": "%1$@ for “%2$@”", "search.showing": "Showing %1$@ of %2$@", "search.any": "Any",
@@ -55,6 +57,7 @@ APP_ONLY = {
         "settings.trackingNote": "iOS asks once whether WatchCompare may track your activity across other apps and websites. Usage analytics (searches and listing views) are only sent with your permission; without it the app records nothing. Change your answer any time in Settings › Privacy & Security › Tracking.",
     },
     "zh-TW": {
+        "alerts.done": "完成",
         "home.removeRecent": "從最近搜尋中移除",
         "search.resultsNone": "沒有符合的手錶", "search.resultsOne": "1 支手錶", "search.resultsMany": "%@ 支手錶",
         "search.resultsFor": "%1$@：「%2$@」", "search.showing": "已顯示 %1$@ / %2$@ 筆", "search.any": "不限",
@@ -68,6 +71,7 @@ APP_ONLY = {
         "settings.trackingNote": "iOS 會詢問一次是否允許 WatchCompare 跨其他 App 與網站追蹤您的活動。使用分析（搜尋與物件瀏覽）僅在您允許後才會傳送；未允許時 App 不會記錄任何內容。您隨時可在「設定 › 隱私權與安全性 › 追蹤」中變更。",
     },
     "zh-CN": {
+        "alerts.done": "完成",
         "home.removeRecent": "从最近搜索中移除",
         "search.resultsNone": "没有符合的手表", "search.resultsOne": "1 只手表", "search.resultsMany": "%@ 只手表",
         "search.resultsFor": "%1$@：“%2$@”", "search.showing": "已显示 %1$@ / %2$@ 条", "search.any": "不限",
@@ -81,6 +85,7 @@ APP_ONLY = {
         "settings.trackingNote": "iOS 会询问一次是否允许 WatchCompare 跨其他应用与网站跟踪您的活动。使用分析（搜索与商品浏览）仅在您允许后才会发送；未允许时应用不会记录任何内容。您可随时在“设置 › 隐私与安全性 › 跟踪”中更改。",
     },
     "ja": {
+        "alerts.done": "完了",
         "home.removeRecent": "最近の検索から削除",
         "search.resultsNone": "該当なし", "search.resultsOne": "1 本", "search.resultsMany": "%@ 本",
         "search.resultsFor": "「%2$@」：%1$@", "search.showing": "%2$@ 件中 %1$@ 件を表示", "search.any": "指定なし",
@@ -94,6 +99,7 @@ APP_ONLY = {
         "settings.trackingNote": "WatchCompare が他社のアプリや Web サイトを横断してアクティビティを追跡することを許可するか、iOS が一度だけ確認します。利用状況の分析（検索と出品の閲覧）は許可した場合にのみ送信され、許可しなければアプリは何も記録しません。「設定 › プライバシーとセキュリティ › トラッキング」からいつでも変更できます。",
     },
     "de": {
+        "alerts.done": "Fertig",
         "home.removeRecent": "Aus den letzten Suchen entfernen",
         "search.resultsNone": "Keine Uhren", "search.resultsOne": "1 Uhr", "search.resultsMany": "%@ Uhren",
         "search.resultsFor": "%1$@ für „%2$@“", "search.showing": "%1$@ von %2$@ angezeigt", "search.any": "Alle",

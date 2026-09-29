@@ -1,5 +1,5 @@
-// Command crawler runs one crawl cycle. Deployed as a Cloud Run Job triggered by
-// Cloud Scheduler at 02:00 Asia/Taipei daily; also usable locally.
+// Command crawler runs one crawl cycle, then pushes new finds to alert subscribers. Deployed as a
+// Cloud Run Job triggered by Cloud Scheduler at 02:00 Asia/Taipei daily; also usable locally.
 package main
 
 import (
@@ -15,6 +15,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
+	"github.com/hsuanlee/watch-compare/backend/internal/alerts"
 	"github.com/hsuanlee/watch-compare/backend/internal/config"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/allu"
@@ -41,6 +42,7 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/wristcheck"
 	"github.com/hsuanlee/watch-compare/backend/internal/db"
 	"github.com/hsuanlee/watch-compare/backend/internal/fx"
+	"github.com/hsuanlee/watch-compare/backend/internal/push"
 	"github.com/hsuanlee/watch-compare/backend/internal/repository"
 )
 
@@ -51,6 +53,8 @@ func main() {
 		maxPages    = flag.Int("max-pages", 0, "override CRAWL_MAX_PAGES")
 		skipFX      = flag.Bool("skip-fx", false, "do not refresh exchange rates")
 		timeout     = flag.Duration("timeout", 5*time.Hour, "overall run timeout")
+		skipAlerts  = flag.Bool("skip-alerts", false, "do not send push notifications for new finds")
+		alertsOnly  = flag.Bool("alerts-only", false, "skip crawling; only send push notifications for new finds")
 	)
 	flag.Parse()
 
@@ -108,6 +112,13 @@ func main() {
 	}
 	conv := &fx.Converter{Rates: rates}
 
+	if *alertsOnly {
+		if err := sendAlerts(ctx, cfg, repo, conv, logger); err != nil {
+			logger.Fatal().Err(err).Msg("alerts")
+		}
+		return
+	}
+
 	// 2. Crawl.
 	runner := crawler.NewRunner(repo, fetcher, cfg, conv, logger,
 		hourstack.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true" || os.Getenv("HOURSTACK_FETCH_DETAILS") == "true"},
@@ -133,11 +144,38 @@ func main() {
 		&ebay.Source{},
 		chrono24.Source{},
 	)
-	if err := runner.Run(ctx, cfg.CrawlSources); err != nil {
-		logger.Error().Err(err).Msg("crawl finished with errors")
+	crawlErr := runner.Run(ctx, cfg.CrawlSources)
+
+	// 3. Notify alert subscribers about new finds, even after a partial crawl: whatever was
+	// stored is new, and the rest will be picked up by the next run.
+	if !cfg.CrawlDryRun && !*skipAlerts {
+		if err := sendAlerts(ctx, cfg, repo, conv, logger); err != nil {
+			logger.Error().Err(err).Msg("alerts")
+		}
+	}
+
+	if crawlErr != nil {
+		logger.Error().Err(crawlErr).Msg("crawl finished with errors")
 		os.Exit(1)
 	}
 	logger.Info().Msg("crawl finished")
+}
+
+func sendAlerts(ctx context.Context, cfg *config.Config, repo *repository.Repo, conv *fx.Converter, logger zerolog.Logger) error {
+	if !cfg.PushEnabled() {
+		logger.Info().Msg("alerts skipped: ONESIGNAL_APP_ID / ONESIGNAL_REST_API_KEY not set")
+		return nil
+	}
+	n := &alerts.Notifier{
+		Store:   repo,
+		Push:    push.NewOneSignal(cfg.OneSignalAppID, cfg.OneSignalRESTAPIKey),
+		Conv:    conv,
+		SiteURL: cfg.PublicSiteURL,
+		Log:     logger,
+	}
+	res, err := n.Run(ctx)
+	logger.Info().Int("alerts", res.Alerts).Int("notified", res.Notified).Int("failed", res.Failed).Msg("alerts sent")
+	return err
 }
 
 func newLogger(cfg *config.Config) zerolog.Logger {

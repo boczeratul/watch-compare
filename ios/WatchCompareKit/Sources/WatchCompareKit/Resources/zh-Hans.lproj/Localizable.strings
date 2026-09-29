@@ -2,6 +2,7 @@
 
 "nav.search" = "搜索";
 "nav.brands" = "品牌";
+"nav.alerts" = "提醒";
 "nav.settings" = "设置";
 "nav.currency" = "货币";
 "nav.language" = "语言";
@@ -112,12 +113,23 @@
 "common.error" = "出错了。";
 "footer.sources" = "数据来源";
 "footer.disclaimer" = "价格每天索引一次，并按每日汇率换算。请务必与卖家核实最终价格。WatchCompare 与任何平台均无关联。";
+"alerts.title" = "提醒";
+"alerts.intro" = "当新上架的手表符合您保存的搜索条件时，我们会发送推送通知。每天在夜间抓取完成后检查一次。";
+"alerts.create" = "有新匹配商品时提醒我";
+"alerts.created" = "提醒已保存，有新匹配商品时会通知您。";
+"alerts.empty" = "尚未设置提醒。先搜索并设置筛选条件，再选择“有新匹配商品时提醒我”。";
+"alerts.delete" = "删除";
+"alerts.permissionDenied" = "通知已被屏蔽。请在浏览器或系统设置中允许通知，才能收到提醒。";
+"alerts.limit" = "提醒已达上限 20 个。请先删除一个再添加。";
+"alerts.needsCriteria" = "请先输入搜索词或设置筛选条件，以免每件新商品都会提醒。";
+"alerts.error" = "出现错误，请重试。";
 "home.heroSubtitle" = "我们每晚从 %2$d 个平台索引 %1$@ 只手表，并以您的货币显示，帮您轻松找到某个品牌、型号或预算内最划算的选择。";
 "home.lastUpdated" = "更新于 %1$@";
 "search.price" = "价格（%1$@）";
 "listing.inactive" = "此商品已不在 %1$@ 上架。";
 "listing.viewOnSource" = "前往 %1$@ 查看";
 "listing.saveVs" = "比次低价便宜 %1$d%%";
+"alerts.done" = "完成";
 "home.removeRecent" = "从最近搜索中移除";
 "search.resultsNone" = "没有符合的手表";
 "search.resultsOne" = "1 只手表";
