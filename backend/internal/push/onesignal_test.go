@@ -56,3 +56,19 @@ func TestOneSignalSendError(t *testing.T) {
 		t.Error("expected an error for HTTP 400")
 	}
 }
+
+func TestOneSignalCreateNotSubscribed(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(`{"id":"","errors":["All included players are not subscribed"]}`))
+	}))
+	defer srv.Close()
+	o := NewOneSignal("app-1", "secret")
+	o.BaseURL = srv.URL
+	res, err := o.Create(context.Background(), Notification{ExternalIDs: []string{"x"}, Contents: map[string]string{"en": "x"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.ID != "" || string(res.Errors) != `["All included players are not subscribed"]` {
+		t.Errorf("result %+v", res)
+	}
+}
