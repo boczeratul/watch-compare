@@ -4,8 +4,6 @@
 <dict>
 	<key>APIBaseURL</key>
 	<string>$(API_BASE_URL)</string>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
@@ -25,7 +23,5 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>This lets WatchCompare measure which searches and marketplaces lead to purchases, so we can improve results and show you relevant offers.</string>
 </dict>
 </plist>

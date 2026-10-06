@@ -1,5 +1,5 @@
 {
-  "originHash" : "2c001cefe658aa82adb468a4770c6d7d858eb4998c431fa5ac588ff73932f3f5",
+  "originHash" : "43f94151213b6fb3623e1927eb3f8c4e9e330881973dd2b0b032a1adf20e6a0b",
   "pins" : [
     {
       "identity" : "amplitude-swift",
@@ -33,7 +33,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/OneSignal/OneSignal-XCFramework",
       "state" : {
-        "revision" : "0f783c1766a52125b225f73e9d9dad417a93d955",
+        "revision" : "c57e23b501cee0a988342a384a4c3ed0dc75ff56",
         "version" : "5.7.0"
       }
     }

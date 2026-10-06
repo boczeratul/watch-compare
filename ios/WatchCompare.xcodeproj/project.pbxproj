@@ -10,6 +10,16 @@
 		WC0000000000000000000B01 /* WatchCompareKit in Frameworks */ = {isa = PBXBuildFile; productRef = WC0000000000000000000D01 /* WatchCompareKit */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		WC0000000000000000000Y01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = WC0000000000000000000R00 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = WC0000000000000000000T01;
+			remoteInfo = WatchCompare;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		WC0000000000000000000F01 /* WatchCompare.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchCompare.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		WC0000000000000000000F02 /* WatchCompareKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = WatchCompareKit; sourceTree = "<group>"; };
@@ -21,7 +31,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				WatchCompare.entitlements,
 			);
 			target = WC0000000000000000000T01 /* WatchCompare */;
 		};
@@ -42,16 +51,6 @@
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
-
-/* Begin PBXContainerItemProxy section */
-		WC0000000000000000000Y01 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = WC0000000000000000000R00 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = WC0000000000000000000T01;
-			remoteInfo = WatchCompare;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		WC0000000000000000000P02 /* Frameworks */ = {
@@ -234,7 +233,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				API_BASE_URL = "https://watch-compare-api-m7slk5b25q-de.a.run.app";
-				ONESIGNAL_APP_ID = "6e12337f-212f-4ec3-9c38-01e83635d2fe";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -287,6 +285,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				ONESIGNAL_APP_ID = "6e12337f-212f-4ec3-9c38-01e83635d2fe";
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -299,7 +298,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				API_BASE_URL = "https://watch-compare-api-m7slk5b25q-de.a.run.app";
-				ONESIGNAL_APP_ID = "6e12337f-212f-4ec3-9c38-01e83635d2fe";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -346,6 +344,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONESIGNAL_APP_ID = "6e12337f-212f-4ec3-9c38-01e83635d2fe";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
@@ -366,6 +365,7 @@
 				INFOPLIST_FILE = WatchCompare/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchCompare;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "This lets WatchCompare measure which searches and marketplaces lead to purchases, so we can improve results and show you relevant offers.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -374,7 +374,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hsuanlee.watchcompare;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -399,6 +399,7 @@
 				INFOPLIST_FILE = WatchCompare/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchCompare;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "This lets WatchCompare measure which searches and marketplaces lead to purchases, so we can improve results and show you relevant offers.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -407,7 +408,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hsuanlee.watchcompare;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
