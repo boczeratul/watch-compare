@@ -37,6 +37,7 @@
 "search.min" = "下限";
 "search.max" = "上限";
 "search.apply" = "適用";
+"search.cancel" = "キャンセル";
 "sort.relevance" = "関連度";
 "sort.newest" = "新着順";
 "sort.oldest" = "古い順";

@@ -37,6 +37,7 @@
 "search.min" = "最低";
 "search.max" = "最高";
 "search.apply" = "套用";
+"search.cancel" = "取消";
 "sort.relevance" = "相關性";
 "sort.newest" = "最新上架";
 "sort.oldest" = "最早上架";

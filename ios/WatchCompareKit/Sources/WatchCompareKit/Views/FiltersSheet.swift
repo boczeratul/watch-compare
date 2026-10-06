@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// Editable copy of a `SearchQuery`; the caller receives the result on Apply (web `FiltersSidebar`).
+/// Editable copy of a `SearchQuery`; the caller receives the result only on Apply (web `FiltersSidebar`);
+/// Cancel or swipe-to-dismiss discards the edits.
 struct FiltersSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AppSettings.self) private var settings
@@ -69,13 +70,27 @@ struct FiltersSheet: View {
             .navigationTitle(L10n.t("search.filters"))
             .inlineNavigationTitle()
             .accessibilityIdentifier("filters.form")
+            // Closing the sheet (Cancel or swipe down) discards the draft; only Apply commits it.
+            .safeAreaInset(edge: .bottom) {
+                Button {
+                    onApply(draft)
+                    dismiss()
+                } label: {
+                    Text(L10n.t("search.apply")).font(.headline).frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .padding(.horizontal).padding(.vertical, 8)
+                .background(.bar)
+                .accessibilityIdentifier("search.apply")
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
+                    Button(L10n.t("search.cancel")) { dismiss() }.accessibilityIdentifier("search.cancel")
+                }
+                ToolbarItem(placement: .primaryAction) {
                     Button(L10n.t("search.clearAll")) { draft = draft.clearingFilters() }
                         .disabled(draft.activeFilterCount == 0)
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(L10n.t("search.apply")) { onApply(draft); dismiss() }.accessibilityIdentifier("search.apply")
                 }
             }
         }

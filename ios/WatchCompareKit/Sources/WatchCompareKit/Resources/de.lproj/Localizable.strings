@@ -37,6 +37,7 @@
 "search.min" = "Min";
 "search.max" = "Max";
 "search.apply" = "Anwenden";
+"search.cancel" = "Abbrechen";
 "sort.relevance" = "Relevanz";
 "sort.newest" = "Neueste zuerst";
 "sort.oldest" = "Älteste zuerst";
