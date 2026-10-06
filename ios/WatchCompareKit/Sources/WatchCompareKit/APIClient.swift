@@ -77,9 +77,17 @@ public final class APIClient: Sendable {
     }
 
     /// Throws `APIError.http` with status 409 at the per-device limit and 422 for a query without criteria.
-    public func createAlert(subscriberID: String, query: String) async throws -> PushAlert {
-        let body = try JSONEncoder().encode(["query": query])
+    /// An empty `name` lets the server name the alert after its criteria.
+    public func createAlert(subscriberID: String, query: String, name: String = "") async throws -> PushAlert {
+        let body = try JSONEncoder().encode(["query": query, "name": name])
         let data = try await send("POST", "/api/v1/alerts", subscriberID: subscriberID, body: body)
+        return try decode(PushAlert.self, from: data)
+    }
+
+    /// Renames an alert; an empty `name` restores the name derived from its criteria.
+    public func renameAlert(subscriberID: String, id: Int64, name: String) async throws -> PushAlert {
+        let body = try JSONEncoder().encode(["name": name])
+        let data = try await send("PATCH", "/api/v1/alerts/\(id)", subscriberID: subscriberID, body: body)
         return try decode(PushAlert.self, from: data)
     }
 

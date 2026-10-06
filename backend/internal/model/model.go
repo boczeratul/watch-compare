@@ -218,7 +218,7 @@ type ExchangeRate struct {
 type Alert struct {
 	ID             int64      `json:"id"`
 	SubscriberID   string     `json:"-"`     // OneSignal external_id of the device that saved it
-	Name           string     `json:"name"`  // human-readable summary of the criteria
+	Name           string     `json:"name"`  // user-chosen name, or a summary of the criteria
 	Query          string     `json:"query"` // URL-encoded /api/v1/listings criteria, incl. currency
 	CheckedAt      time.Time  `json:"-"`     // listings first seen after this are new finds
 	LastNotifiedAt *time.Time `json:"lastNotifiedAt,omitempty"`

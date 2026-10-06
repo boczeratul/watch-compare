@@ -45,6 +45,22 @@ func TestDefaultName(t *testing.T) {
 	}
 }
 
+func TestName(t *testing.T) {
+	q := "brand=rolex&currency=USD"
+	long := strings.Repeat("錶", 100)
+	cases := map[string]string{
+		"":                  "rolex",
+		"   ":               "rolex",
+		"  My  daily\tGMT ": "My daily GMT",
+		long:                strings.Repeat("錶", MaxNameLen-1) + "…",
+	}
+	for in, want := range cases {
+		if got := Name(in, q); got != want {
+			t.Errorf("Name(%q) = %q, want %q", in, got, want)
+		}
+	}
+}
+
 func TestValidSubscriberID(t *testing.T) {
 	if !ValidSubscriberID("0B6F1A2E-5C1D-4B8E-9F3A-2D7C6E1F0A9B") {
 		t.Error("UUID rejected")

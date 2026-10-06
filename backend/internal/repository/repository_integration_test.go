@@ -317,6 +317,18 @@ func TestRepositoryEndToEnd(t *testing.T) {
 	if mine, err := repo.AlertsFor(ctx, sub); err != nil || len(mine) != 2 {
 		t.Errorf("alerts for: %+v %v", mine, err)
 	}
+	if renamed, err := repo.RenameAlert(ctx, sub, al.ID, "Daily GMT"); err != nil || renamed.Name != "Daily GMT" || renamed.Query != al.Query {
+		t.Errorf("rename: %+v %v", renamed, err)
+	}
+	if got, err := repo.Alert(ctx, sub, al.ID); err != nil || got.Name != "Daily GMT" {
+		t.Errorf("get renamed: %+v %v", got, err)
+	}
+	if _, err := repo.RenameAlert(ctx, "someone-else-0000000000000000000000", al.ID, "x"); err != repository.ErrNotFound {
+		t.Errorf("rename other's alert: %v", err)
+	}
+	if _, err := repo.Alert(ctx, "someone-else-0000000000000000000000", al.ID); err != repository.ErrNotFound {
+		t.Errorf("get other's alert: %v", err)
+	}
 	if err := repo.DeleteAlert(ctx, "someone-else-0000000000000000000000", al.ID); err != repository.ErrNotFound {
 		t.Errorf("delete other's alert: %v", err)
 	}

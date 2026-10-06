@@ -258,6 +258,12 @@
     "limit": "Sie haben das Maximum von 20 Alarmen erreicht. Löschen Sie einen, um einen neuen anzulegen.",
     "needsCriteria": "Geben Sie zuerst einen Suchbegriff ein oder setzen Sie einen Filter, damit der Alarm nicht bei jedem neuen Angebot auslöst.",
     "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
-    "manage": "Alarme verwalten"
+    "manage": "Alarme verwalten",
+    "nameTitle": "Alarm benennen",
+    "namePlaceholder": "Name (optional)",
+    "nameHint": "Leer lassen, um ihn nach den Filtern zu benennen.",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "rename": "Umbenennen"
   }
 }

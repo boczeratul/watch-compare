@@ -258,6 +258,12 @@
     "limit": "You have reached the maximum of 20 alerts. Delete one to add another.",
     "needsCriteria": "Add a search term or a filter first, so the alert doesn't match every new listing.",
     "error": "Something went wrong. Please try again.",
-    "manage": "Manage alerts"
+    "manage": "Manage alerts",
+    "nameTitle": "Name this alert",
+    "namePlaceholder": "Name (optional)",
+    "nameHint": "Leave blank to name it after the filters.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "rename": "Rename"
   }
 }

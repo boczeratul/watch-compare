@@ -37,7 +37,6 @@
 "search.min" = "最低";
 "search.max" = "最高";
 "search.apply" = "套用";
-"search.cancel" = "取消";
 "sort.relevance" = "相關性";
 "sort.newest" = "最新上架";
 "sort.oldest" = "最早上架";
@@ -124,6 +123,12 @@
 "alerts.limit" = "通知條件已達上限 20 組。請先刪除一組再新增。";
 "alerts.needsCriteria" = "請先輸入搜尋字詞或設定篩選條件，以免每件新物件都會通知。";
 "alerts.error" = "發生錯誤，請再試一次。";
+"alerts.nameTitle" = "為這組通知條件命名";
+"alerts.namePlaceholder" = "名稱（選填）";
+"alerts.nameHint" = "留空則依篩選條件自動命名。";
+"alerts.save" = "儲存";
+"alerts.cancel" = "取消";
+"alerts.rename" = "重新命名";
 "home.heroSubtitle" = "我們每晚從 %2$d 個平台索引 %1$@ 支手錶，並以您的貨幣顯示，讓您輕鬆找到某個品牌、型號或預算內最划算的選擇。";
 "home.lastUpdated" = "更新於 %1$@";
 "search.price" = "價格（%1$@）";
@@ -131,6 +136,7 @@
 "listing.viewOnSource" = "前往 %1$@ 查看";
 "listing.saveVs" = "比次低價便宜 %1$d%%";
 "alerts.done" = "完成";
+"search.cancel" = "取消";
 "home.removeRecent" = "從最近搜尋中移除";
 "search.resultsNone" = "沒有符合的手錶";
 "search.resultsOne" = "1 支手錶";

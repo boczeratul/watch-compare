@@ -163,7 +163,7 @@ export const api = {
 };
 
 /** Push alerts are per device and writable, so these calls are never cached. */
-async function alertsRequest(method: "GET" | "POST" | "DELETE", path: string, subscriberId: string, body?: unknown): Promise<Response> {
+async function alertsRequest(method: "GET" | "POST" | "PATCH" | "DELETE", path: string, subscriberId: string, body?: unknown): Promise<Response> {
   return fetch(new URL(path, API_URL), {
     method,
     cache: "no-store",
@@ -180,12 +180,18 @@ export const alertsApi = {
     if (!res.ok) throw new ApiError(res.status, `${res.status} listing alerts`);
     return arr(((await res.json()) as { items: Alert[] }).items);
   },
-  create: async (subscriberId: string, query: string): Promise<CreateAlertResult> => {
-    const res = await alertsRequest("POST", "/api/v1/alerts", subscriberId, { query });
+  /** An empty name lets the API name the alert after its criteria. */
+  create: async (subscriberId: string, query: string, name = ""): Promise<CreateAlertResult> => {
+    const res = await alertsRequest("POST", "/api/v1/alerts", subscriberId, { query, name });
     if (res.ok) return { ok: true, alert: (await res.json()) as Alert };
     if (res.status === 409) return { ok: false, error: "limit" };
     if (res.status === 422) return { ok: false, error: "criteria" };
     return { ok: false, error: "error" };
+  },
+  /** Renames an alert; an empty name restores the one derived from its criteria. Null if it failed. */
+  rename: async (subscriberId: string, id: number, name: string): Promise<Alert | null> => {
+    const res = await alertsRequest("PATCH", `/api/v1/alerts/${id}`, subscriberId, { name });
+    return res.ok ? ((await res.json()) as Alert) : null;
   },
   remove: async (subscriberId: string, id: number): Promise<boolean> => {
     const res = await alertsRequest("DELETE", `/api/v1/alerts/${id}`, subscriberId);

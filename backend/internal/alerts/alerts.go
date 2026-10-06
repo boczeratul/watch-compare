@@ -50,6 +50,26 @@ func Normalize(raw string, conv *fx.Converter) (string, error) {
 	return crit.Encode(), nil
 }
 
+// MaxNameLen caps an alert name, in characters.
+const MaxNameLen = 80
+
+// Name returns the display name for an alert on query: the user's name with whitespace collapsed
+// and cut to MaxNameLen characters, or DefaultName(query) when the user gave none.
+func Name(userName, query string) string {
+	name := strings.Join(strings.Fields(userName), " ")
+	if name == "" {
+		return DefaultName(query)
+	}
+	return truncate(name)
+}
+
+func truncate(name string) string {
+	if r := []rune(name); len(r) > MaxNameLen {
+		return string(r[:MaxNameLen-1]) + "…"
+	}
+	return name
+}
+
 // DefaultName summarizes a normalized query for display: search text, brands, model, reference
 // and price range, e.g. "rolex · 116610LN · ≤ 300,000 TWD".
 func DefaultName(query string) string {
@@ -73,11 +93,7 @@ func DefaultName(query string) string {
 	if len(parts) == 0 {
 		return "Saved search"
 	}
-	name := strings.Join(parts, " · ")
-	if r := []rune(name); len(r) > 80 {
-		name = string(r[:79]) + "…"
-	}
-	return name
+	return truncate(strings.Join(parts, " · "))
 }
 
 // Store is the slice of the repository the notifier needs.

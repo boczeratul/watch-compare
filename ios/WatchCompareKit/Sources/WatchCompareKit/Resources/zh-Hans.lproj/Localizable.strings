@@ -37,7 +37,6 @@
 "search.min" = "最低";
 "search.max" = "最高";
 "search.apply" = "应用";
-"search.cancel" = "取消";
 "sort.relevance" = "相关性";
 "sort.newest" = "最新上架";
 "sort.oldest" = "最早上架";
@@ -124,6 +123,12 @@
 "alerts.limit" = "提醒已达上限 20 个。请先删除一个再添加。";
 "alerts.needsCriteria" = "请先输入搜索词或设置筛选条件，以免每件新商品都会提醒。";
 "alerts.error" = "出现错误，请重试。";
+"alerts.nameTitle" = "为这组提醒条件命名";
+"alerts.namePlaceholder" = "名称（选填）";
+"alerts.nameHint" = "留空则按筛选条件自动命名。";
+"alerts.save" = "保存";
+"alerts.cancel" = "取消";
+"alerts.rename" = "重命名";
 "home.heroSubtitle" = "我们每晚从 %2$d 个平台索引 %1$@ 只手表，并以您的货币显示，帮您轻松找到某个品牌、型号或预算内最划算的选择。";
 "home.lastUpdated" = "更新于 %1$@";
 "search.price" = "价格（%1$@）";
@@ -131,6 +136,7 @@
 "listing.viewOnSource" = "前往 %1$@ 查看";
 "listing.saveVs" = "比次低价便宜 %1$d%%";
 "alerts.done" = "完成";
+"search.cancel" = "取消";
 "home.removeRecent" = "从最近搜索中移除";
 "search.resultsNone" = "没有符合的手表";
 "search.resultsOne" = "1 只手表";

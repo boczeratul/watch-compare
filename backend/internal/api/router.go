@@ -52,6 +52,7 @@ func NewRouter(repo *repository.Repo, cfg *config.Config, logger zerolog.Logger)
 			r.Use(noStore)
 			r.Get("/", s.listAlerts)
 			r.Post("/", s.createAlert)
+			r.Patch("/{id}", s.updateAlert)
 			r.Delete("/{id}", s.deleteAlert)
 		})
 

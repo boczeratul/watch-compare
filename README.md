@@ -67,7 +67,7 @@ Listing and reference endpoints are `GET`, JSON, CORS-enabled for the configured
 | `/api/v1/listings/{id}/similar` | Same reference on other marketplaces, cheapest first |
 | `/api/v1/listings/{id}/price-history` | Observed price points |
 | `/api/v1/brands` · `/api/v1/sources` · `/api/v1/rates` · `/api/v1/stats` · `/api/v1/crawls` | Reference data & ops |
-| `GET/POST /api/v1/alerts` · `DELETE /api/v1/alerts/{id}` | Push alerts for one device (header `X-Subscriber-ID`, never cached); see [Architecture](docs/ARCHITECTURE.md#push-alerts) |
+| `GET/POST /api/v1/alerts` · `PATCH/DELETE /api/v1/alerts/{id}` | Push alerts for one device (header `X-Subscriber-ID`, never cached); see [Architecture](docs/ARCHITECTURE.md#push-alerts) |
 | `/healthz` · `/readyz` | Liveness / DB readiness |
 
 `sort` accepts `relevance, newest, oldest, price_asc, price_desc, year_desc, year_asc, size_asc, size_desc`.
