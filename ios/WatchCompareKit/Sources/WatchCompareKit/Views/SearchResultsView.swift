@@ -129,7 +129,7 @@ struct SearchResultsView: View {
             Button {
                 showFilters = true
             } label: {
-                Label(L10n.t("search.filters"), systemImage: "line.3.horizontal.decrease.circle")
+                Label(L10n.t("search.filters"), systemImage: "funnel")
                     .symbolVariant(model.query.activeFilterCount > 0 ? .fill : .none)
             }
             .accessibilityIdentifier("search.filters")
