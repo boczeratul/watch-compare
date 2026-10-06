@@ -22,12 +22,21 @@ export async function listAlerts(subscriberId: string): Promise<Alert[] | null> 
   }
 }
 
-export async function createAlert(subscriberId: string, query: string): Promise<CreateAlertResult> {
+export async function createAlert(subscriberId: string, query: string, name = ""): Promise<CreateAlertResult> {
   try {
-    return await alertsApi.create(subscriberId, query);
+    return await alertsApi.create(subscriberId, query, name.trim());
   } catch (err) {
     console.error("[alerts]", err instanceof Error ? err.message : err);
     return { ok: false, error: "error" };
+  }
+}
+
+export async function renameAlert(subscriberId: string, id: number, name: string): Promise<Alert | null> {
+  try {
+    return await alertsApi.rename(subscriberId, id, name.trim());
+  } catch (err) {
+    console.error("[alerts]", err instanceof Error ? err.message : err);
+    return null;
   }
 }
 

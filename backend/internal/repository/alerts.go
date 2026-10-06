@@ -70,6 +70,34 @@ func (r *Repo) CreateAlert(ctx context.Context, subscriberID, name, query string
 	return a, err == nil, err
 }
 
+// Alert returns one of the subscriber's alerts; it returns ErrNotFound when there is none.
+func (r *Repo) Alert(ctx context.Context, subscriberID string, id int64) (model.Alert, error) {
+	rows, err := r.pool.Query(ctx, `SELECT `+alertColumns+` FROM alerts WHERE id = $1 AND subscriber_id = $2`, id, subscriberID)
+	if err != nil {
+		return model.Alert{}, err
+	}
+	found, err := scanAlerts(rows)
+	if err != nil {
+		return model.Alert{}, err
+	}
+	if len(found) == 0 {
+		return model.Alert{}, ErrNotFound
+	}
+	return found[0], nil
+}
+
+// RenameAlert sets the display name of one of the subscriber's alerts and returns the updated
+// alert; it returns ErrNotFound when there is none.
+func (r *Repo) RenameAlert(ctx context.Context, subscriberID string, id int64, name string) (model.Alert, error) {
+	var a model.Alert
+	err := r.pool.QueryRow(ctx, `UPDATE alerts SET name = $3 WHERE id = $1 AND subscriber_id = $2 RETURNING `+alertColumns, id, subscriberID, name).
+		Scan(&a.ID, &a.SubscriberID, &a.Name, &a.Query, &a.CheckedAt, &a.LastNotifiedAt, &a.CreatedAt)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return a, ErrNotFound
+	}
+	return a, err
+}
+
 // DeleteAlert removes one of the subscriber's alerts; it returns ErrNotFound when there is none.
 func (r *Repo) DeleteAlert(ctx context.Context, subscriberID string, id int64) error {
 	tag, err := r.pool.Exec(ctx, `DELETE FROM alerts WHERE id = $1 AND subscriber_id = $2`, id, subscriberID)

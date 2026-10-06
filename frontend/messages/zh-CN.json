@@ -258,6 +258,12 @@
     "limit": "提醒已达上限 20 个。请先删除一个再添加。",
     "needsCriteria": "请先输入搜索词或设置筛选条件，以免每件新商品都会提醒。",
     "error": "出现错误，请重试。",
-    "manage": "管理提醒"
+    "manage": "管理提醒",
+    "nameTitle": "为这组提醒条件命名",
+    "namePlaceholder": "名称（选填）",
+    "nameHint": "留空则按筛选条件自动命名。",
+    "save": "保存",
+    "cancel": "取消",
+    "rename": "重命名"
   }
 }

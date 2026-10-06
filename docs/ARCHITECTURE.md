@@ -79,9 +79,11 @@ An adapter that parses a published tax-free price keeps it; the derivation only 
 
 Clients have no accounts. The web app and the iOS app each generate a random subscriber id
 (localStorage / UserDefaults), log in to OneSignal with it as `external_id`, and send it in the
-`X-Subscriber-ID` header to `GET/POST /api/v1/alerts` and `DELETE /api/v1/alerts/{id}`. The web
+`X-Subscriber-ID` header to `GET/POST /api/v1/alerts` and `PATCH/DELETE /api/v1/alerts/{id}`. The web
 calls these from Next.js server actions, so CORS stays GET-only. Alerts must have at least one
-criterion (a query that matches everything is rejected with 422); a device can keep 20.
+criterion (a query that matches everything is rejected with 422); a device can keep 20. An alert
+has an optional user-chosen name (up to 80 characters, renamed with `PATCH {"name": …}`); without
+one it is named after its filters (`alerts.DefaultName`). The name is the notification heading.
 
 ### Search
 

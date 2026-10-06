@@ -2,9 +2,9 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { deleteAlert, listAlerts } from "@/app/actions";
+import { deleteAlert, listAlerts, renameAlert } from "@/app/actions";
 import { existingSubscriberId } from "@/lib/push";
 import type { Alert } from "@/lib/api";
 
@@ -14,6 +14,8 @@ export function AlertsList() {
   const [items, setItems] = useState<Alert[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [pending, startTransition] = useTransition();
+  const [editing, setEditing] = useState<number | null>(null);
+  const [draft, setDraft] = useState("");
 
   useEffect(() => {
     const id = existingSubscriberId();
@@ -22,6 +24,19 @@ export function AlertsList() {
       setItems(res ?? []);
     });
   }, []);
+
+  const onRename = (e: React.FormEvent, alert: Alert) => {
+    e.preventDefault();
+    const id = existingSubscriberId();
+    if (!id) return;
+    startTransition(async () => {
+      const updated = await renameAlert(id, alert.id, draft);
+      if (updated) {
+        setItems((cur) => (cur ?? []).map((a) => (a.id === alert.id ? updated : a)));
+        setEditing(null);
+      } else setFailed(true);
+    });
+  };
 
   const onDelete = (alert: Alert) => {
     const id = existingSubscriberId();
@@ -42,12 +57,47 @@ export function AlertsList() {
         <ul className="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white">
           {items.map((a) => (
             <li key={a.id} className="flex items-center gap-3 px-4 py-3">
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-medium text-slate-900">{a.name}</p>
-                <Link href={`/search?${a.query}&sort=newest`} className="text-sm text-emerald-700 hover:underline">
-                  {t("viewResults")}
-                </Link>
-              </div>
+              {editing === a.id ? (
+                <form onSubmit={(e) => onRename(e, a)} className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+                  <input
+                    autoFocus
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    maxLength={80}
+                    placeholder={t("namePlaceholder")}
+                    aria-label={t("rename")}
+                    title={t("nameHint")}
+                    className="h-9 min-w-0 flex-1 rounded-md border border-slate-300 px-3 text-sm text-slate-900"
+                  />
+                  <button type="submit" disabled={pending} className="h-9 rounded-md bg-slate-900 px-3 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-60">
+                    {t("save")}
+                  </button>
+                  <button type="button" onClick={() => setEditing(null)} className="h-9 rounded-md px-3 text-sm text-slate-700 hover:bg-slate-50">
+                    {t("cancel")}
+                  </button>
+                </form>
+              ) : (
+                <>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium text-slate-900">{a.name}</p>
+                    <Link href={`/search?${a.query}&sort=newest`} className="text-sm text-emerald-700 hover:underline">
+                      {t("viewResults")}
+                    </Link>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDraft(a.name);
+                      setEditing(a.id);
+                    }}
+                    disabled={pending}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-md border border-slate-300 px-3 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                  >
+                    <Pencil className="h-4 w-4" aria-hidden />
+                    {t("rename")}
+                  </button>
+                </>
+              )}
               <button
                 type="button"
                 onClick={() => onDelete(a)}

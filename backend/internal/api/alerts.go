@@ -68,10 +68,7 @@ func (s *Server) createAlert(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	name := strings.TrimSpace(req.Name)
-	if name == "" || len([]rune(name)) > 80 {
-		name = alerts.DefaultName(query)
-	}
+	name := alerts.Name(req.Name, query)
 	a, ok, err := s.repo.CreateAlert(r.Context(), sub, name, query, alerts.MaxPerSubscriber)
 	if err != nil {
 		s.fail(w, err)
@@ -81,7 +78,52 @@ func (s *Server) createAlert(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusConflict, "alert limit reached")
 		return
 	}
+	// Saving the same criteria again returns the existing alert; a name given this time renames it.
+	if strings.TrimSpace(req.Name) != "" && a.Name != name {
+		if a, err = s.repo.RenameAlert(r.Context(), sub, a.ID, name); err != nil {
+			s.fail(w, err)
+			return
+		}
+	}
 	writeJSON(w, http.StatusCreated, a)
+}
+
+type updateAlertRequest struct {
+	Name string `json:"name"` // empty restores the name derived from the query
+}
+
+func (s *Server) updateAlert(w http.ResponseWriter, r *http.Request) {
+	sub, ok := subscriber(w, r)
+	if !ok {
+		return
+	}
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "invalid id")
+		return
+	}
+	var req updateAlertRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 8<<10)).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, "invalid JSON body")
+		return
+	}
+	cur, err := s.repo.Alert(r.Context(), sub, id)
+	if errors.Is(err, repository.ErrNotFound) {
+		writeError(w, http.StatusNotFound, "alert not found")
+		return
+	} else if err != nil {
+		s.fail(w, err)
+		return
+	}
+	a, err := s.repo.RenameAlert(r.Context(), sub, id, alerts.Name(req.Name, cur.Query))
+	if errors.Is(err, repository.ErrNotFound) {
+		writeError(w, http.StatusNotFound, "alert not found")
+		return
+	} else if err != nil {
+		s.fail(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, a)
 }
 
 func (s *Server) deleteAlert(w http.ResponseWriter, r *http.Request) {

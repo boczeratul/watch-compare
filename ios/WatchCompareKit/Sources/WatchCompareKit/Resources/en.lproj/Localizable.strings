@@ -37,7 +37,6 @@
 "search.min" = "Min";
 "search.max" = "Max";
 "search.apply" = "Apply";
-"search.cancel" = "Cancel";
 "sort.relevance" = "Relevance";
 "sort.newest" = "Newest first";
 "sort.oldest" = "Oldest first";
@@ -124,6 +123,12 @@
 "alerts.limit" = "You have reached the maximum of 20 alerts. Delete one to add another.";
 "alerts.needsCriteria" = "Add a search term or a filter first, so the alert doesn't match every new listing.";
 "alerts.error" = "Something went wrong. Please try again.";
+"alerts.nameTitle" = "Name this alert";
+"alerts.namePlaceholder" = "Name (optional)";
+"alerts.nameHint" = "Leave blank to name it after the filters.";
+"alerts.save" = "Save";
+"alerts.cancel" = "Cancel";
+"alerts.rename" = "Rename";
 "home.heroSubtitle" = "We index %1$@ watches from %2$d marketplaces every night and show them in your currency, so you can spot the best deal for a brand, a reference or a budget.";
 "home.lastUpdated" = "Updated %1$@";
 "search.price" = "Price (%1$@)";
@@ -131,6 +136,7 @@
 "listing.viewOnSource" = "View on %1$@";
 "listing.saveVs" = "%1$d%% cheaper than the next offer";
 "alerts.done" = "Done";
+"search.cancel" = "Cancel";
 "home.removeRecent" = "Remove from recent searches";
 "search.resultsNone" = "No watches";
 "search.resultsOne" = "1 watch";

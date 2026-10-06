@@ -37,7 +37,6 @@
 "search.min" = "下限";
 "search.max" = "上限";
 "search.apply" = "適用";
-"search.cancel" = "キャンセル";
 "sort.relevance" = "関連度";
 "sort.newest" = "新着順";
 "sort.oldest" = "古い順";
@@ -124,6 +123,12 @@
 "alerts.limit" = "通知は最大 20 件です。追加するには 1 件削除してください。";
 "alerts.needsCriteria" = "すべての新着に一致しないよう、先に検索語か絞り込み条件を設定してください。";
 "alerts.error" = "エラーが発生しました。もう一度お試しください。";
+"alerts.nameTitle" = "この通知に名前を付ける";
+"alerts.namePlaceholder" = "名前（任意）";
+"alerts.nameHint" = "空欄の場合は検索条件から自動で名前を付けます。";
+"alerts.save" = "保存";
+"alerts.cancel" = "キャンセル";
+"alerts.rename" = "名前を変更";
 "home.heroSubtitle" = "毎晩 %2$d のマーケットプレイスから %1$@ 本の時計をインデックスし、お好みの通貨で表示。ブランド・型番・予算ごとの最安値がすぐに見つかります。";
 "home.lastUpdated" = "更新：%1$@";
 "search.price" = "価格（%1$@）";
@@ -131,6 +136,7 @@
 "listing.viewOnSource" = "%1$@ で見る";
 "listing.saveVs" = "次点より %1$d%% 安い";
 "alerts.done" = "完了";
+"search.cancel" = "キャンセル";
 "home.removeRecent" = "最近の検索から削除";
 "search.resultsNone" = "該当なし";
 "search.resultsOne" = "1 本";

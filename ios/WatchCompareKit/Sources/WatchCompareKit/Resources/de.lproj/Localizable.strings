@@ -37,7 +37,6 @@
 "search.min" = "Min";
 "search.max" = "Max";
 "search.apply" = "Anwenden";
-"search.cancel" = "Abbrechen";
 "sort.relevance" = "Relevanz";
 "sort.newest" = "Neueste zuerst";
 "sort.oldest" = "Älteste zuerst";
@@ -124,6 +123,12 @@
 "alerts.limit" = "Sie haben das Maximum von 20 Alarmen erreicht. Löschen Sie einen, um einen neuen anzulegen.";
 "alerts.needsCriteria" = "Geben Sie zuerst einen Suchbegriff ein oder setzen Sie einen Filter, damit der Alarm nicht bei jedem neuen Angebot auslöst.";
 "alerts.error" = "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.";
+"alerts.nameTitle" = "Alarm benennen";
+"alerts.namePlaceholder" = "Name (optional)";
+"alerts.nameHint" = "Leer lassen, um ihn nach den Filtern zu benennen.";
+"alerts.save" = "Speichern";
+"alerts.cancel" = "Abbrechen";
+"alerts.rename" = "Umbenennen";
 "home.heroSubtitle" = "Wir indexieren jede Nacht %1$@ Uhren von %2$d Marktplätzen und zeigen sie in Ihrer Währung – so finden Sie das beste Angebot für eine Marke, eine Referenz oder ein Budget.";
 "home.lastUpdated" = "Aktualisiert %1$@";
 "search.price" = "Preis (%1$@)";
@@ -131,6 +136,7 @@
 "listing.viewOnSource" = "Auf %1$@ ansehen";
 "listing.saveVs" = "%1$d %% günstiger als das nächste Angebot";
 "alerts.done" = "Fertig";
+"search.cancel" = "Abbrechen";
 "home.removeRecent" = "Aus den letzten Suchen entfernen";
 "search.resultsNone" = "Keine Uhren";
 "search.resultsOne" = "1 Uhr";
