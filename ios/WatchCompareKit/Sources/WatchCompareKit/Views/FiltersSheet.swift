@@ -72,17 +72,10 @@ struct FiltersSheet: View {
             .accessibilityIdentifier("filters.form")
             // Closing the sheet (Cancel or swipe down) discards the draft; only Apply commits it.
             .safeAreaInset(edge: .bottom) {
-                Button {
+                ApplyBar(id: "search.apply") {
                     onApply(draft)
                     dismiss()
-                } label: {
-                    Text(L10n.t("search.apply")).font(.headline).frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .padding(.horizontal).padding(.vertical, 8)
-                .background(.bar)
-                .accessibilityIdentifier("search.apply")
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -163,22 +156,34 @@ struct FiltersSheet: View {
     }
 }
 
+/// Edits a local copy of the selection; only the bottom Apply button writes it back.
+/// Going back (top-left) discards the edits, matching `FiltersSheet`.
 struct MultiSelectList: View {
+    @Environment(\.dismiss) private var dismiss
     let title: String
     let values: [FacetValue]
     @Binding var selection: Set<String>
     let label: ((String) -> String)?
+    @State private var draft: Set<String>
     @State private var filter = ""
+
+    init(title: String, values: [FacetValue], selection: Binding<Set<String>>, label: ((String) -> String)?) {
+        self.title = title
+        self.values = values
+        _selection = selection
+        self.label = label
+        _draft = State(initialValue: selection.wrappedValue)
+    }
 
     var body: some View {
         List {
             ForEach(filtered) { v in
                 Button {
-                    if selection.contains(v.key) { selection.remove(v.key) } else { selection.insert(v.key) }
+                    if draft.contains(v.key) { draft.remove(v.key) } else { draft.insert(v.key) }
                 } label: {
                     HStack {
-                        Image(systemName: selection.contains(v.key) ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(selection.contains(v.key) ? Color.accentColor : Color.secondary)
+                        Image(systemName: draft.contains(v.key) ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(draft.contains(v.key) ? Color.accentColor : Color.secondary)
                         Text(label?(v.key) ?? v.label).foregroundStyle(.primary)
                         Spacer()
                         Text(v.count.formatted()).font(.caption).foregroundStyle(.tertiary)
@@ -189,9 +194,15 @@ struct MultiSelectList: View {
         .navigationTitle(title)
         .inlineNavigationTitle()
         .searchable(text: $filter, placement: values.count > 12 ? .automatic : .toolbar)
+        .safeAreaInset(edge: .bottom) {
+            ApplyBar(id: "filters.multi.apply") {
+                selection = draft
+                dismiss()
+            }
+        }
         .toolbar {
-            if !selection.isEmpty {
-                ToolbarItem(placement: .primaryAction) { Button(L10n.t("search.clearAll")) { selection = [] } }
+            if !draft.isEmpty {
+                ToolbarItem(placement: .primaryAction) { Button(L10n.t("search.clearAll")) { draft = [] } }
             }
         }
     }
@@ -200,5 +211,22 @@ struct MultiSelectList: View {
         let f = filter.trimmingCharacters(in: .whitespaces)
         if f.isEmpty { return values }
         return values.filter { (label?($0.key) ?? $0.label).localizedCaseInsensitiveContains(f) || $0.key.localizedCaseInsensitiveContains(f) }
+    }
+}
+
+/// Full-width Apply button pinned to the bottom of a filter screen.
+private struct ApplyBar: View {
+    let id: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(L10n.t("search.apply")).font(.headline).frame(maxWidth: .infinity)
+        }
+        .accessibilityIdentifier(id)
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+        .padding(.horizontal).padding(.vertical, 8)
+        .background(.bar)
     }
 }
