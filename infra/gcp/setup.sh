@@ -9,7 +9,9 @@ set -euo pipefail
 REGION="${REGION:-asia-east1}"
 AR_REPO="${AR_REPO:-watch-compare}"
 SQL_INSTANCE="${SQL_INSTANCE:-watch-compare-pg}"
-SQL_TIER="${SQL_TIER:-db-perf-optimized-N-2}"
+SQL_TIER="${SQL_TIER:-db-g1-small}"
+# PG16 defaults to Enterprise Plus, which has no shared-core tiers; pin Enterprise for db-g1-small.
+SQL_EDITION="${SQL_EDITION:-enterprise}"
 API_SERVICE="${API_SERVICE:-watch-compare-api}"
 CRAWLER_JOB="${CRAWLER_JOB:-watch-compare-crawler}"
 CORS_ORIGINS="${CORS_ORIGINS:-https://watch-compare.vercel.app}"
@@ -33,7 +35,7 @@ gcloud artifacts repositories describe "$AR_REPO" --location="$REGION" >/dev/nul
 
 echo "▶ Cloud SQL (PostgreSQL 16)"
 if ! gcloud sql instances describe "$SQL_INSTANCE" >/dev/null 2>&1; then
-  gcloud sql instances create "$SQL_INSTANCE" --database-version=POSTGRES_16 --tier="$SQL_TIER" \
+  gcloud sql instances create "$SQL_INSTANCE" --database-version=POSTGRES_16 --edition="$SQL_EDITION" --tier="$SQL_TIER" \
     --region="$REGION" --storage-auto-increase --backup-start-time=18:00 --availability-type=zonal \
     --database-flags=max_connections=100
 fi
