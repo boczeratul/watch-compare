@@ -22,7 +22,7 @@ What it does:
 1. Enables APIs: Cloud Run, Cloud Build, Artifact Registry, Cloud SQL Admin, Secret Manager,
    Cloud Scheduler, IAM.
 2. Creates an Artifact Registry Docker repo `watch-compare` in `$REGION`.
-3. Creates a Cloud SQL **PostgreSQL 16** instance (`db-g1-small` is plenty; enable automatic
+3. Creates a Cloud SQL **PostgreSQL 16** instance (Enterprise edition `db-g1-small` is plenty; enable automatic
    backups), database `watch`, user `watch` with a generated password.
 4. Stores secrets in Secret Manager: `DATABASE_URL` (Unix-socket DSN for Cloud SQL), `EBAY_CLIENT_ID`,
    `EBAY_CLIENT_SECRET` (placeholders you fill in later).
