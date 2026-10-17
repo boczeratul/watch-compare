@@ -44,7 +44,11 @@ type Config struct {
 	EbayClientID     string
 	EbayClientSecret string
 	EbayMarketplaces []string
-	FXProviderURL    string
+	// Reddit (r/Watchexchange): optional app credentials for the OAuth API; without them the public
+	// JSON endpoint is used, which Reddit throttles and may block from cloud IP ranges.
+	RedditClientID     string
+	RedditClientSecret string
+	FXProviderURL      string
 
 	// Push alerts (OneSignal). The app id defaults to the production app; the REST API key must be
 	// set for the crawler to send notifications.
@@ -81,6 +85,8 @@ func Load() (*Config, error) {
 		EbayClientID:              os.Getenv("EBAY_CLIENT_ID"),
 		EbayClientSecret:          os.Getenv("EBAY_CLIENT_SECRET"),
 		EbayMarketplaces:          splitList(getenv("EBAY_MARKETPLACES", "EBAY_US")),
+		RedditClientID:            os.Getenv("REDDIT_CLIENT_ID"),
+		RedditClientSecret:        os.Getenv("REDDIT_CLIENT_SECRET"),
 		FXProviderURL:             getenv("FX_PROVIDER_URL", "https://open.er-api.com/v6/latest/USD"),
 		OneSignalAppID:            strings.TrimSpace(getenv("ONESIGNAL_APP_ID", "6e12337f-212f-4ec3-9c38-01e83635d2fe")),
 		OneSignalRESTAPIKey:       strings.TrimSpace(os.Getenv("ONESIGNAL_REST_API_KEY")),
