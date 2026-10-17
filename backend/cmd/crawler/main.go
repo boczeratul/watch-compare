@@ -37,6 +37,7 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/rww"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/sevenhours"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchandtime"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchexchange"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchfinderhk"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchnian"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/wristcheck"
@@ -149,6 +150,7 @@ func main() {
 		watchandtime.Source{},
 		jdpawn.Source{},
 		bbc0804.Source{},
+		&watchexchange.Source{},
 		&ebay.Source{},
 		chrono24.Source{},
 	)

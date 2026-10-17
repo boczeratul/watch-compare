@@ -34,6 +34,7 @@ deactivation. Parsers are covered by fixture tests using real HTML captured in `
 | `watchandtime` | HTML (ASP, Big5), brand categories `products_list.asp?id=N&page=P` from `index.asp` (24 per page) plus one product page per item | TWD | ✅ 24/24 cards with price and image; the product page adds the description title, reference, material, movement, gender, year, photos | 黃忠政名錶交流中心 (James Huang Vintage Watches), Taiwan; cards carry only brand + stock code, so every product page is fetched (a few hundred requests a night); the 鑽石／配件 category is skipped |
 | `jdpawn` | HTML (ASP.NET MVC), `/luxury/Stuffs/Watch?page=N` (16 per page, "共13頁" in the pager); each piece is a quick-view modal on the list page | TWD | ✅ 16/16 with price, brand, 型式 reference/model, 機芯 movement, 錶徑 diameter, 附註 box/papers, store city; photo from `/luxury/StuffPictures/<code>.jpg` | 久大御典品, a Taichung pawn-shop group; ~200 pieces; pages weigh 4–5 MB because photos are inlined as base64, so the Fetcher body limit is 16 MB |
 | `bbc0804` | HTML (iyp.tw static site), watch categories from the `/goods.html` nav (one page each, no pagination) plus one product page per piece | TWD | ✅ 27/27 cards with price ("$64.8萬"), brand, 型號 reference, 錶徑, papers year from the title; product page adds box/papers, material, movement, condition note, photos | 仁川當舖, a pawn shop in Rende, Tainan; ~80 pieces; jewellery, gold, scooter, phone and bag categories are skipped |
+| `watchexchange` | **Reddit JSON API**, `/r/Watchexchange/new` (100 posts per page, `after` cursor, ≤10 pages: Reddit stops a listing at ~1000) | per post (USD default; C$, A$, €, £, CAD/EUR/… recognised) | ⚠️ fixture only: reddit.com is unreachable from the dev sandbox; optional `REDDIT_CLIENT_ID/SECRET` | peer-to-peer marketplace of private sellers; only WTS / WTS/WTT posts (flair, else `[WTS]` in the title), skipping WTB, Sold, removed and stickied posts; price from the title, else the body's asking line; photos from Reddit galleries / previews, imgur albums kept in `attributes.album`; `CONUS` / "located in US" sets US, otherwise location stays empty |
 | `ebay` | **Browse API** (OAuth client credentials) | market currency | needs `EBAY_CLIENT_ID/SECRET` | per-brand aspect filter in Wristwatches (31387); free developer keys at developer.ebay.com |
 | `chrono24` | HTML via Browserless (see [BROWSERLESS.md](BROWSERLESS.md)) | listing currency | ❌ plain requests get HTTP 403; selectors unverified until a rendered page is captured | marketplace: each card carries the seller's own country and city, so the DE on the sources row is never applied to a listing; skipped unless `CRAWL_RENDER_SERVICE_URL` or `CRAWL_PROXY_URL` is set; budget = `CHRONO24_BRANDS` (default Rolex, Omega, IWC, AP, PP) × `CHRONO24_MAX_PAGES` (default 3) |
 
@@ -138,6 +139,19 @@ Supported ways to run the adapter, in order of preference:
 3. **Forward proxy** (`CRAWL_PROXY_URL`) — a residential proxy for plain fetches.
 
 Review Chrono24's terms of use and robots.txt before enabling any of these.
+
+## Reddit setup (r/Watchexchange)
+
+Works without configuration through the public `www.reddit.com/r/Watchexchange/new.json`, but
+Reddit throttles unauthenticated clients and often answers 403 to cloud IP ranges (Cloud Run). For
+production, use the OAuth API:
+
+1. Create a *script* app at https://www.reddit.com/prefs/apps (any redirect URI).
+2. Set `REDDIT_CLIENT_ID` (the string under the app name) and `REDDIT_CLIENT_SECRET` on the crawler
+   job, e.g. via Secret Manager and `--set-secrets` in `backend/cloudbuild.yaml`.
+
+The adapter then gets an app-only token (client-credentials grant) and reads
+`oauth.reddit.com/r/Watchexchange/new`; 10 requests a night are far below Reddit's free-tier limit.
 
 ## eBay setup
 
