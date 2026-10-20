@@ -73,7 +73,7 @@ func ComparisonPrice(l *model.Listing) (float64, bool) {
 // cards with SVG badges and icons (Chrono24's "Certified" seal is the usual offender), and an <img>
 // sweep picks them up ahead of the real photo. No dealer publishes watch photos as SVG.
 func PhotoURLs(urls []string) []string {
-	out := urls[:0:0]
+	out := make([]string, 0, len(urls))
 	for _, u := range urls {
 		p := strings.ToLower(u)
 		if i := strings.IndexAny(p, "?#"); i >= 0 {

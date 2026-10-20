@@ -144,7 +144,7 @@ func TestRepositoryEndToEnd(t *testing.T) {
 	p3, u3 := 280000.0, 8750.0
 	l2 := model.Listing{SourceID: hs.ID, ExternalID: "x9", URL: "https://example.com/2", Title: "勞力士 Submariner 116610LN 黑水鬼",
 		BrandID: &rolex, BrandName: "Rolex", ReferenceNumber: "116610LN", Condition: model.ConditionGood,
-		Movement: model.MovementAutomatic, Gender: model.GenderMen, Price: &p3, Currency: "TWD", PriceUSD: &u3, ImageURLs: []string{}}
+		Movement: model.MovementAutomatic, Gender: model.GenderMen, Price: &p3, Currency: "TWD", PriceUSD: &u3} // no photos: nil ImageURLs must not be sent as NULL
 	if _, err := repo.UpsertListing(ctx, &l2); err != nil {
 		t.Fatal(err)
 	}

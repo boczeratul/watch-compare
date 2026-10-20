@@ -468,6 +468,11 @@ func (r *Repo) UpsertListing(ctx context.Context, l *model.Listing) (UpsertResul
 	if len(attrs) == 0 {
 		attrs = json.RawMessage(`{}`)
 	}
+	// image_urls is NOT NULL: a nil slice would be sent as NULL and fail the insert.
+	images := l.ImageURLs
+	if images == nil {
+		images = []string{}
+	}
 	var inserted bool
 	err := r.pool.QueryRow(ctx, `
 		INSERT INTO listings (source_id, external_id, url, title, brand_id, brand_name, model, reference_number, condition, year,
@@ -496,7 +501,7 @@ func (r *Repo) UpsertListing(ctx context.Context, l *model.Listing) (UpsertResul
 		RETURNING id, (xmax = 0) AS inserted`,
 		l.SourceID, l.ExternalID, l.URL, l.Title, l.BrandID, l.BrandName, l.Model, l.ReferenceNumber, string(l.Condition), l.Year,
 		l.CaseDiameterMM, l.CaseMaterial, string(l.Movement), string(l.Gender), l.HasBox, l.HasPapers, l.Price, l.Currency, l.PriceUSD, l.ShippingPrice,
-		l.LocationCountry, l.LocationCity, l.SellerName, l.SellerType, l.ImageURLs, l.Description, attrs, l.DialColor, l.PriceExclTax,
+		l.LocationCountry, l.LocationCity, l.SellerName, l.SellerType, images, l.Description, attrs, l.DialColor, l.PriceExclTax,
 	).Scan(&res.ID, &inserted)
 	if err != nil {
 		return res, err

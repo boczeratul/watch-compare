@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
+// Shown when a listing has no photo (the crawler found none).
+export const PLACEHOLDER_IMAGE = "/watch-placeholder.svg";
+
 export function ImageGallery({ images, alt }: { images: string[]; alt: string }) {
   const [active, setActive] = useState(0);
   const main = images[active];
@@ -13,7 +16,8 @@ export function ImageGallery({ images, alt }: { images: string[]; alt: string })
           // eslint-disable-next-line @next/next/no-img-element
           <img src={main} alt={alt} referrerPolicy="no-referrer" className="h-full w-full object-contain p-4" />
         ) : (
-          <div className="flex h-full items-center justify-center text-slate-300">—</div>
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={PLACEHOLDER_IMAGE} alt="" className="h-full w-full object-contain p-16" />
         )}
       </div>
       {images.length > 1 && (

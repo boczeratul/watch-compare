@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import type { Listing } from "@/lib/api";
 import { Price } from "./price";
 import { SourceBadge } from "./source-badge";
+import { PLACEHOLDER_IMAGE } from "./image-gallery";
 
 export function ListingCard({ listing }: { listing: Listing }) {
   const tc = useTranslations("condition");
@@ -18,7 +19,8 @@ export function ListingCard({ listing }: { listing: Listing }) {
           // eslint-disable-next-line @next/next/no-img-element
           <img src={img} alt={listing.title} loading="lazy" decoding="async" referrerPolicy="no-referrer" className="h-full w-full object-contain p-3 transition group-hover:scale-[1.03]" />
         ) : (
-          <div className="flex h-full items-center justify-center text-slate-300">—</div>
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={PLACEHOLDER_IMAGE} alt="" className="h-full w-full object-contain p-10" />
         )}
         <SourceBadge source={listing.source} name={listing.sourceName} className="absolute left-2 top-2" />
       </div>
