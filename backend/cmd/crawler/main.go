@@ -21,7 +21,6 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/allu"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/bbc0804"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/bellemonde"
-	"github.com/hsuanlee/watch-compare/backend/internal/crawler/chrono24"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/commitwatch"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ebay"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/hourstack"
@@ -152,7 +151,6 @@ func main() {
 		bbc0804.Source{},
 		&watchexchange.Source{},
 		&ebay.Source{},
-		chrono24.Source{},
 	)
 	crawlErr := runner.Run(ctx, cfg.CrawlSources)
 

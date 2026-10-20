@@ -1,7 +1,7 @@
 # WatchCompare
 
 Find the best deal for a watch across marketplaces. A nightly crawler indexes listings from
-**Chrono24, eBay, Watchnian, Jackroad, Commit Ginza, 7hours, Brand Shop LIPS, ALLU, BEST ISHIDA, RWW Watch, Watchfinder HK, Wristcheck, Ken's Watches, GINZA RASIN, Quark, Belle Monde, Kitamura, James Huang Vintage Watches, JD Pawn, 仁川當舖, Hourstack, RD Watch and Reddit r/Watchexchange** into PostgreSQL; a Next.js frontend lets you
+**eBay, Watchnian, Jackroad, Commit Ginza, 7hours, Brand Shop LIPS, ALLU, BEST ISHIDA, RWW Watch, Watchfinder HK, Wristcheck, Ken's Watches, GINZA RASIN, Quark, Belle Monde, Kitamura, James Huang Vintage Watches, JD Pawn, 仁川當舖, Hourstack, RD Watch and Reddit r/Watchexchange** into PostgreSQL; a Next.js frontend lets you
 search, filter and sort them Chrono24-style, in your own currency and language. Saved searches
 send web and iOS push notifications (OneSignal) when a new listing matches.
 
@@ -85,7 +85,5 @@ cd ios/WatchCompareKit && swift build && swift test   # models, API client, view
 
 ## Legal note
 
-Only index sites whose terms allow it. eBay is accessed through its official Browse API. Chrono24
-blocks unattended requests; the adapter is provided for use with a licensed data feed or an
-authorized rendering proxy (see [docs/CRAWLERS.md](docs/CRAWLERS.md)). Images are never stored, only
-linked to their original location.
+Only index sites whose terms allow it. eBay is accessed through its official Browse API. Images
+are never stored, only linked to their original location.
