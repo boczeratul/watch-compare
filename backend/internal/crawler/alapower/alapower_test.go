@@ -53,3 +53,16 @@ func TestParseListFixtures(t *testing.T) {
 		}
 	}
 }
+
+func TestSkipCategory(t *testing.T) {
+	s := Site{SkipCategories: []string{"配件", "錶帶"}}
+	for name, want := range map[string]bool{
+		"手錶配件及錶帶":    true,
+		"Rolex‧勞力士":  false,
+		"HERMES‧愛馬仕": false,
+	} {
+		if got := s.skipCategory(name); got != want {
+			t.Errorf("skipCategory(%q) = %v, want %v", name, got, want)
+		}
+	}
+}

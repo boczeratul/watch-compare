@@ -38,7 +38,7 @@ set -a; source .env; set +a
 make run                        # http://localhost:8080/healthz
 
 # 2. Populate the index (a couple of pages per site is enough to try the UI)
-make crawl ARGS="-sources=jackroad,hourstack,watchnian,rdwatch,commitwatch,sevenhours,lips,allu,ishida,rww,watchfinderhk,wristcheck,kenwatches,rasin,quark,bellemonde,kitamura,watchandtime,jdpawn,bbc0804,watchexchange -max-pages=2"
+make crawl ARGS="-sources=jackroad,hourstack,watchnian,rdwatch,commitwatch,sevenhours,lips,allu,ishida,rww,watchfinderhk,wristcheck,kenwatches,rasin,quark,bellemonde,kitamura,watchandtime,jdpawn,bbc0804,watchexchange,999watch -max-pages=2"
 
 # 3. Frontend
 cd ../frontend
