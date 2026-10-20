@@ -23,6 +23,9 @@ import (
 const (
 	baseURL  = "https://commit-watch.co.jp"
 	pageSize = 250
+	// Shopify rejects page*limit > 25000 with HTTP 400 "Page * Limit exceeds the 25000 limit.",
+	// so with 250 per page the feed ends at page 100 however many products the shop has.
+	maxPage = 25000 / pageSize
 )
 
 // Source implements crawler.Source.
@@ -63,10 +66,10 @@ var (
 	yearRe = regexp.MustCompile(`(\d{4})年`)
 )
 
-// Crawl pages through the JSON feed until a short page.
+// Crawl pages through the JSON feed until a short page or Shopify's page cap.
 func (s Source) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) error {
 	seen := map[string]bool{}
-	for page := 1; page <= env.MaxPages; page++ {
+	for page := 1; page <= min(env.MaxPages, maxPage); page++ {
 		body, err := env.Fetcher.Get(ctx, fmt.Sprintf("%s/products.json?limit=%d&page=%d", baseURL, pageSize, page))
 		if err != nil {
 			return fmt.Errorf("page %d: %w", page, err)
@@ -93,6 +96,9 @@ func (s Source) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) 
 		}
 		if len(feed.Products) < pageSize {
 			return nil
+		}
+		if page == maxPage {
+			env.Log.Warn().Int("page", page).Msg("commitwatch: reached Shopify's 25000-product feed cap; later products are not indexed")
 		}
 	}
 	return nil

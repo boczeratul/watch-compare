@@ -13,7 +13,7 @@ func TestParseListFixture(t *testing.T) {
 	if err != nil {
 		t.Skip("fixture missing")
 	}
-	doc, err := crawler.ParseHTML(body, "https://www.jdpawn.com.tw/luxury/Stuffs/Watch")
+	doc, err := crawler.ParseHTML(body, "https://jdpawn.com.tw/luxury/Stuffs/Watch")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +69,7 @@ func TestParseListFixture(t *testing.T) {
 	}
 	if f.BrandSlug != "cartier" || f.ReferenceNumber != "W6920042" || f.Price == nil || *f.Price != 126000 || f.Movement != model.MovementAutomatic ||
 		f.CaseDiameterMM == nil || *f.CaseDiameterMM != 42 || f.HasBox == nil || !*f.HasBox || f.HasPapers == nil || !*f.HasPapers || f.LocationCity != "Taichung" ||
-		f.URL != "https://www.jdpawn.com.tw/luxury/Stuffs/SingleProduct/T848" || f.ImageURLs[0] != "https://www.jdpawn.com.tw/luxury/StuffPictures/T848.jpg" {
+		f.URL != "https://jdpawn.com.tw/luxury/Stuffs/SingleProduct/T848" || f.ImageURLs[0] != "https://jdpawn.com.tw/luxury/StuffPictures/T848.jpg" {
 		t.Errorf("T848 parsed wrong: %+v", f)
 	}
 }
