@@ -36,7 +36,6 @@ deactivation. Parsers are covered by fixture tests using real HTML captured in `
 | `bbc0804` | HTML (iyp.tw static site), watch categories from the `/goods.html` nav (one page each, no pagination) plus one product page per piece | TWD | ✅ 27/27 cards with price ("$64.8萬"), brand, 型號 reference, 錶徑, papers year from the title; product page adds box/papers, material, movement, condition note, photos | 仁川當舖, a pawn shop in Rende, Tainan; ~80 pieces; jewellery, gold, scooter, phone and bag categories are skipped |
 | `watchexchange` | **Reddit JSON API**, `/r/Watchexchange/new` (100 posts per page, `after` cursor, ≤10 pages: Reddit stops a listing at ~1000) | per post (USD default; C$, A$, €, £, CAD/EUR/… recognised) | ⚠️ fixture only: reddit.com is unreachable from the dev sandbox; optional `REDDIT_CLIENT_ID/SECRET`; blocked from Google Cloud: set `REDDIT_CLIENT_ID/SECRET` (OAuth works from cloud IPs); without them the public JSON goes through Browserless when `CRAWL_RENDER_SERVICE_URL` is set, but Browserless also gets 403 (2026-10-20) | peer-to-peer marketplace of private sellers; only WTS / WTS/WTT posts (flair, else `[WTS]` in the title), skipping WTB, Sold, removed and stickied posts; price from the title, else the body's asking line; photos from Reddit galleries / previews, imgur albums kept in `attributes.album`; `CONUS` / "located in US" sets US, otherwise location stays empty |
 | `ebay` | **Browse API** (OAuth client credentials) | market currency | needs `EBAY_CLIENT_ID/SECRET` | per-brand aspect filter in Wristwatches (31387); free developer keys at developer.ebay.com |
-| `chrono24` | HTML via Browserless (see [BROWSERLESS.md](BROWSERLESS.md)) | listing currency | ❌ plain requests get HTTP 403; selectors unverified until a rendered page is captured | marketplace: each card carries the seller's own country and city, so the DE on the sources row is never applied to a listing; skipped unless `CRAWL_RENDER_SERVICE_URL` or `CRAWL_PROXY_URL` is set; budget = `CHRONO24_BRANDS` (default Rolex, Omega, IWC, AP, PP) × `CHRONO24_MAX_PAGES` (default 3) |
 
 Image URLs: Jackroad thumbnails (`/img/goods/S/<id>.jpg`) are upgraded to the product-page image
 (`/img/goods/1/<id>.jpg`); Watchnian only serves the small `/S/` variant for the main image;
@@ -44,7 +43,7 @@ Hourstack links `product/product_big/*.JPG` directly. We never download or store
 
 ## Sources that need configuration
 
-`ebay` and `chrono24` implement `crawler.Preflighter`. When their credentials / proxy are missing
+`ebay` implements `crawler.Preflighter`. When its credentials are missing
 the Runner logs a warning, writes a `skipped` row to `crawl_runs` (visible at `/api/v1/crawls`) and
 carries on with the other sources; the job still exits 0. Silence the warning with
 `CRAWL_SOURCES=<list>` or `UPDATE sources SET enabled = false WHERE key = '…'`.
@@ -125,20 +124,6 @@ Otherwise:
 5. Insert the source row in a new migration (`INSERT INTO sources …`) and register the adapter in
    `cmd/crawler/main.go`.
 6. Add brand aliases in `normalize/brands.go` for any names in the site's language.
-
-## Chrono24 options
-
-Chrono24 fronts its site with bot protection; a data-centre IP receives 403 immediately.
-Supported ways to run the adapter, in order of preference:
-
-1. **Licensed feed** — Chrono24 offers partner/affiliate data. If you have one, replace the HTML
-   parser with the feed client; the rest of the pipeline stays the same.
-2. **Browserless** (`CRAWL_RENDER_SERVICE_URL` + `CRAWL_RENDER_SERVICE_TOKEN`) — either the hosted
-   browserless.io Smart Scrape service or the official container on Cloud Run. Step-by-step setup, testing and
-   budget notes: [BROWSERLESS.md](BROWSERLESS.md).
-3. **Forward proxy** (`CRAWL_PROXY_URL`) — a residential proxy for plain fetches.
-
-Review Chrono24's terms of use and robots.txt before enabling any of these.
 
 ## Reddit setup (r/Watchexchange)
 

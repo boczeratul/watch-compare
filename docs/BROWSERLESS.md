@@ -1,5 +1,9 @@
 # Rendering Chrono24 through Browserless
 
+> The Chrono24 adapter has been removed (Cloudflare kept blocking it; see migration
+> `0022_retire_chrono24`). The render service is still used by kitamura and watchexchange;
+> the Chrono24 steps below are kept for reference only.
+
 Chrono24 answers plain HTTP clients with 403 and fronts the site with a Cloudflare challenge, so
 its adapter fetches pages through a headless browser service. By default the crawler uses
 **browserless.io Smart Scrape** (`POST /smart-scrape`), which picks its own strategy (plain fetch,

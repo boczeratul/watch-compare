@@ -10,7 +10,7 @@
 #   _CLOUDSQL         Cloud SQL connection name, e.g. my-proj:asia-east1:watch-compare-pg
 #   _RUNTIME_SA       Runtime service account email
 #   _CORS_ORIGINS     Comma-separated allowed origins (Vercel production + preview domains)
-#   _RENDER_SERVICE_URL   Browserless base URL for Chrono24 (docs/BROWSERLESS.md); secret BROWSERLESS_TOKEN must exist
+#   _RENDER_SERVICE_URL   Browserless base URL for kitamura / watchexchange (docs/BROWSERLESS.md); secret BROWSERLESS_TOKEN must exist
 #   _RENDER_EXTRA_QUERY   Extra browserless.io query options (residential proxy, stealth)
 #   _ONESIGNAL_APP_ID     OneSignal app id for push alerts (public client config); secret ONESIGNAL_REST_API_KEY must exist
 #   _PUBLIC_SITE_URL      Web origin used in notification links
@@ -22,10 +22,8 @@ substitutions:
   _CLOUDSQL: ""
   _RUNTIME_SA: ""
   _CORS_ORIGINS: "https://watch-compare.vercel.app"
-  _RENDER_SERVICE_URL: ""          # e.g. https://production-sfo.browserless.io (empty = Chrono24 skipped)
+  _RENDER_SERVICE_URL: ""          # e.g. https://production-sfo.browserless.io (empty = direct fetch)
   _RENDER_EXTRA_QUERY: ""          # e.g. proxy=residential&proxyCountry=de
-  _CHRONO24_BRANDS: "rolex,omega,iwc,audemarspiguet,patekphilippe"
-  _CHRONO24_MAX_PAGES: "10"
   _ONESIGNAL_APP_ID: "6e12337f-212f-4ec3-9c38-01e83635d2fe"
   _PUBLIC_SITE_URL: "https://watch-compare.vercel.app"
 
@@ -124,7 +122,7 @@ steps:
       - --service-account=${_RUNTIME_SA}
       - --set-cloudsql-instances=${_CLOUDSQL}
       - --set-secrets=DATABASE_URL=DATABASE_URL:latest,EBAY_CLIENT_ID=EBAY_CLIENT_ID:latest,EBAY_CLIENT_SECRET=EBAY_CLIENT_SECRET:latest,CRAWL_RENDER_SERVICE_TOKEN=BROWSERLESS_TOKEN:latest,ONESIGNAL_REST_API_KEY=ONESIGNAL_REST_API_KEY:latest
-      - --set-env-vars=^@^APP_ENV=production@AUTO_MIGRATE=false@CRAWL_CONCURRENCY=3@CRAWL_MAX_PAGES=200@CRAWL_RATE_LIMIT_MS=1500@CRAWL_RENDER_SERVICE_URL=${_RENDER_SERVICE_URL}@CRAWL_RENDER_EXTRA_QUERY=${_RENDER_EXTRA_QUERY}@CHRONO24_BRANDS=${_CHRONO24_BRANDS}@CHRONO24_MAX_PAGES=${_CHRONO24_MAX_PAGES}@ONESIGNAL_APP_ID=${_ONESIGNAL_APP_ID}@PUBLIC_SITE_URL=${_PUBLIC_SITE_URL}
+      - --set-env-vars=^@^APP_ENV=production@AUTO_MIGRATE=false@CRAWL_CONCURRENCY=3@CRAWL_MAX_PAGES=200@CRAWL_RATE_LIMIT_MS=1500@CRAWL_RENDER_SERVICE_URL=${_RENDER_SERVICE_URL}@CRAWL_RENDER_EXTRA_QUERY=${_RENDER_EXTRA_QUERY}@ONESIGNAL_APP_ID=${_ONESIGNAL_APP_ID}@PUBLIC_SITE_URL=${_PUBLIC_SITE_URL}
       - --cpu=1
       - --memory=1Gi
       - --tasks=1
