@@ -95,7 +95,7 @@ type Item struct {
 	Cash           *float64                 `json:"cash"`
 	ListedPrice    *float64                 `json:"listedPrice"`
 	PriceRemark    *string                  `json:"priceRemark"`
-	Material       *string                  `json:"material"`
+	Material       json.RawMessage          `json:"material"` // text, {"en-US": …} or {_id,name}
 	Store          struct {
 		Name Localized `json:"name"`
 	} `json:"store"`
@@ -215,8 +215,8 @@ func ToListing(it Item, p *Page) (model.Listing, bool) {
 	if sz := optionName(it.WatchSize, p.FilterOpt.WatchSizes); sz != "" {
 		l.Gender = normalize.GenderType(sz) // Men / Ladies / Boy / Jumbo …
 	}
-	if it.Material != nil && *it.Material != "" {
-		l.CaseMaterial = *it.Material
+	if m := materialName(it.Material); m != "" {
+		l.CaseMaterial = m
 	}
 	for _, ph := range it.Photos {
 		if ph != "" && len(l.ImageURLs) < 8 {
@@ -238,6 +238,29 @@ func ToListing(it Item, p *Page) (model.Listing, bool) {
 	}
 	l.Attributes, _ = json.Marshal(attrs)
 	return l, true
+}
+
+// materialName reads the material field, which is plain text on most items and a localized
+// name or an embedded option object on others.
+func materialName(raw json.RawMessage) string {
+	if len(raw) == 0 || string(raw) == "null" {
+		return ""
+	}
+	var text string
+	if json.Unmarshal(raw, &text) == nil {
+		return strings.TrimSpace(text)
+	}
+	var o Option
+	if json.Unmarshal(raw, &o) == nil {
+		if n := o.Name.En(); n != "" {
+			return n
+		}
+	}
+	var loc Localized
+	if json.Unmarshal(raw, &loc) == nil {
+		return loc.En()
+	}
+	return ""
 }
 
 // optionName resolves a field that is either an option id or an embedded option object.

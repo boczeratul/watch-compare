@@ -7,8 +7,9 @@
 // oauth.reddit.com with an app-only token (client-credentials grant), which Reddit's Data API
 // terms expect from servers and which is not blocked from cloud IP ranges; without them the
 // public www.reddit.com/…/new.json endpoint is used. Reddit blocks plain requests from Google
-// Cloud, so when a render service is configured (CRAWL_RENDER_SERVICE_URL, as for Chrono24) the
-// public endpoint is fetched through it instead, and takes precedence over OAuth.
+// Cloud, so without OAuth credentials but with a render service (CRAWL_RENDER_SERVICE_URL, as for
+// Chrono24) the public endpoint is fetched through it. Browserless gets 403 there too (verified
+// 2026-10-20, every smart-scrape strategy), so OAuth is the reliable route.
 //
 // Post shape (sub rules): title "[WTS] Tudor Black Bay 58 79030N - $3,100 shipped", link flair
 // "WTS" / "WTS/WTT" / "WTT" / "WTB" / "Sold". Only WTS posts are indexed; WTB, trade-only,
@@ -110,13 +111,6 @@ func (s *Source) get(ctx context.Context, env *crawler.Env, after string) ([]byt
 		q.Set("after", after)
 	}
 	base, path := publicURL, "/r/"+subreddit+"/new.json"
-	if env.Fetcher.HasRenderer() {
-		body, err := env.Fetcher.GetRendered(ctx, base+path+"?"+q.Encode())
-		if err != nil {
-			return nil, err
-		}
-		return UnwrapRenderedJSON(body)
-	}
 	token := ""
 	if env.Cfg.RedditClientID != "" && env.Cfg.RedditClientSecret != "" {
 		t, err := s.accessToken(ctx, env)
@@ -124,6 +118,12 @@ func (s *Source) get(ctx context.Context, env *crawler.Env, after string) ([]byt
 			return nil, err
 		}
 		base, path, token = oauthURL, "/r/"+subreddit+"/new", t
+	} else if env.Fetcher.HasRenderer() {
+		body, err := env.Fetcher.GetRendered(ctx, base+path+"?"+q.Encode())
+		if err != nil {
+			return nil, err
+		}
+		return UnwrapRenderedJSON(body)
 	}
 	req, err := http.NewRequest(http.MethodGet, base+path+"?"+q.Encode(), nil)
 	if err != nil {

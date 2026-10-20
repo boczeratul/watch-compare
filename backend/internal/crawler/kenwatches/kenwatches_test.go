@@ -1,6 +1,7 @@
 package kenwatches
 
 import (
+	"encoding/json"
 	"os"
 	"testing"
 
@@ -72,5 +73,19 @@ func TestParsePageFixture(t *testing.T) {
 	// second item: Cartier WSBB0025 has no cash price but a listed price of HK$30,800
 	if s := items[1]; s.ReferenceNumber != "WSBB0025" || s.Price == nil || *s.Price != 30800 {
 		t.Errorf("listed-price fallback: %+v", s)
+	}
+}
+
+// material is text on most items but an object on some (page 33 on 2026-10-20 failed to decode).
+func TestMaterialName(t *testing.T) {
+	for raw, want := range map[string]string{
+		`null`:              "",
+		`"Stainless Steel"`: "Stainless Steel",
+		`{"en-US":"Rose Gold","zh-TW":"玫瑰金"}`:       "Rose Gold",
+		`{"_id":"abc","name":{"en-US":"Titanium"}}`: "Titanium",
+	} {
+		if got := materialName(json.RawMessage(raw)); got != want {
+			t.Errorf("%s: got %q, want %q", raw, got, want)
+		}
 	}
 }

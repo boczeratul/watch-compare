@@ -1,57 +1,41 @@
 package commitwatch
 
 import (
-	"encoding/json"
 	"os"
 	"testing"
 
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler"
+	"github.com/hsuanlee/watch-compare/backend/internal/model"
 )
 
-func TestToListingFixture(t *testing.T) {
-	body, err := os.ReadFile("testdata/products.json")
+// testdata/list.html is page 1 of /collections/all?sort_by=created-descending captured 2026-10-20:
+// 48 cards, 22 for sale, the rest SOLD OUT or RESERVED.
+func TestParseListFixture(t *testing.T) {
+	body, err := os.ReadFile("testdata/list.html")
 	if err != nil {
-		t.Skip("fixture missing")
-	}
-	var feed Feed
-	if err := json.Unmarshal(body, &feed); err != nil {
 		t.Fatal(err)
 	}
-	if len(feed.Products) < 20 {
-		t.Fatalf("expected products, got %d", len(feed.Products))
+	doc, err := crawler.ParseHTML(body, baseURL+"/collections/all?sort_by=created-descending")
+	if err != nil {
+		t.Fatal(err)
 	}
-	n, withPrice, withBrand, withRef, withImg, withCond := 0, 0, 0, 0, 0, 0
-	for _, p := range feed.Products {
-		l, ok := ToListing(p)
-		if !ok {
-			continue
-		}
-		n++
-		crawler.EnrichFromTitle(&l)
-		if l.ExternalID == "" || l.URL == "" || l.Title == "" {
+	cards, items := ParseList(doc)
+	if cards != 48 || len(items) != 22 {
+		t.Fatalf("cards=%d listings=%d, want 48/22", cards, len(items))
+	}
+	var d model.Listing
+	for _, l := range items {
+		if l.ExternalID == "" || l.Price == nil || l.PriceExclTax == nil || l.BrandSlug == "" || len(l.ImageURLs) == 0 {
 			t.Errorf("incomplete listing: %+v", l)
 		}
-		if l.Price != nil {
-			withPrice++
-		}
-		if l.BrandSlug != "" {
-			withBrand++
-		}
-		if l.ReferenceNumber != "" {
-			withRef++
-		}
-		if len(l.ImageURLs) > 0 {
-			withImg++
-		}
-		if l.Condition != "unknown" {
-			withCond++
-		}
-		if n == 1 {
-			t.Logf("sample: %s | %s | %s | ref=%s | %v JPY | cond=%s | model=%s", l.ExternalID, l.BrandName, l.Title, l.ReferenceNumber, *l.Price, l.Condition, l.Model)
+		if l.ExternalID == "10348078432418" {
+			d = l
 		}
 	}
-	t.Logf("listings=%d price=%d brand=%d ref=%d img=%d cond=%d", n, withPrice, withBrand, withRef, withImg, withCond)
-	if n < 10 || withPrice < n || withBrand < n*8/10 || withRef < n/2 || withImg < n*8/10 {
-		t.Errorf("too few parsed fields")
+	if d.URL != baseURL+"/products/d6y8dkkt" || d.BrandSlug != "rolex" || d.ReferenceNumber != "126519LN" ||
+		*d.Price != 15510000 || *d.PriceExclTax != 14100000 || d.Condition != model.ConditionUnworn ||
+		d.Title != "ロレックス デイトナ Ref.126519LN ホワイトゴールド メテオライト文字盤 未使用" ||
+		d.ImageURLs[0] != "https://commit-watch.co.jp/cdn/shop/files/d6y8dkkt-010.jpg?v=1792468302&width=1920" {
+		t.Errorf("d6y8dkkt: %+v %v %v", d, *d.Price, d.ImageURLs)
 	}
 }
