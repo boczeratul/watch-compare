@@ -9,6 +9,9 @@
 //     "ロレックス(ROLEX) エクスプローラーII ブラック 16570 ステンレススティール", .detail .type lines
 //     "型番：16570", "状態：A" (AA / A / AB / B dealer grades), "取扱店舗：東京・中野サンモール店",
 //     .price "1,348,000 円(税込)"
+//
+// The shop blocks plain requests from Google Cloud IP ranges, so list pages go through the render
+// service (CRAWL_RENDER_SERVICE_URL, as for Chrono24) when one is configured, else a plain fetch.
 package kitamura
 
 import (
@@ -44,7 +47,7 @@ func (s Source) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) 
 	seen := map[string]bool{}
 	for page := 1; page <= env.MaxPages; page++ {
 		u := fmt.Sprintf("%s/watch/buy/search/?page=%d&sort=used_update_dt&pageSize=%d", baseURL, page, pageSize)
-		doc, err := env.Fetcher.Doc(ctx, u)
+		doc, err := env.Fetcher.DocRendered(ctx, u)
 		if err != nil {
 			return fmt.Errorf("page %d: %w", page, err)
 		}

@@ -6,7 +6,9 @@
 // few days of the sub). With REDDIT_CLIENT_ID / REDDIT_CLIENT_SECRET set, requests go to
 // oauth.reddit.com with an app-only token (client-credentials grant), which Reddit's Data API
 // terms expect from servers and which is not blocked from cloud IP ranges; without them the
-// public www.reddit.com/…/new.json endpoint is used.
+// public www.reddit.com/…/new.json endpoint is used. Reddit blocks plain requests from Google
+// Cloud, so when a render service is configured (CRAWL_RENDER_SERVICE_URL, as for Chrono24) the
+// public endpoint is fetched through it instead, and takes precedence over OAuth.
 //
 // Post shape (sub rules): title "[WTS] Tudor Black Bay 58 79030N - $3,100 shipped", link flair
 // "WTS" / "WTS/WTT" / "WTT" / "WTB" / "Sold". Only WTS posts are indexed; WTB, trade-only,
@@ -16,6 +18,7 @@
 package watchexchange
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -29,6 +32,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
 
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler"
 	"github.com/hsuanlee/watch-compare/backend/internal/model"
@@ -105,6 +110,13 @@ func (s *Source) get(ctx context.Context, env *crawler.Env, after string) ([]byt
 		q.Set("after", after)
 	}
 	base, path := publicURL, "/r/"+subreddit+"/new.json"
+	if env.Fetcher.HasRenderer() {
+		body, err := env.Fetcher.GetRendered(ctx, base+path+"?"+q.Encode())
+		if err != nil {
+			return nil, err
+		}
+		return UnwrapRenderedJSON(body)
+	}
 	token := ""
 	if env.Cfg.RedditClientID != "" && env.Cfg.RedditClientSecret != "" {
 		t, err := s.accessToken(ctx, env)
@@ -135,6 +147,29 @@ func (s *Source) get(ctx context.Context, env *crawler.Env, after string) ([]byt
 		return nil, fmt.Errorf("%s: http %d", req.URL.Path, resp.StatusCode)
 	}
 	return body, nil
+}
+
+// UnwrapRenderedJSON returns the JSON document from a render-service response. A headless browser
+// shows a JSON response as an HTML page with the document in a <pre>; a plain fetch strategy hands
+// back the JSON itself.
+func UnwrapRenderedJSON(body []byte) ([]byte, error) {
+	trimmed := bytes.TrimSpace(body)
+	if len(trimmed) > 0 && (trimmed[0] == '{' || trimmed[0] == '[') {
+		return trimmed, nil
+	}
+	doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+	text := doc.Find("pre").First().Text()
+	if strings.TrimSpace(text) == "" {
+		text = doc.Find("body").Text()
+	}
+	text = strings.TrimSpace(text)
+	if !strings.HasPrefix(text, "{") {
+		return nil, fmt.Errorf("render service returned no JSON: %.200s", text)
+	}
+	return []byte(text), nil
 }
 
 func (s *Source) accessToken(ctx context.Context, env *crawler.Env) (string, error) {

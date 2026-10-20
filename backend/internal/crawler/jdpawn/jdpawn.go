@@ -1,4 +1,4 @@
-// Package jdpawn crawls the watch section of https://www.jdpawn.com.tw (久大御典品, a pawn shop
+// Package jdpawn crawls the watch section of https://jdpawn.com.tw (久大御典品, a pawn shop
 // group around Taichung; TWD).
 //
 // Site structure (verified 2026-09): ASP.NET MVC, UTF-8, server-rendered.
@@ -28,7 +28,7 @@ import (
 )
 
 const (
-	baseURL  = "https://www.jdpawn.com.tw"
+	baseURL  = "https://jdpawn.com.tw"
 	pageSize = 16
 )
 
