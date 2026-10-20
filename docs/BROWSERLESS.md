@@ -158,7 +158,7 @@ crawl of a few hundred pages costs cents. Set `--max-instances` to bound the wor
 
 | Variable | Meaning |
 |----------|---------|
-| `CRAWL_RENDER_SERVICE_URL` | Base URL of the Browserless service. Empty = Chrono24 is skipped. |
+| `CRAWL_RENDER_SERVICE_URL` | Base URL of the Browserless service. Empty = Chrono24 is skipped and kitamura / watchexchange fetch directly (both are blocked from Google Cloud). |
 | `CRAWL_RENDER_SERVICE_TOKEN` | Browserless API key / container `TOKEN`, sent as `?token=`. |
 | `CRAWL_RENDER_EXTRA_QUERY` | Extra query options appended to the render request, e.g. `proxy=residential&proxyCountry=de`. |
 | `CRAWL_RENDER_LAUNCH_JSON` | Chromium launch options for self-hosted Browserless (`content` mode only), e.g. `{"stealth":true,"args":["--proxy-server=…"]}`. |

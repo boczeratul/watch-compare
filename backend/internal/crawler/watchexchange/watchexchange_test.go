@@ -102,3 +102,20 @@ func TestPrice(t *testing.T) {
 		}
 	}
 }
+
+func TestUnwrapRenderedJSON(t *testing.T) {
+	want := `{"kind":"Listing","data":{"after":"t3_x","children":[]}}`
+	for name, body := range map[string]string{
+		"raw":     want,
+		"browser": `<html><head></head><body><pre style="word-wrap: break-word;">{"kind":"Listing","data":{"after":"t3_x","children":[]}}</pre></body></html>`,
+		"escaped": `<html><body><pre>{&quot;kind&quot;:&quot;Listing&quot;,&quot;data&quot;:{&quot;after&quot;:&quot;t3_x&quot;,&quot;children&quot;:[]}}</pre></body></html>`,
+	} {
+		got, err := UnwrapRenderedJSON([]byte(body))
+		if err != nil || string(got) != want {
+			t.Errorf("%s: got %q, %v", name, got, err)
+		}
+	}
+	if _, err := UnwrapRenderedJSON([]byte(`<html><body>Blocked</body></html>`)); err == nil {
+		t.Error("expected error for a page without JSON")
+	}
+}
