@@ -23,6 +23,7 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/bellemonde"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/commitwatch"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ebay"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/hongsheng"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/hourstack"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ishida"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jackroad"
@@ -131,6 +132,7 @@ func main() {
 	runner := crawler.NewRunner(repo, fetcher, cfg, conv, logger,
 		hourstack.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true" || os.Getenv("HOURSTACK_FETCH_DETAILS") == "true"},
 		rdwatch.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true"},
+		hongsheng.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true"},
 		jackroad.Source{},
 		watchnian.Source{},
 		commitwatch.Source{},

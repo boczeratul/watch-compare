@@ -1,5 +1,5 @@
 // Package alapower parses the classic ASP shop system built by alapower.com.tw that several
-// Taiwanese watch dealers use (Hourstack, RD Watch). Site adapters only supply the base URL,
+// Taiwanese watch dealers use (Hourstack, RD Watch, 鴻昇名錶). Site adapters only supply the base URL,
 // seller name and any site-specific text cleanup.
 //
 // Structure (verified 2026-09):
@@ -31,6 +31,9 @@ type Site struct {
 	SellerName   string
 	FetchDetails bool     // also fetch product pages for material/diameter (slower)
 	Boilerplate  []string // markers that start a marketing suffix to strip from titles
+	// SkipCategories are substrings of menu entries that hold no watches (straps, accessories);
+	// those categories are not crawled.
+	SkipCategories []string
 }
 
 var (
@@ -57,6 +60,10 @@ func (s Site) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) er
 		}
 		seenCat[m[1]] = true
 		name := strings.Trim(crawler.Text(a), "‧· ")
+		if s.skipCategory(name) {
+			env.Log.Info().Str("category", name).Msg("skipping non-watch category")
+			return
+		}
 		if reason := normalize.ExclusionReason(name); reason != "" {
 			// strap makers and the like have their own menu entry: skip the whole category
 			env.Log.Info().Str("category", name).Str("reason", reason).Msg("skipping non-watch category")
@@ -98,6 +105,15 @@ func (s Site) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) er
 		}
 	}
 	return nil
+}
+
+func (s Site) skipCategory(name string) bool {
+	for _, m := range s.SkipCategories {
+		if strings.Contains(name, m) {
+			return true
+		}
+	}
+	return false
 }
 
 func hasNextPage(doc *goquery.Document, current int) bool {
