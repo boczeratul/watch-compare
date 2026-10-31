@@ -19,7 +19,7 @@ internal/
   config/      env-based configuration
   crawler/     Fetcher (rate limit, retries, charset), Source interface, Runner (persistence)
   crawler/<site>/  one adapter per marketplace (+ fixture tests using real captured HTML/JSON)
-  crawler/alapower/ shared parser for the ASP shop platform used by Hourstack, RD Watch and 鴻昇名錶 (999watch)
+  crawler/alapower/ shared parser for the ASP shop platform used by Hourstack, RD Watch, 鴻昇名錶 (999watch), 金宸名錶 (369rolexwatch), 大眾名錶 (dzwatch), 好時計 (goodtimezone) and 永生／永久 (egps)
   db/          pgx pool, embedded migrations (advisory-locked on one connection, idempotent;
                applied on start unless AUTO_MIGRATE=false, which production sets on both workloads)
   fx/          USD-based exchange rates

@@ -321,3 +321,17 @@ func CleanText(s string) string {
 	s = multiSpace.ReplaceAllString(s, " ")
 	return strings.TrimSpace(s)
 }
+
+// TitleConditionZH reads the condition words Taiwanese dealers put in titles. "近全新" (nearly new)
+// is checked before "全新" so it is not taken for unworn.
+func TitleConditionZH(title string, fallback model.Condition) model.Condition {
+	switch {
+	case strings.Contains(title, "近全新") || strings.Contains(title, "媲美新品") || strings.Contains(title, "美品"):
+		return model.ConditionVeryGood
+	case strings.Contains(title, "未使用") || strings.Contains(title, "全新"):
+		return model.ConditionUnworn
+	case strings.Contains(title, "二手") || strings.Contains(title, "中古"):
+		return model.ConditionGood
+	}
+	return fallback
+}
