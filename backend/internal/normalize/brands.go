@@ -70,7 +70,7 @@ var Brands = []BrandEntry{
 	{"tissot", "Tissot", []string{"tissot", "天梭", "ティソ"}},
 	{"hamilton", "Hamilton", []string{"hamilton", "漢米爾頓", "汉米尔顿", "ハミルトン"}},
 	{"rado", "Rado", []string{"rado", "雷達", "雷达", "ラドー"}},
-	{"nomos", "NOMOS Glashütte", []string{"nomos", "nomos glashütte", "nomos glashutte", "ノモス"}},
+	{"nomos", "Nomos", []string{"nomos", "nomos glashütte", "nomos glashutte", "諾莫斯", "诺莫斯", "諾莫斯格拉蘇蒂", "诺莫斯格拉苏蒂", "nomos 格拉蘇蒂", "nomos格拉蘇蒂", "ノモス", "ノモス グラスヒュッテ"}},
 	{"sinn", "Sinn", []string{"sinn", "ジン"}},
 	{"citizen", "Citizen", []string{"citizen", "星辰", "シチズン"}},
 	{"casio", "Casio", []string{"casio", "g-shock", "卡西歐", "卡西欧", "カシオ"}},

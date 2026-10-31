@@ -18,6 +18,12 @@ func TestDetectBrand(t *testing.T) {
 		"Omegaville watches":                         "",
 		"TUDOR Black Bay 58 79030N":                  "tudor",
 		"オーデマ ピゲ ロイヤルオーク 15500ST":                    "audemars-piguet",
+		"NOMOS Glashütte Tangente 38 Datum 130":      "nomos",
+		"諾莫斯 Tangente 139":                           "nomos",
+		"諾莫斯格拉蘇蒂 Club Campus 765":                    "nomos",
+		"NOMOS 格拉蘇蒂 Orion 381":                       "nomos",
+		"ノモス グラスヒュッテ タンジェント":                         "nomos",
+		"格拉蘇蒂 Senator 1-39-59-01-02-04":              "glashutte-original",
 	}
 	for in, want := range cases {
 		got := ""
@@ -119,6 +125,7 @@ func TestCanonicalizeQuery(t *testing.T) {
 		"rolex submariner": "rolex submariner",
 		"オメガ スピードマスター":     "Omega Speedmaster",
 		"116610LN":         "116610LN",
+		"諾莫斯 tangente":     "Nomos tangente",
 	}
 	for in, want := range cases {
 		if got := CanonicalizeQuery(in); got != want {
