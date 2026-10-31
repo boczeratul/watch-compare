@@ -15,12 +15,17 @@
 // /product/product_BIG/ photos: goodtimezone), the pager can use index=<p> instead of page=<p>
 // (369rolexwatch, goodtimezone) and the price can be plain "售價 : 368,000元" text without
 // span.shopping_Price. Cards are therefore located from their product link, not from a class.
+//
+// Verified live 2026-10-31: the index= pager links are "product.asp?index=<p>" without cat=; the
+// category is kept in the ASP session, and cat=<n>&index=<p> returns an empty list. egps cards
+// also carry a td.shopping_Price holding the store phone, ahead of the real span.shopping_Price.
 package alapower
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http/cookiejar"
 	"regexp"
 	"strings"
 
@@ -44,9 +49,9 @@ type Site struct {
 	ListPath string
 	// CategoryQuery is appended to every category URL (egps needs "&type=open").
 	CategoryQuery string
-	// PageParams are the pager query parameters sent for page > 1; default ["page"]. Sites whose
-	// pager links use index= get both, so whichever one the script reads takes effect.
-	PageParams []string
+	// SessionPager marks sites whose pager is product.asp?index=<p>: page 1 opens the category,
+	// which the server stores in the session, and later pages are fetched with that cookie.
+	SessionPager bool
 	// Categories, when set, replaces home-page discovery (sites whose home page also links
 	// jewellery categories under the same scheme).
 	Categories []Category
@@ -66,7 +71,7 @@ var (
 	diaRe    = regexp.MustCompile(`錶徑\s*[:：]\s*(\S+)`)
 	photoRe  = regexp.MustCompile(`(?i)product/product_(big|small)/`)
 	bigRe    = regexp.MustCompile(`(?i)product_big/`)
-	pageNoRe = regexp.MustCompile(`(?:page|index)=(\d+)`)
+	pageNoRe = regexp.MustCompile(`(?i)products?\.asp\?(?:.*&)?(?:page|index)=(\d+)`)
 )
 
 func (s Site) listPath() string {
@@ -77,13 +82,12 @@ func (s Site) listPath() string {
 }
 
 func (s Site) categoryURL(id string, page int) string {
-	u := fmt.Sprintf("%s%s?cat=%s%s", s.BaseURL, s.listPath(), id, s.CategoryQuery)
-	params := s.PageParams
-	if len(params) == 0 {
-		params = []string{"page"}
+	if page > 1 && s.SessionPager {
+		return fmt.Sprintf("%s%s?index=%d", s.BaseURL, s.listPath(), page)
 	}
-	for _, p := range params {
-		u += fmt.Sprintf("&%s=%d", p, page)
+	u := fmt.Sprintf("%s%s?cat=%s%s", s.BaseURL, s.listPath(), id, s.CategoryQuery)
+	if page > 1 {
+		u += fmt.Sprintf("&page=%d", page)
 	}
 	return u
 }
@@ -105,8 +109,9 @@ func (s Site) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) er
 
 	seen := map[string]bool{}
 	for _, c := range cats {
+		jar, _ := cookiejar.New(nil) // a fresh session per category, see SessionPager
 		for page := 1; page <= env.MaxPages; page++ {
-			doc, err := env.Fetcher.Doc(ctx, s.categoryURL(c.ID, page))
+			doc, err := env.Fetcher.DocWithJar(ctx, s.categoryURL(c.ID, page), jar)
 			if err != nil {
 				return fmt.Errorf("category %s page %d: %w", c.ID, page, err)
 			}
@@ -175,7 +180,7 @@ func (s Site) skipCategory(name string) bool {
 
 func hasNextPage(doc *goquery.Document, current int) bool {
 	next := false
-	doc.Find(`a[href*="page="], a[href*="index="]`).Each(func(_ int, a *goquery.Selection) {
+	doc.Find(`a[href]`).Each(func(_ int, a *goquery.Selection) {
 		href, _ := a.Attr("href")
 		if m := pageNoRe.FindStringSubmatch(href); m != nil {
 			var p int
@@ -195,8 +200,14 @@ func (s Site) ParseList(doc *goquery.Document, categoryName string) []model.List
 	for _, c := range crawler.LinkCards(doc, idRe) {
 		card := c.Card
 		text := crawler.Text(card)
-		priceEl := card.Find(".shopping_Price").First()
-		if priceEl.Length() == 0 && !strings.Contains(text, "售價") && !strings.Contains(text, "價格") {
+		labelled := strings.Contains(text, "售價") || strings.Contains(text, "價格")
+		priceEl := card.Find("span.shopping_Price").First()
+		if priceEl.Length() == 0 && !labelled {
+			// classic cards; a labelled card reads its price from the 售價 line instead, since
+			// egps puts the store phone in a td.shopping_Price
+			priceEl = card.Find(".shopping_Price").First()
+		}
+		if priceEl.Length() == 0 && !labelled {
 			continue // a link in a sidebar or banner, not a product card
 		}
 		href, _ := card.Find("a[href]").FilterFunction(func(_ int, a *goquery.Selection) bool {

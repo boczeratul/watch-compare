@@ -104,9 +104,41 @@ func TestCategoryURL(t *testing.T) {
 	if got, want := s.categoryURL("2", 3), "https://www.egps.com.tw/products.asp?cat=2&type=open&page=3"; got != want {
 		t.Errorf("got %s want %s", got, want)
 	}
-	s = Site{BaseURL: "https://www.369rolexwatch.com/", PageParams: []string{"page", "index"}}
-	if got, want := s.categoryURL("47", 2), "https://www.369rolexwatch.com/product.asp?cat=47&page=2&index=2"; got != want {
+	s = Site{BaseURL: "https://www.369rolexwatch.com/", SessionPager: true}
+	if got, want := s.categoryURL("47", 1), "https://www.369rolexwatch.com/product.asp?cat=47"; got != want {
 		t.Errorf("got %s want %s", got, want)
+	}
+	if got, want := s.categoryURL("47", 2), "https://www.369rolexwatch.com/product.asp?index=2"; got != want {
+		t.Errorf("got %s want %s", got, want)
+	}
+}
+
+// egps cards carry the store phone in a td.shopping_Price ahead of the real price span.
+func TestParseListEgpsPhoneCell(t *testing.T) {
+	phone := `<tr><td align="center" class="shopping_Price"><span>永生五權店</span>04-22024721</td></tr>`
+	html := page(
+		card("products_open.asp?ID=199548", "product/product_big/C44F.JPG", "ROLEX 勞力士 DAY-DATE 40 228238 綠色面盤",
+			phone+`<tr><td>售價 : <span class="shopping_Price">2,188,000</span>元</td></tr>`),
+		card("products_open.asp?ID=199567", "product/product_big/D1.JPG", "BREGUET 寶璣 Type XXI 3810ST/92/SZ9",
+			phone+`<tr><td>售價 : <font>歡迎來電洽詢</font></td></tr>`),
+	)
+	doc, _ := crawler.ParseHTML([]byte(html), "https://www.egps.com.tw/products.asp?cat=2&type=open")
+	items := Site{SellerName: "永生／永久名錶"}.ParseList(doc, "品牌男錶")
+	if len(items) != 2 {
+		t.Fatalf("want 2 items, got %d", len(items))
+	}
+	if items[0].Price == nil || *items[0].Price != 2188000 {
+		t.Errorf("price: %v", items[0].Price)
+	}
+	if items[1].Price != nil {
+		t.Errorf("on-request item got price %v", *items[1].Price)
+	}
+}
+
+func TestHasNextPageIgnoresHomeIndexLinks(t *testing.T) {
+	doc, _ := crawler.ParseHTML([]byte(`<html><body><a href="index.asp?index=3">news</a></body></html>`), "https://www.369rolexwatch.com/product.asp?cat=47")
+	if hasNextPage(doc, 1) {
+		t.Error("index.asp?index= is not a pager link")
 	}
 }
 

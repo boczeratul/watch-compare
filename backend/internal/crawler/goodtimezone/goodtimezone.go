@@ -24,7 +24,7 @@ func (s Source) Crawl(ctx context.Context, env *crawler.Env, emit crawler.Emit) 
 		FetchDetails:   s.FetchDetails,
 		BaseURL:        "https://www.goodtimezone.com.tw/",
 		SellerName:     "好時計",
-		PageParams:     []string{"page", "index"},
+		SessionPager:   true,
 		SkipCategories: []string{"配件", "錶帶"},
 	}.Crawl(ctx, env, emit)
 }

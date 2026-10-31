@@ -9,9 +9,10 @@ import (
 )
 
 var (
-	numberRe   = regexp.MustCompile(`[0-9][0-9,.]*`)
-	diameterRe = regexp.MustCompile(`(?i)(\d{2}(?:[.,]\d)?)\s*(?:mm|ミリ|公釐|毫米)`)
-	yearRe     = regexp.MustCompile(`\b((?:19|20)\d{2})\b`)
+	numberRe    = regexp.MustCompile(`[0-9][0-9,.]*`)
+	diameterRe  = regexp.MustCompile(`(?i)(\d{2}(?:[.,]\d)?)\s*(?:mm|ミリ|公釐|毫米)`)
+	yearRe      = regexp.MustCompile(`\b((?:19|20)\d{2})\b`)
+	yearMonthRe = regexp.MustCompile(`^(\d{4})[./-](\d{1,2})(?:[./-]\d{1,2})?$`)
 	// Reference numbers: mixed alnum tokens like 116610LN, 5711/1A-010, 311.30.42.30.01.005, IW371605, RB0138211B1P1
 	refRe = regexp.MustCompile(`\b([A-Z]{0,3}\d{3,8}(?:(?:[A-Z]{1,4}\d{0,4}){1,3}|(?:[./-][A-Z0-9]{1,6}){1,6})?)\b`)
 )
@@ -75,7 +76,7 @@ func ExtractReference(title string) string {
 	best := ""
 	for _, m := range refRe.FindAllStringSubmatch(t, -1) {
 		c := m[1]
-		if isPlainYear(c) || len(c) < 4 {
+		if isPlainYear(c) || isYearMonth(c) || len(c) < 4 {
 			continue
 		}
 		// prefer tokens containing both letters and digits, then longest
@@ -92,6 +93,17 @@ func isPlainYear(s string) bool {
 	}
 	y, err := strconv.Atoi(s)
 	return err == nil && y >= 1900 && y <= 2100
+}
+
+// isYearMonth reports warranty-card dates such as "2019/12" or "2026.05.01", which Taiwanese
+// dealers put next to the reference ("126603 Sea-Dweller 2019/12").
+func isYearMonth(s string) bool {
+	m := yearMonthRe.FindStringSubmatch(s)
+	if m == nil {
+		return false
+	}
+	mo, _ := strconv.Atoi(m[2])
+	return isPlainYear(m[1]) && mo >= 1 && mo <= 12
 }
 
 func score(s string) int {
