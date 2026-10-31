@@ -60,6 +60,8 @@ func TestExtractReference(t *testing.T) {
 		"IWC Portugieser IW371605 Chronograph":         "IW371605",
 		"Tudor Black Bay 58 79030N":                    "79030N",
 		"ロレックス デイトジャスト 69178 ブラック レディース":               "69178",
+		"ROLEX 勞力士126603 Sea-Dweller 2019/12 半金海使":     "126603",
+		"ROLEX勞力士 126503 Daytona迪通拿 2026/05未使用新品":      "126503",
 	}
 	for in, want := range cases {
 		if got := ExtractReference(in); got != want {

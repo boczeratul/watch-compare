@@ -158,6 +158,32 @@ func (f *Fetcher) Doc(ctx context.Context, rawURL string) (*goquery.Document, er
 	return ParseHTML(body, rawURL)
 }
 
+// DocWithJar is Doc for sites that keep state in cookies (an ASP session pager whose links drop
+// the category): it sends the jar's cookies for the URL and stores the ones the response sets.
+func (f *Fetcher) DocWithJar(ctx context.Context, rawURL string, jar http.CookieJar) (*goquery.Document, error) {
+	req, err := http.NewRequest(http.MethodGet, rawURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	for _, c := range jar.Cookies(req.URL) {
+		req.AddCookie(c)
+	}
+	resp, err := f.Do(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	jar.SetCookies(req.URL, resp.Cookies())
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%s: http %d", rawURL, resp.StatusCode)
+	}
+	body, err := decodeBody(resp)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHTML(body, rawURL)
+}
+
 // DocRendered is Doc via the render service.
 func (f *Fetcher) DocRendered(ctx context.Context, rawURL string) (*goquery.Document, error) {
 	body, err := f.GetRendered(ctx, rawURL)

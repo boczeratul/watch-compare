@@ -22,12 +22,16 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/bbc0804"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/bellemonde"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/commitwatch"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/dzwatch"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ebay"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/egps"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/goodtimezone"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/hongsheng"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/hourstack"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/ishida"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jackroad"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jdpawn"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/jinchen"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/kenwatches"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/kitamura"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/lips"
@@ -40,7 +44,9 @@ import (
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchexchange"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchfinderhk"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchnian"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/watchstore"
 	"github.com/hsuanlee/watch-compare/backend/internal/crawler/wristcheck"
+	"github.com/hsuanlee/watch-compare/backend/internal/crawler/xintai"
 	"github.com/hsuanlee/watch-compare/backend/internal/db"
 	"github.com/hsuanlee/watch-compare/backend/internal/fx"
 	"github.com/hsuanlee/watch-compare/backend/internal/push"
@@ -133,6 +139,12 @@ func main() {
 		hourstack.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true" || os.Getenv("HOURSTACK_FETCH_DETAILS") == "true"},
 		rdwatch.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true"},
 		hongsheng.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true"},
+		jinchen.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true"},
+		dzwatch.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true"},
+		goodtimezone.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true"},
+		egps.Source{FetchDetails: os.Getenv("ALAPOWER_FETCH_DETAILS") == "true"},
+		xintai.Source{},
+		watchstore.Source{},
 		jackroad.Source{},
 		watchnian.Source{},
 		commitwatch.Source{},

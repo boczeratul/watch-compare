@@ -19,6 +19,12 @@ deactivation. Parsers are covered by fixture tests using real HTML captured in `
 | `hourstack` | HTML (alapower shop), brand categories `/product.asp?cat=N&page=P` | TWD | ✅ cards parsed; reference/diameter/year extracted from title | shared parser in `crawler/alapower`; `ALAPOWER_FETCH_DETAILS=true` also fetches product pages for material/diameter (slower) |
 | `rdwatch` | HTML (alapower shop, same markup as Hourstack; 230px cards, prices without separators) | TWD | ✅ 24/24 cards on the Rolex category; live dry-run OK (41 categories) | RD Watch, Taipei |
 | `999watch` | HTML (alapower shop, same markup as RD Watch), brand categories `/product.asp?cat=N&page=P` (24 per page) | TWD | ⚠️ no captured fixture: 999watch.com is unreachable from the dev sandbox; 24/24 Rolex cards with ID, title, 編號 and price seen through a page reader (2026-10-20) | 鴻昇名錶精品中心, Taichung (package `crawler/hongsheng`; Go packages cannot start with a digit); the 手錶配件及錶帶 category is skipped |
+| `369rolexwatch` | HTML (alapower shop; plain-text "售價 : 368,000元", spacer-gif card images, `index=` pager), brand categories `/product.asp?cat=N` | TWD | ✅ live crawl 2026-10-31: 26/26 pieces (the whole stock) with price, brand, photo; 25 with reference | 金宸名錶, Taichung (package `crawler/jinchen`); session pager like goodtimezone, though no category currently has a second page |
+| `dzwatch` | HTML (alapower shop, same markup as RD Watch), brand categories `/product.asp?cat=N&page=P` (24 per page) | TWD | ✅ live crawl 2026-10-31: 232 pieces, all priced with photos, 218 with reference (warranty dates like "2019/12" in titles are not taken as references) | 大眾名錶, Kaohsiung; jewellery (GIA 鑽石, 玉石, 珍珠, 珊瑚, 飾品), 手錶配件 and 其他 categories are skipped |
+| `goodtimezone` | HTML (alapower shop; lowercase `product_open.asp?id=`, `/product/product_BIG/` photos, `index=` pager) | TWD | ✅ live crawl 2026-10-31: 270 pieces (137 Rolex over 10 pages), all priced | 好時計, Taipei; the pager links are `product.asp?index=P` without `cat=` because the category lives in the ASP session (`cat=N&index=P` returns an empty list), so page 1 opens the category and later pages reuse its cookie |
+| `egps` | HTML (alapower shop, `products.asp` / `products_open.asp` variant), only `products.asp?cat=2&type=open` (品牌男錶) and `cat=1` (品牌女錶), `&page=P` | TWD | ✅ live crawl 2026-10-31: 691 pieces, all priced, 608 with reference | 永生／永久名錶, Taichung (two shops); pages are Big5; every card has a `td.shopping_Price` holding the store phone ahead of the real `span.shopping_Price`; shop notices posted as products ("…公告") are skipped; mostly new-card pieces at market price |
+| `xintai` | HTML (custom PHP), `/goods.php?Ty=1&currentPage=N` (腕錶類, 8 per page) | TWD | ✅ live crawl 2026-10-31: 38 pieces, 37 priced; card text has no diameter | 鑫泰當鋪 (89675555.com), Tucheng, New Taipei; pawn shop, so condition defaults to good; "(已售出)" pieces with the 999,999 placeholder price are skipped; listings can be months old, stock is confirmed over LINE |
+| `watchstore` | HTML (classic ASP on iPAGE), every piece on the home page list `/?keywords=&larcode=&newsclass=&page=N` | TWD | ✅ live crawl 2026-10-31: 132 watches; 8 accessories (watch boxes, travel cases, straps) are dropped by the exclusion rules | 名錶窩, Taipei; thumbnails (`_S.jpg`) only |
 | `commitwatch` | HTML (Shopify theme), `/collections/all?sort_by=created-descending&page=N` (48 cards per page, newest first) | JPY | ✅ 22/22 for-sale cards on the 2026-10-20 capture with price + 税抜, brand, 型番 reference, condition, 2 images | Commit Ginza, Tokyo; `/products.json` is oldest-first and capped at 25000 while the shop keeps 27000+ sold pieces, so it never reaches current stock; SOLD OUT / RESERVED cards are skipped and the crawl stops after 10 pages in a row with nothing for sale |
 | `sevenhours` | HTML (Shopserve), all items via `/SHOP/list.php?Search=&Type=01&PAGE=N`, `<link rel=next>` | JPY | ✅ 40/40 cards with price, 税抜 price from the card, brand + reference from the title, image | 7hours, Kobe; a few hundred pieces, mostly new/unused |
 | `lips` | HTML (EC-CUBE 4), in-stock watches newest first `/ec/products/list?category_id=1&stock_flg[]=1&orderby=2&pageno=N` | JPY | ✅ 40/40 cards with price, brand, 型番 reference, grade (新品 / SA / A ランク), 付属 box+papers, image | Brand Shop LIPS; ~1.1k in stock of ~43k catalogued, so the stock filter is essential |
@@ -81,10 +87,17 @@ is additionally rejected in its own parser together with everything under `/imag
 ## Non-watch items
 
 Dealers list straps, buckles and bracelet links under their watch brands. `normalize.NonWatchBrands`
-(currently Vagenari, a strap maker) and `normalize.NonWatchTitleMarkers` (currently 錶節, bracelet
-links) name what is dropped: the Runner skips any listing whose title or model matches and counts
-it as `excluded` in the run summary, and the alapower adapters skip a whole brand category whose
-menu entry matches. Add to those two lists when a new part maker or part type shows up.
+(currently Vagenari, a strap maker) and `normalize.NonWatchTitleMarkers` (bracelet links 錶節,
+straps sold alone 原廠錶帶 / 副廠錶帶, boxes 錶盒 and travel cases / pouches) name what is dropped:
+the Runner skips any listing whose title or model matches and counts it as `excluded` in the run
+summary, and the alapower adapters skip a whole brand category whose menu entry matches. Add to
+those two lists when a new part maker or part type shows up.
+
+Taiwanese dealers use the same words when describing a whole watch ("錶節齊全", "少一節錶節",
+"搭配Vagenari橡膠錶帶", "附原廠錶盒"), so a match does not count when the title also reads as a
+watch (錶徑, 上鍊, 機芯, 保單/保卡, 面盤, 腕錶, a case diameter of 28mm or more, …) or when it sits
+in a "comes with" phrase after 搭配 / 附 / 贈 / 送. A bare 錶帶 is not a marker: it usually
+describes the watch's own strap ("快拆式錶帶", "不鏽鋼橡膠錶帶").
 
 ## Politeness and reliability
 

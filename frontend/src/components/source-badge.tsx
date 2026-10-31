@@ -24,6 +24,12 @@ const STYLES: Record<string, string> = {
   bbc0804: "bg-orange-50 text-orange-900 ring-orange-300",
   watchexchange: "bg-red-50 text-red-900 ring-red-300",
   "999watch": "bg-yellow-50 text-yellow-900 ring-yellow-300",
+  "369rolexwatch": "bg-sky-50 text-sky-900 ring-sky-300",
+  dzwatch: "bg-lime-50 text-lime-900 ring-lime-300",
+  goodtimezone: "bg-teal-50 text-teal-900 ring-teal-300",
+  egps: "bg-indigo-50 text-indigo-900 ring-indigo-300",
+  xintai: "bg-pink-50 text-pink-900 ring-pink-300",
+  watchstore: "bg-violet-50 text-violet-900 ring-violet-300",
 };
 
 export function SourceBadge({ source, name, className }: { source: string; name: string; className?: string }) {
